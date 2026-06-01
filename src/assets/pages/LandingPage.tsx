@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [animateChart, setAnimateChart] = useState(false);
-
-  // 현재 선택된 요금제 상태 관리
   const [selectedPlan, setSelectedPlan] = useState<
     "starter" | "business" | "enterprise"
   >("business");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -48,7 +49,10 @@ const LandingPage: React.FC = () => {
             : "bg-transparent border-transparent"
         }`}
       >
-        <div className="flex items-center gap-2.5 group cursor-pointer">
+        <div
+          className="flex items-center gap-2.5 group cursor-pointer"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
           <div className="w-9 h-9 bg-gradient-to-br from-[#5B50E8] to-[#8B5CF6] rounded-xl flex items-center justify-center shadow-lg shadow-[#5B50E8]/30 group-hover:rotate-[-8deg] group-hover:scale-110 transition-transform">
             <i className="ti ti-shield-check text-white text-xl"></i>
           </div>
@@ -69,10 +73,16 @@ const LandingPage: React.FC = () => {
           ))}
         </div>
         <div className="ml-auto flex gap-2.5 items-center">
-          <button className="px-5 py-2 rounded-lg text-[13px] font-bold border border-gray-200 hover:border-[#5B50E8] hover:text-[#5B50E8] transition-all">
+          <button
+            onClick={() => navigate("/login")}
+            className="px-5 py-2 rounded-lg text-[13px] font-bold border border-gray-200 hover:border-[#5B50E8] hover:text-[#5B50E8] transition-all"
+          >
             로그인
           </button>
-          <button className="px-5 py-2.5 rounded-lg text-[13px] font-bold bg-[#5B50E8] text-white shadow-lg hover:translate-y-[-2px] transition-all">
+          <button
+            onClick={() => navigate("/signup")}
+            className="px-5 py-2.5 rounded-lg text-[13px] font-bold bg-[#5B50E8] text-white shadow-lg hover:translate-y-[-2px] transition-all"
+          >
             무료로 시작하기
           </button>
         </div>
@@ -118,10 +128,16 @@ const LandingPage: React.FC = () => {
         </p>
 
         <div className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-500 flex flex-wrap justify-center gap-4 mb-20 z-10">
-          <button className="px-10 py-4 bg-[#5B50E8] text-white rounded-xl font-bold shadow-xl shadow-[#5B50E8]/20 hover:scale-105 transition-all">
+          <button
+            onClick={() => navigate("/signup")}
+            className="px-10 py-4 bg-[#5B50E8] text-white rounded-xl font-bold shadow-xl shadow-[#5B50E8]/20 hover:scale-105 transition-all"
+          >
             기업 회원가입 — 무료 체험
           </button>
-          <button className="px-10 py-4 bg-white border border-gray-200 text-[#1A1A2E] rounded-xl font-bold hover:border-[#5B50E8] transition-all">
+          <button
+            onClick={() => navigate("/main")}
+            className="px-10 py-4 bg-white border border-gray-200 text-[#1A1A2E] rounded-xl font-bold hover:border-[#5B50E8] hover:text-[#5B50E8] active:scale-98 transition-all shadow-sm"
+          >
             소개 영상 보기
           </button>
         </div>
@@ -295,10 +311,10 @@ const LandingPage: React.FC = () => {
                 Features
               </span>
             </div>
-            <h2 className="text-[44px] md:text-[56px] font-bebas text-[#1A1A2E] leading-tight mb-4 tracking-tight">
+            <h2 className="text-[44px] md:text-[56px] font-bebas text-[#1A1A2E] text-left leading-tight mb-4 tracking-tight">
               핵심 기능
             </h2>
-            <p className="text-[#4B5563] text-lg max-w-2xl leading-relaxed">
+            <p className="text-[#4B5563] text-lg text-left max-w-2xl leading-relaxed">
               단순한 인사 도구가 아닙니다. HR 데이터 인프라로서 채용의
               불확실성을 구조적으로 제거합니다.
             </p>
@@ -525,6 +541,10 @@ const LandingPage: React.FC = () => {
                 ))}
               </ul>
               <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/signup");
+                }}
                 className={`w-full py-3.5 rounded-xl text-[13px] font-bold transition-all ${
                   selectedPlan === "starter"
                     ? "bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] text-white shadow-md shadow-[#5B50E8]/20"
@@ -580,6 +600,10 @@ const LandingPage: React.FC = () => {
                 ))}
               </ul>
               <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/signup");
+                }}
                 className={`w-full py-3.5 rounded-xl text-[13px] font-bold transition-all ${
                   selectedPlan === "business"
                     ? "bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] text-white shadow-md shadow-[#5B50E8]/20"
@@ -645,9 +669,8 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 7. CTA SECTION (NEW) ─── */}
+      {/* ─── 7. CTA SECTION ─── */}
       <section className="relative py-32 px-8 text-center bg-gradient-to-br from-[#FAFAFF] via-[#EEF0FF] to-[#F5F3FF] border-t border-[#5B50E8]/10 overflow-hidden">
-        {/* Subtle background grids & floaters */}
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
@@ -674,11 +697,17 @@ const LandingPage: React.FC = () => {
           </p>
 
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-200 flex flex-wrap justify-center gap-4 mb-5">
-            <button className="px-10 py-4 bg-gradient-to-br from-[#5B50E8] to-[#8B5CF6] text-white rounded-xl font-bold shadow-xl shadow-[#5B50E8]/30 hover:scale-105 transition-all flex items-center gap-2">
+            <button
+              onClick={() => navigate("/signup")}
+              className="px-10 py-4 bg-gradient-to-br from-[#5B50E8] to-[#8B5CF6] text-white rounded-xl font-bold shadow-xl shadow-[#5B50E8]/30 hover:scale-105 transition-all flex items-center gap-2"
+            >
               <i className="ti ti-building-community text-lg" />
               기업 회원가입 — 무료 시작
             </button>
-            <button className="px-8 py-4 bg-white border border-gray-200 text-[#1A1A2E] rounded-xl font-bold shadow-sm hover:border-[#5B50E8] hover:text-[#5B50E8] transition-all flex items-center gap-2">
+            <button
+              onClick={() => navigate("/login")}
+              className="px-8 py-4 bg-white border border-gray-200 text-[#1A1A2E] rounded-xl font-bold shadow-sm hover:border-[#5B50E8] hover:text-[#5B50E8] transition-all flex items-center gap-2"
+            >
               <i className="ti ti-login text-lg" />
               로그인
             </button>
@@ -686,7 +715,10 @@ const LandingPage: React.FC = () => {
 
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-300 text-xs text-[#9CA3AF]">
             이미 계정이 있으신가요?{" "}
-            <span className="text-[#5B50E8] font-bold cursor-pointer hover:underline">
+            <span
+              onClick={() => navigate("/login")}
+              className="text-[#5B50E8] font-bold cursor-pointer hover:underline"
+            >
               로그인 →
             </span>
           </div>
