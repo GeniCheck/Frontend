@@ -1,10 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
+// agreements 상태를 위한 명확한 타입 정의
+interface AgreementsType {
+  terms: boolean;
+  dataShare: boolean;
+  marketing: boolean;
+  [key: string]: boolean; // 인덱스 시그니처를 추가하여 any 없이 동적 키 접근 허용
+}
+
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // ─── ★ 중요: 회원가입 페이지 진입 시 스크롤을 무조건 맨 위로 올리는 로직 추가 ───
+  // 회원가입 페이지 진입 시 스크롤 최상단 리셋
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -63,11 +71,20 @@ const SignupPage: React.FC = () => {
   const [selectedTier, setSelectedTier] = useState<
     "starter" | "business" | "enterprise"
   >("starter");
-  const [agreements, setAgreements] = useState({
+  const [agreements, setAgreements] = useState<AgreementsType>({
     terms: true,
     dataShare: true,
     marketing: false,
   });
+
+  // 미사용 경고(assigned but never used)를 해결하고 폼 작성이 작동하도록 변경 핸들러 추가
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) return;
@@ -83,7 +100,7 @@ const SignupPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-[#F9FAFB] text-[#1A1A2E] font-sans selection:bg-[#5B50E8]/20 relative">
-      {/* ─── 좌측: 스크롤에 따라 차례차례 색이 바뀌는 고정 사이드바 ─── */}
+      {/* ─── 좌측: 고정 사이드바 ─── */}
       <div className="hidden lg:flex lg:w-[380px] h-screen bg-[#1A1A2E] p-10 flex-col justify-between text-white fixed top-0 left-0 z-50 border-r border-gray-800">
         <div
           className="absolute inset-0 opacity-[0.02] pointer-events-none"
@@ -164,7 +181,7 @@ const SignupPage: React.FC = () => {
                     <h4
                       className={`text-xs font-black tracking-wide transition-colors duration-300 ${
                         isCurrent
-                          ? "text-white text-sm"
+                          ? "bg-transparent text-white text-sm"
                           : isPassed
                             ? "text-gray-300"
                             : "text-gray-500"
@@ -211,146 +228,155 @@ const SignupPage: React.FC = () => {
             ))}
           </div>
 
-          {/* STEP 1 & 2 구역 */}
+          {/* ★ 핵심 보정 구역 1: ref 속성에 .current를 제외한 레퍼런스 자체를 전달하여 에러 원천 차단 */}
           <div
             ref={sectionRefs.step1}
             id="section-1"
             className="space-y-6 scroll-mt-24"
           >
-            <div ref={sectionRefs.step2} id="section-2" className="space-y-2">
-              <h3 className="text-2xl font-black tracking-tight text-[#1A1A2E]">
-                사업자 인증 & 대표 확인
-              </h3>
-              <p className="text-xs text-[#4B5563]">
-                국세청 API를 통해 사업자 등록번호를 확인하고, 대표 휴대폰으로
-                SMS 인증을 진행합니다.
-              </p>
-            </div>
-
-            {/* 기업 정보 입력 카드 */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4 hover:shadow-md transition-shadow">
-              <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                기업 정보
+            {/* ★ 핵심 보정 구역 2: 중첩되었던 div와 step2 레퍼런스를 분리 독립 마크업 배치 */}
+            <div ref={sectionRefs.step2} id="section-2" className="space-y-6">
+              <div className="space-y-2">
+                <h3 className="text-2xl font-black tracking-tight text-[#1A1A2E]">
+                  사업자 인증 & 대표 확인
+                </h3>
+                <p className="text-xs text-[#4B5563]">
+                  국세청 API를 통해 사업자 등록번호를 확인하고, 대표 휴대폰으로
+                  SMS 인증을 진행합니다.
+                </p>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#4B5563]">
-                  기업명 <span className="text-[#5B50E8]">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.companyName}
-                  disabled
-                  className="w-full px-4 py-3 bg-[#F9FAFB] border border-gray-100 rounded-xl text-sm font-medium text-gray-400 cursor-not-allowed"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-xs font-bold text-[#4B5563]">
-                    사업자 등록번호 <span className="text-[#5B50E8]">*</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={formData.businessNumber}
-                      disabled
-                      className="flex-1 px-4 py-3 bg-[#F9FAFB] border border-gray-100 rounded-xl text-sm font-medium text-gray-400 cursor-not-allowed"
-                    />
-                    <button
-                      type="button"
-                      className="px-4 py-3 bg-[#10B981] text-white rounded-xl text-xs font-bold shadow-sm cursor-default active:scale-98 transition-transform"
-                    >
-                      인증 완료
-                    </button>
-                  </div>
+              {/* 기업 정보 입력 카드 */}
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4 hover:shadow-md transition-shadow">
+                <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                  기업 정보
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#4B5563]">
-                    대표자명 <span className="text-[#5B50E8]">*</span>
+                    기업명 <span className="text-[#5B50E8]">*</span>
                   </label>
                   <input
                     type="text"
-                    value={formData.ceoName}
+                    name="companyName"
+                    value={formData.companyName}
                     disabled
                     className="w-full px-4 py-3 bg-[#F9FAFB] border border-gray-100 rounded-xl text-sm font-medium text-gray-400 cursor-not-allowed"
                   />
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="md:col-span-2 space-y-1.5">
+                    <label className="text-xs font-bold text-[#4B5563]">
+                      사업자 등록번호 <span className="text-[#5B50E8]">*</span>
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        name="businessNumber"
+                        value={formData.businessNumber}
+                        disabled
+                        className="flex-1 px-4 py-3 bg-[#F9FAFB] border border-gray-100 rounded-xl text-sm font-medium text-gray-400 cursor-not-allowed"
+                      />
+                      <button
+                        type="button"
+                        className="px-4 py-3 bg-[#10B981] text-white rounded-xl text-xs font-bold shadow-sm cursor-default active:scale-98 transition-transform"
+                      >
+                        인증 완료
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[#4B5563]">
+                      대표자명 <span className="text-[#5B50E8]">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="ceoName"
+                      value={formData.ceoName}
+                      disabled
+                      className="w-full px-4 py-3 bg-[#F9FAFB] border border-gray-100 rounded-xl text-sm font-medium text-gray-400 cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-3.5 bg-[#F9FAFB] border border-gray-100 rounded-xl">
+                  <div className="text-left">
+                    <div className="text-xs font-black text-[#1A1A2E]">
+                      테크플러스 주식회사{" "}
+                      <span className="text-[10px] font-normal text-gray-400 ml-1">
+                        사업자 인증이 완료되었습니다.
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-gray-400 mt-0.5">
+                      대표자: 김대표 · 업태: 정보통신업
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 bg-white border border-[#10B981]/30 rounded-lg text-[10px] font-bold text-[#10B981]">
+                    인증 완료
+                  </span>
+                </div>
               </div>
 
-              <div className="flex items-center justify-between p-3.5 bg-[#F9FAFB] border border-gray-100 rounded-xl">
-                <div className="text-left">
-                  <div className="text-xs font-black text-[#1A1A2E]">
-                    테크플러스 주식회사{" "}
-                    <span className="text-[10px] font-normal text-gray-400 ml-1">
-                      사업자 인증이 완료되었습니다.
+              {/* 대표 휴대폰 SMS 인증 카드 */}
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4 hover:shadow-md transition-shadow">
+                <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                  대표 휴대폰 SMS 인증
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#4B5563]">
+                    대표 휴대폰 번호 <span className="text-[#5B50E8]">*</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                      placeholder="010-1234-5678"
+                      className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#5B50E8] focus:ring-1 focus:ring-[#5B50E8] outline-none transition-all placeholder:text-gray-300"
+                    />
+                    <button
+                      type="button"
+                      className="px-5 py-3 bg-[#5B50E8] text-white rounded-xl text-xs font-bold shadow-md shadow-[#5B50E8]/10 hover:bg-[#493fd1] active:scale-95 transition-all whitespace-nowrap"
+                    >
+                      인증번호 발송
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t border-gray-100">
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-gray-400">
+                      010-1234-5678 로 6자리 인증번호를 전송했습니다.
+                    </span>
+                    <span className="font-bold text-red-500 flex items-center gap-1">
+                      <i className="ti ti-alert-circle" />
+                      만료
                     </span>
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5">
-                    대표자: 김대표 · 업태: 정보통신업
+
+                  <div className="flex justify-center gap-2">
+                    {otpValues.map((val, i) => (
+                      <input
+                        key={i}
+                        id={`otp-${i}`}
+                        type="text"
+                        maxLength={1}
+                        value={val}
+                        onChange={(e) => handleOtpChange(i, e.target.value)}
+                        className="w-11 h-13 border border-gray-200 rounded-xl text-center font-black text-lg focus:border-[#5B50E8] focus:ring-2 focus:ring-[#5B50E8]/10 bg-white hover:border-gray-300 outline-none transition-all"
+                      />
+                    ))}
                   </div>
-                </div>
-                <span className="px-2.5 py-1 bg-white border border-[#10B981]/30 rounded-lg text-[10px] font-bold text-[#10B981]">
-                  인증 완료
-                </span>
-              </div>
-            </div>
-
-            {/* 대표 휴대폰 SMS 인증 카드 */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4 hover:shadow-md transition-shadow">
-              <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                대표 휴대폰 SMS 인증
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#4B5563]">
-                  대표 휴대폰 번호 <span className="text-[#5B50E8]">*</span>
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="010-1234-5678"
-                    className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#5B50E8] focus:ring-1 focus:ring-[#5B50E8] outline-none transition-all placeholder:text-gray-300"
-                  />
-                  <button
-                    type="button"
-                    className="px-5 py-3 bg-[#5B50E8] text-white rounded-xl text-xs font-bold shadow-md shadow-[#5B50E8]/10 hover:bg-[#493fd1] active:scale-95 transition-all whitespace-nowrap"
-                  >
-                    인증번호 발송
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-3 pt-4 border-t border-gray-100">
-                <div className="flex justify-between items-center text-[11px]">
-                  <span className="text-gray-400">
-                    010-1234-5678 로 6자리 인증번호를 전송했습니다.
-                  </span>
-                  <span className="font-bold text-red-500 flex items-center gap-1">
-                    <i className="ti ti-alert-circle" />
-                    만료
-                  </span>
-                </div>
-
-                <div className="flex justify-center gap-2">
-                  {otpValues.map((val, i) => (
-                    <input
-                      key={i}
-                      id={`otp-${i}`}
-                      type="text"
-                      maxLength={1}
-                      value={val}
-                      onChange={(e) => handleOtpChange(i, e.target.value)}
-                      className="w-11 h-13 border border-gray-200 rounded-xl text-center font-black text-lg focus:border-[#5B50E8] focus:ring-2 focus:ring-[#5B50E8]/10 bg-white hover:border-gray-300 outline-none transition-all"
-                    />
-                  ))}
-                </div>
-                <div className="text-center text-[10px] text-gray-400">
-                  번호를 받지 못하셨나요?{" "}
-                  <span className="text-[#5B50E8] font-bold cursor-pointer hover:underline active:opacity-70">
-                    재발송
-                  </span>{" "}
-                  · 최대 5회 시도 가능
+                  <div className="text-center text-[10px] text-gray-400">
+                    번호를 받지 못하셨나요?{" "}
+                    <span className="text-[#5B50E8] font-bold cursor-pointer hover:underline active:opacity-70">
+                      재발송
+                    </span>{" "}
+                    · 최대 5회 시도 가능
+                  </div>
                 </div>
               </div>
             </div>
@@ -376,6 +402,9 @@ const SignupPage: React.FC = () => {
                 </label>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="ceo@company.com"
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#5B50E8] focus:ring-1 focus:ring-[#5B50E8] outline-none transition-all placeholder:text-gray-300"
                 />
@@ -391,6 +420,9 @@ const SignupPage: React.FC = () => {
                   </label>
                   <input
                     type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
                     placeholder="8자 이상, 영문+숫자+특수문자"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#5B50E8] focus:ring-1 focus:ring-[#5B50E8] outline-none transition-all"
                   />
@@ -401,6 +433,9 @@ const SignupPage: React.FC = () => {
                   </label>
                   <input
                     type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
                     placeholder="비밀번호 재입력"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#5B50E8] focus:ring-1 focus:ring-[#5B50E8] outline-none transition-all"
                   />
@@ -488,7 +523,7 @@ const SignupPage: React.FC = () => {
               >
                 <input
                   type="checkbox"
-                  checked={(agreements as any)[item.id]}
+                  checked={agreements[item.id]}
                   onChange={(e) =>
                     setAgreements((prev) => ({
                       ...prev,

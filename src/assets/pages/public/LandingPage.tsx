@@ -89,12 +89,10 @@ const LandingPage: React.FC = () => {
       </nav>
 
       {/* ─── 2. HERO SECTION ─── */}
-      <section className="relative min-h-screen pt-32 pb-20 px-8 flex flex-col items-center text-center overflow-hidden">
+      <section className="relative min-h-screen pt-32 pb-20 px-8 flex flex-col items-center text-center overflow-hidden bg-[#F9FAFB]">
         <div className="absolute inset-0 -z-10 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-[#5B50E8]/5 blur-[120px] rounded-full animate-pulse" />
-          <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-[#8B5CF6]/5 blur-[120px] rounded-full animate-pulse delay-700" />
           <div
-            className="absolute inset-0 opacity-[0.06]"
+            className="absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage: "radial-gradient(#5B50E8 1px, transparent 1px)",
               backgroundSize: "40px 40px",
@@ -112,11 +110,10 @@ const LandingPage: React.FC = () => {
           </span>
         </div>
 
+        {/* 메인 타이틀 단색 보라색화 적용 완료 */}
         <h1 className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-300 font-bebas text-[clamp(52px,9vw,110px)] leading-[0.93] tracking-tight mb-6">
           <span className="block text-[#1A1A2E]">직원의 진짜 실력,</span>
-          <span className="block bg-gradient-to-r from-[#5B50E8] via-[#8B5CF6] to-[#F59E0B] bg-clip-text text-transparent">
-            데이터로 증명한다
-          </span>
+          <span className="block text-[#5B50E8]">데이터로 증명한다</span>
         </h1>
 
         <p className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-400 max-w-[580px] text-[#4B5563] text-lg leading-relaxed mb-12">
@@ -138,7 +135,7 @@ const LandingPage: React.FC = () => {
             onClick={() => navigate("/main")}
             className="px-10 py-4 bg-white border border-gray-200 text-[#1A1A2E] rounded-xl font-bold hover:border-[#5B50E8] hover:text-[#5B50E8] active:scale-98 transition-all shadow-sm"
           >
-            소개 영상 보기
+            대시보드 미리보기
           </button>
         </div>
 
@@ -215,7 +212,7 @@ const LandingPage: React.FC = () => {
 
       {/* ─── 3. TRUST BAR ─── */}
       <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-[#5B50E8] py-8 text-white/90 font-bold text-[13px] tracking-wide">
-        <div className="max-w-6xl mx-auto px-8 flex flex-wrap justify-between items-center">
+        <div className="max-w-6xl mx-auto px-8 flex flex-wrap justify-between items-center gap-4">
           {[
             "법적 동의 기반",
             "암호화 보관",
@@ -232,7 +229,7 @@ const LandingPage: React.FC = () => {
       </div>
 
       {/* ─── 4. HOW IT WORKS SECTION ─── */}
-      <section id="how" className="py-24 bg-[#F9FAFB]">
+      <section id="how" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-8">
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 mb-16 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEF0FF] border border-[#5B50E8]/20 rounded-full mb-4">
@@ -278,7 +275,7 @@ const LandingPage: React.FC = () => {
             ].map((step, idx) => (
               <div
                 key={idx}
-                className="reveal opacity-0 translate-y-8 transition-all duration-700 group bg-white border border-gray-100 rounded-3xl p-10 relative overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all"
+                className="reveal opacity-0 translate-y-8 transition-all duration-700 group bg-white border border-gray-200 rounded-3xl p-10 relative overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all"
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
                 <div className="absolute right-6 top-0 font-bebas text-[100px] text-gray-100 leading-none select-none opacity-20">
@@ -289,9 +286,9 @@ const LandingPage: React.FC = () => {
                 >
                   <i className={`ti ${step.icon}`}></i>
                 </div>
-                <h3 className="text-xl font-black text-[#1A1A2E] mb-4">
+                <div className="text-xl font-black text-[#1A1A2E] mb-4">
                   {step.title}
-                </h3>
+                </div>
                 <p className="text-[#4B5563] text-[14px] leading-relaxed">
                   {step.desc}
                 </p>
@@ -302,7 +299,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* ─── 5. FEATURES SECTION ─── */}
-      <section id="features-section" className="py-24 bg-white">
+      <section id="features-section" className="py-24 bg-[#F9FAFB]">
         <div className="max-w-6xl mx-auto px-8">
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 mb-16 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEF0FF] border border-[#5B50E8]/20 rounded-full mb-4">
@@ -321,14 +318,14 @@ const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 col-span-1 md:col-span-2 bg-white border border-gray-100 rounded-[24px] p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row gap-10 items-center justify-between overflow-hidden">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 col-span-1 md:col-span-2 bg-white border border-gray-200 rounded-[24px] p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row gap-10 items-center justify-between overflow-hidden">
               <div className="flex-1 text-left">
                 <div className="w-12 h-12 bg-[#EEF0FF] text-[#5B50E8] rounded-xl flex items-center justify-center text-xl mb-6">
                   <i className="ti ti-chart-arrows-vertical"></i>
                 </div>
-                <h3 className="text-2xl font-black text-[#1A1A2E] mb-4">
+                <div className="text-2xl font-black text-[#1A1A2E] mb-4">
                   선언 vs 검증 대조 분석
-                </h3>
+                </div>
                 <p className="text-[#4B5563] text-[15px] leading-relaxed mb-6 max-w-xl">
                   직원이 선언한 역량과 대표의 검증 점수를 항목별로 비교합니다.
                   GAP이 작을수록 자기 인식이 정확한 인재입니다. 채용 시 가장
@@ -407,14 +404,14 @@ const LandingPage: React.FC = () => {
                   <span className="text-[11px] text-[#9CA3AF]">
                     HR 신용점수
                   </span>
-                  <span className="font-bebas text-[44px] leading-none tracking-tighter bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] bg-clip-text text-transparent">
+                  <span className="font-bebas text-[44px] leading-none tracking-tighter text-[#5B50E8]">
                     76
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-100 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
               <div className="w-11 h-11 rounded-xl bg-[#EEF0FF] text-[#5B50E8] flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-clock-hour-4"></i>
               </div>
@@ -429,7 +426,7 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-100 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
               <div className="w-11 h-11 rounded-xl bg-[#ECFDF5] text-[#10B981] flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-users-group"></i>
               </div>
@@ -444,7 +441,7 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-100 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
               <div className="w-11 h-11 rounded-xl bg-[#FFFBEB] text-[#F59E0B] flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-coin"></i>
               </div>
@@ -459,7 +456,7 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-100 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-[20px] p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
               <div className="w-11 h-11 rounded-xl bg-[#EFF6FF] text-[#3B82F6] flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-shield-lock"></i>
               </div>
@@ -477,8 +474,11 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 6. PRICING SECTION ─── */}
-      <section id="pricing-section" className="py-24 bg-[#F9FAFB]">
+      {/* ─── 6. PRICING SECTION (★ 수직 출렁임 제로 + 배지 정중앙 픽스 스펙) ─── */}
+      <section
+        id="pricing-section"
+        className="py-24 bg-white border-t border-gray-100"
+      >
         <div className="max-w-6xl mx-auto px-8">
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 mb-20 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEF0FF] border border-[#5B50E8]/20 rounded-full mb-4">
@@ -496,22 +496,24 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {/* Starter Plan */}
+          {/* ★ 중요 보정 구역 1: items-center 속성을 부여하여 카드가 확대될 때 위아래로 대칭 확장되게 고정 (밑으로 안 쳐짐) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center justify-center">
+            {/* 1. Starter 플랜 카드 */}
             <div
               onClick={() => setSelectedPlan("starter")}
-              className={`reveal opacity-0 translate-y-8 transition-all duration-700 rounded-[24px] p-8 flex flex-col cursor-pointer bg-white transition-all duration-300 border ${
+              className={`reveal opacity-0 translate-y-8 transition-all duration-700 rounded-[24px] p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 relative ${
                 selectedPlan === "starter"
-                  ? "border-2 border-[#5B50E8] shadow-xl shadow-[#5B50E8]/10 scale-[1.02]"
-                  : "border-gray-200 shadow-sm hover:border-gray-300"
+                  ? "border-[#5B50E8] ring-4 ring-[#5B50E8]/30 shadow-xl scale-[1.04] z-20 opacity-100"
+                  : "border-gray-200 shadow-sm hover:border-gray-300 opacity-60 scale-100"
               }`}
+              style={{ minHeight: "530px" }} // 고정 최소 높이 설정으로 균형 락업
             >
               <div className="text-left mb-6">
                 <div className="text-[12px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">
                   Starter
                 </div>
                 <div
-                  className={`font-bebas text-[48px] font-black leading-none transition-colors ${selectedPlan === "starter" ? "text-[#5B50E8]" : "text-[#1A1A2E]"}`}
+                  className={`font-bebas text-[48px] font-black leading-none ${selectedPlan === "starter" ? "text-[#5B50E8]" : "text-[#1A1A2E]"}`}
                 >
                   ₩390K
                 </div>
@@ -531,7 +533,7 @@ const LandingPage: React.FC = () => {
                 ].map((item, idx) => (
                   <li
                     key={idx}
-                    className={`flex items-center gap-3 text-[13px] ${item.check ? "text-[#4B5563]" : "text-[#9CA3AF] opacity-60"}`}
+                    className={`flex items-center gap-3 text-[13px] ${item.check ? "text-[#4B5563]" : "text-[#9CA3AF] opacity-40"}`}
                   >
                     <i
                       className={`ti ${item.check ? "ti-check text-[#10B981]" : "ti-x text-gray-300"} text-base shrink-0 font-bold`}
@@ -547,7 +549,7 @@ const LandingPage: React.FC = () => {
                 }}
                 className={`w-full py-3.5 rounded-xl text-[13px] font-bold transition-all ${
                   selectedPlan === "starter"
-                    ? "bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] text-white shadow-md shadow-[#5B50E8]/20"
+                    ? "bg-[#5B50E8] text-white shadow-md shadow-[#5B50E8]/10"
                     : "border border-gray-200 text-[#1A1A2E] bg-white hover:bg-gray-50"
                 }`}
               >
@@ -555,16 +557,18 @@ const LandingPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Business Plan */}
+            {/* 2. Business 플랜 카드 */}
             <div
               onClick={() => setSelectedPlan("business")}
-              className={`reveal opacity-0 translate-y-8 transition-all duration-700 relative rounded-[24px] p-8 flex flex-col cursor-pointer bg-white transition-all duration-300 border ${
+              className={`reveal opacity-0 translate-y-8 transition-all duration-700 relative rounded-[24px] p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 ${
                 selectedPlan === "business"
-                  ? "border-2 border-[#5B50E8] shadow-xl shadow-[#5B50E8]/10 scale-[1.02]"
-                  : "border-gray-200 shadow-sm hover:border-gray-300"
+                  ? "border-[#5B50E8] ring-4 ring-[#5B50E8]/30 shadow-xl scale-[1.04] z-20 opacity-100"
+                  : "border-gray-200 shadow-sm hover:border-gray-300 opacity-60 scale-100"
               }`}
+              style={{ minHeight: "530px" }}
             >
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-5 py-1.5 bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] text-white text-[10px] font-black tracking-wider rounded-full shadow-md shadow-[#5B50E8]/20 uppercase">
+              {/* ★ 중요 보정 구역 2: Most Popular 배지를 단색 보라색 배경 + left-1/2 -translate-x-1/2 조합으로 완벽한 정중앙 강제 배치 */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-5 py-1.5 bg-[#5B50E8] text-white text-[10px] font-black tracking-wider rounded-full shadow-md whitespace-nowrap uppercase">
                 Most Popular
               </div>
               <div className="text-left mb-6 mt-2">
@@ -572,7 +576,7 @@ const LandingPage: React.FC = () => {
                   Business
                 </div>
                 <div
-                  className={`font-bebas text-[48px] font-black leading-none transition-colors ${selectedPlan === "business" ? "text-[#5B50E8]" : "text-[#1A1A2E]"}`}
+                  className={`font-bebas text-[48px] font-black leading-none ${selectedPlan === "business" ? "text-[#5B50E8]" : "text-[#1A1A2E]"}`}
                 >
                   ₩990K
                 </div>
@@ -606,7 +610,7 @@ const LandingPage: React.FC = () => {
                 }}
                 className={`w-full py-3.5 rounded-xl text-[13px] font-bold transition-all ${
                   selectedPlan === "business"
-                    ? "bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] text-white shadow-md shadow-[#5B50E8]/20"
+                    ? "bg-[#5B50E8] text-white shadow-md shadow-[#5B50E8]/10"
                     : "border border-gray-200 text-[#1A1A2E] bg-white hover:bg-gray-50"
                 }`}
               >
@@ -614,21 +618,22 @@ const LandingPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Enterprise Plan */}
+            {/* 3. Enterprise 플랜 카드 */}
             <div
               onClick={() => setSelectedPlan("enterprise")}
-              className={`reveal opacity-0 translate-y-8 transition-all duration-700 rounded-[24px] p-8 flex flex-col cursor-pointer bg-white transition-all duration-300 border ${
+              className={`reveal opacity-0 translate-y-8 transition-all duration-700 rounded-[24px] p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 relative ${
                 selectedPlan === "enterprise"
-                  ? "border-2 border-[#5B50E8] shadow-xl shadow-[#5B50E8]/10 scale-[1.02]"
-                  : "border-gray-200 shadow-sm hover:border-gray-300"
+                  ? "border-[#5B50E8] ring-4 ring-[#5B50E8]/30 shadow-xl scale-[1.04] z-20 opacity-100"
+                  : "border-gray-200 shadow-sm hover:border-gray-300 opacity-60 scale-100"
               }`}
+              style={{ minHeight: "530px" }}
             >
               <div className="text-left mb-6">
                 <div className="text-[12px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">
                   Enterprise
                 </div>
                 <div
-                  className={`font-bebas text-[48px] font-black leading-none transition-colors ${selectedPlan === "enterprise" ? "text-[#5B50E8]" : "text-[#1A1A2E]"}`}
+                  className={`font-bebas text-[48px] font-black leading-none ${selectedPlan === "enterprise" ? "text-[#5B50E8]" : "text-[#1A1A2E]"}`}
                 >
                   문의
                 </div>
@@ -656,9 +661,13 @@ const LandingPage: React.FC = () => {
                 ))}
               </ul>
               <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  alert("영업팀 문의 창으로 연결됩니다.");
+                }}
                 className={`w-full py-3.5 rounded-xl text-[13px] font-bold transition-all ${
                   selectedPlan === "enterprise"
-                    ? "bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] text-white shadow-md shadow-[#5B50E8]/20"
+                    ? "bg-[#5B50E8] text-white shadow-md shadow-[#5B50E8]/10"
                     : "border border-gray-200 text-[#1A1A2E] bg-white hover:bg-gray-50"
                 }`}
               >
@@ -669,8 +678,8 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 7. CTA SECTION ─── */}
-      <section className="relative py-32 px-8 text-center bg-gradient-to-br from-[#FAFAFF] via-[#EEF0FF] to-[#F5F3FF] border-t border-[#5B50E8]/10 overflow-hidden">
+      {/* ─── 7. CTA SECTION (하단 락업 보라색 단색화 및 가입 버튼 복원 완료) ─── */}
+      <section className="relative py-32 px-8 text-center bg-[#F9FAFB] border-t border-gray-200 overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
@@ -678,17 +687,14 @@ const LandingPage: React.FC = () => {
             backgroundSize: "36px 36px",
           }}
         />
-        <div className="absolute -top-[100px] -left-[100px] w-[400px] h-[400px] bg-[#5B50E8]/10 blur-[60px] rounded-full pointer-events-none" />
-        <div className="absolute -bottom-[80px] -right-[80px] w-[350px] h-[350px] bg-[#8B5CF6]/8 blur-[60px] rounded-full pointer-events-none" />
 
         <div className="max-w-4xl mx-auto relative z-10">
-          <h2 className="reveal opacity-0 translate-y-8 transition-all duration-700 font-bebas text-[clamp(44px,6vw,78px)] leading-[1] tracking-wider text-[#1A1A2E] mb-6">
+          {/* 하단 텍스트 단색 보라색 피드백 반영 */}
+          <div className="reveal opacity-0 translate-y-8 transition-all duration-700 font-bebas text-[clamp(44px,6vw,78px)] leading-[1] tracking-wider text-[#1A1A2E] mb-6">
             HR 신용 인프라,
             <br />
-            <span className="bg-gradient-to-r from-[#5B50E8] via-[#8B5CF6] to-[#F59E0B] bg-clip-text text-transparent">
-              지금 시작하세요
-            </span>
-          </h2>
+            <span className="text-[#5B50E8]">지금 시작하세요</span>
+          </div>
 
           <p className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-100 text-[#4B5563] text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-12">
             채용 불안은 정보 부족에서 옵니다.
@@ -696,17 +702,18 @@ const LandingPage: React.FC = () => {
             GeniCheck로 검증된 HR 데이터 기반의 채용을 시작하세요.
           </p>
 
+          {/* ★ 중요 보정 구역 3: 안 보이던 투명 버튼을 '선명한 보라색 배경 + 흰 글씨' 가시성 스펙으로 완전 전합 */}
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-200 flex flex-wrap justify-center gap-4 mb-5">
             <button
               onClick={() => navigate("/signup")}
-              className="px-10 py-4 bg-gradient-to-br from-[#5B50E8] to-[#8B5CF6] text-white rounded-xl font-bold shadow-xl shadow-[#5B50E8]/30 hover:scale-105 transition-all flex items-center gap-2"
+              className="px-10 py-4 bg-[#5B50E8] text-white rounded-xl font-bold shadow-xl shadow-[#5B50E8]/30 hover:scale-105 active:scale-98 transition-all flex items-center gap-2"
             >
               <i className="ti ti-building-community text-lg" />
               기업 회원가입 — 무료 시작
             </button>
             <button
               onClick={() => navigate("/login")}
-              className="px-8 py-4 bg-white border border-gray-200 text-[#1A1A2E] rounded-xl font-bold shadow-sm hover:border-[#5B50E8] hover:text-[#5B50E8] transition-all flex items-center gap-2"
+              className="px-8 py-4 bg-white border border-gray-200 text-[#1A1A2E] rounded-xl font-bold shadow-sm hover:border-[#5B50E8] hover:text-[#5B50E8] active:scale-98 transition-all flex items-center gap-2"
             >
               <i className="ti ti-login text-lg" />
               로그인
