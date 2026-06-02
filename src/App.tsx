@@ -4,11 +4,15 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import LandingPage from "./assets/pages/LandingPage";
-import LoginPage from "./assets/pages/LoginPage";
-import SignupPage from "./assets/pages/SignupPage";
 
-// ★ 신설된 pages/main/ 폴더 구조에 맞춰 임포트 경로 최적화
+// ─── 1. PUBLIC 도메인 영역 ───
+import LandingPage from "./assets/pages/public/LandingPage";
+
+// ─── 2. AUTH 도메인 영역 ───
+import LoginPage from "./assets/pages/auth/LoginPage";
+import SignupPage from "./assets/pages/auth/SignupPage";
+
+// ─── 3. MAIN 대시보드 도메인 영역 ───
 import MainPage from "./assets/pages/main/MainPage";
 import DashboardPage from "./assets/pages/main/DashboardPage";
 import VerificationPage from "./assets/pages/main/VerificationPage";
@@ -21,17 +25,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* 퍼블릭 페이지 라인 */}
+        {/* 일반 공개 및 회원인증 주소 라인 */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* ─── 대시보드 통합 오피스 인프라 중첩 라우트 세팅 ─── */}
+        {/* 대시보드 백오피스 내부 중첩 라우트 */}
         <Route path="/main" element={<MainPage />}>
-          {/* /main 주소창 기본 진입 시 대시보드 메인 서브 패널 바인딩 */}
           <Route index element={<DashboardPage />} />
-
-          {/* 자식 라우트들은 부모 주소 뒤에 붙으므로 앞에 슬래시(/)를 빼고 선언하는 것이 정석입니다 */}
           <Route path="verification" element={<VerificationPage />} />
           <Route path="referral" element={<ReferralPage />} />
           <Route path="ai-reports" element={<AIReportsPage />} />
@@ -39,7 +40,7 @@ function App() {
           <Route path="credits" element={<CreditsPage />} />
         </Route>
 
-        {/* 예외 주소 입력 시 랜딩 페이지로 리다이렉트 */}
+        {/* 잘못된 경로 예외 처리 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
