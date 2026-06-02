@@ -8,97 +8,75 @@ const CompanySignupForm: React.FC = () => {
     phone: "",
     email: "",
     password: "",
-    startDate: new Date().toISOString(), // 명세서 요구 필드
+    startDate: new Date().toISOString(),
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleCompanySignup = async () => {
-    try {
-      const response = await fetch("/auth/company/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        alert("기업 회원가입이 완료되었습니다.");
-      }
-    } catch (error) {
-      console.error("회원가입 실패:", error);
-    }
-  };
+  const inputClass =
+    "w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm transition-all duration-300 focus:bg-white focus:border-[#5B50E8] focus:ring-4 focus:ring-[#5B50E8]/10 outline-none";
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      {/* 1. 기업 정보 입력 섹션 */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-        <h4 className="text-xs font-bold text-gray-400 uppercase mb-4">
-          기업 정보
-        </h4>
-        <div className="space-y-4">
-          <input
-            name="companyName"
-            onChange={handleInputChange}
-            placeholder="기업명"
-            className="w-full px-4 py-3 border rounded-xl text-sm"
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              name="businessNumber"
-              onChange={handleInputChange}
-              placeholder="사업자 등록번호 (000-00-00000)"
-              className="px-4 py-3 border rounded-xl text-sm"
-            />
-            <input
-              name="representativeName"
-              onChange={handleInputChange}
-              placeholder="대표자명"
-              className="px-4 py-3 border rounded-xl text-sm"
-            />
-          </div>
-        </div>
+    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+      <div className="space-y-2">
+        <h2 className="text-3xl font-black text-[#1A1A2E]">반갑습니다!</h2>
+        <p className="text-gray-500">
+          기업 회원가입을 통해 HR 데이터를 혁신해 보세요.
+        </p>
       </div>
 
-      {/* 2. 계정 및 인증 섹션 */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-        <h4 className="text-xs font-bold text-gray-400 uppercase mb-4">
-          계정 설정
-        </h4>
-        <div className="space-y-4">
+      <div className="space-y-6">
+        <input
+          name="companyName"
+          onChange={(e) =>
+            setFormData({ ...formData, companyName: e.target.value })
+          }
+          placeholder="기업 이름을 알려주세요"
+          className={inputClass}
+        />
+        <div className="grid grid-cols-2 gap-4">
           <input
-            name="phone"
-            onChange={handleInputChange}
-            placeholder="대표 휴대폰 번호 (010-0000-0000)"
-            className="w-full px-4 py-3 border rounded-xl text-sm"
+            name="businessNumber"
+            onChange={(e) =>
+              setFormData({ ...formData, businessNumber: e.target.value })
+            }
+            placeholder="사업자 번호"
+            className={inputClass}
           />
           <input
-            name="email"
-            onChange={handleInputChange}
-            placeholder="기업 이메일"
-            className="w-full px-4 py-3 border rounded-xl text-sm"
-          />
-          <input
-            name="password"
-            type="password"
-            onChange={handleInputChange}
-            placeholder="비밀번호 (8자 이상)"
-            className="w-full px-4 py-3 border rounded-xl text-sm"
+            name="representativeName"
+            onChange={(e) =>
+              setFormData({ ...formData, representativeName: e.target.value })
+            }
+            placeholder="대표님 성함"
+            className={inputClass}
           />
         </div>
+        <input
+          name="phone"
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          placeholder="대표 연락처"
+          className={inputClass}
+        />
+        <input
+          name="email"
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          placeholder="기업용 이메일"
+          className={inputClass}
+        />
+        <input
+          name="password"
+          type="password"
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
+          placeholder="비밀번호를 설정해주세요"
+          className={inputClass}
+        />
       </div>
 
-      {/* 3. 제출 버튼 */}
-      <button
-        onClick={handleCompanySignup}
-        className="w-full py-4 bg-gradient-to-r from-[#5B50E8] to-[#8B5CF6] text-white rounded-xl font-bold shadow-lg shadow-[#5B50E8]/20"
-      >
+      <button className="w-full py-4 bg-[#5B50E8] hover:bg-[#4a42c4] active:scale-[0.98] transition-all text-white rounded-2xl font-bold shadow-xl shadow-[#5B50E8]/30">
         기업 회원가입 완료
       </button>
     </div>
   );
 };
-
 export default CompanySignupForm;
