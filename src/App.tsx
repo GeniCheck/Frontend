@@ -12,7 +12,10 @@ import LandingPage from "./assets/pages/public/LandingPage";
 import LoginPage from "./assets/pages/auth/LoginPage";
 import SignupPage from "./assets/pages/auth/SignupPage"; // 여기서 내부 분기 처리
 
-// ─── 3. MAIN 대시보드 도메인 영역 ───
+// ─── 3. VERIFICATION 도메인 영역 (링크 토큰 기반, 지원자용) ───
+import SelfDeclarePage from "./assets/pages/verification/SelfDeclarePage";
+
+// ─── 4. MAIN 대시보드 도메인 영역 ───
 import MainPage from "./assets/pages/main/MainPage";
 import DashboardPage from "./assets/pages/main/DashboardPage";
 import VerificationPage from "./assets/pages/main/VerificationPage";
@@ -33,6 +36,12 @@ function App() {
            이 페이지 내에서 [유형 선택 -> 폼 분기] 로직이 실행됩니다.
         */}
         <Route path="/signup" element={<SignupPage />} />
+
+        {/* 지원자용 자기선언 페이지: 링크 토큰 기반, 로그인 불필요 */}
+        <Route
+          path="/verification/self-declare/:token"
+          element={<SelfDeclarePage />}
+        />
 
         {/* 대시보드 백오피스 내부 중첩 라우트 */}
         <Route path="/main" element={<MainPage />}>
