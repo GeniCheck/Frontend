@@ -74,9 +74,9 @@ const VerificationPage: React.FC = () => {
     /* 부모(MainPage)가 이미 고정 사이드바를 품고 있으므로,
        이곳에서는 전체 flex 레이아웃 틀을 걷어내고 독립적인 우측 스크롤 본문 영역만 바로 기동합니다.
     */
-    <main className="flex-1 md:pl-[260px] flex flex-col min-h-screen">
+    <main className="flex-1 md:pl-65 flex flex-col min-h-screen">
       {/* 상단 툴바 헤더 */}
-      <header className="h-[68px] bg-white border-b border-gray-200 px-6 flex items-center justify-between sticky top-0 z-40">
+      <header className="h-17 bg-white border-b border-gray-200 px-6 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-baseline gap-3 text-left">
           <h1 className="text-base font-black tracking-tight text-[#1A1A2E]">
             Verification
@@ -97,7 +97,7 @@ const VerificationPage: React.FC = () => {
       </header>
 
       {/* 내부 실시간 데이터 대시보드 그리드 */}
-      <div className="p-6 space-y-6 max-w-[1200px] w-full mx-auto flex-1">
+      <div className="p-6 space-y-6 max-w-300 w-full mx-auto flex-1">
         <div className="bg-white border border-gray-200 rounded-[22px] p-6 text-left shadow-sm">
           <h2 className="text-base font-black text-[#1A1A2E] mb-1">
             Verification{" "}
