@@ -3,14 +3,11 @@ import { useParams } from "react-router-dom";
 import { useTokenValidation } from "../../hooks/useTokenValidation";
 import LinkStatusMessage from "../../components/verification/LinkStatusMessage";
 import ApplicantGreetingBanner from "../../components/verification/ApplicantGreetingBanner";
-import CompanyQuestionList, {
-  MOCK_QUESTIONS,
-} from "../../components/verification/CompanyQuestionList";
+import CompanyQuestionList from "../../components/verification/CompanyQuestionList";
 import FreeDeclarationField from "../../components/verification/FreeDeclarationField";
 import ResumeAttachment from "../../components/verification/ResumeAttachment";
-import ConsentCheckboxes, {
-  CONSENT_LABELS,
-} from "../../components/verification/ConsentCheckboxes";
+import ConsentCheckboxes from "../../components/verification/ConsentCheckboxes";
+import { MOCK_QUESTIONS, CONSENT_LABELS } from "../../components/verification/mockData";
 
 const SelfDeclarePage: React.FC = () => {
   const { token } = useParams();

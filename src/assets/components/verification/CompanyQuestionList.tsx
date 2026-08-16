@@ -1,8 +1,6 @@
 import React from "react";
 import QuestionAnswerField from "./QuestionAnswerField";
-
-// TODO: 실제 질문 API(GET /declarations/forms/:token/summary) 연동 전까지 목업 사용
-export const MOCK_QUESTIONS = ["질문 1", "질문 2", "질문 3"];
+import { MOCK_QUESTIONS } from "./mockData";
 
 interface CompanyQuestionListProps {
   answers: string[];
