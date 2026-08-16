@@ -4,7 +4,7 @@ import Sidebar from "../../components/layout/Sidebar"; // 폴더 깊이에 맞�
 
 const MainPage: React.FC = () => {
   return (
-    <div className="min-h-screen flex bg-[#F3F4F6] text-[#1A1A2E] font-sans antialiased overflow-x-hidden selection:bg-[#5B50E8]/20">
+    <div className="flex min-h-screen overflow-x-hidden bg-[#F3F4F6] font-sans text-[#1A1A2E] antialiased selection:bg-[#5B50E8]/20">
       {/* ─── [공통 레이아웃] 사이드바 렌더링 (메뉴를 클릭해도 새로 마운트되지 않고 고정됨) ─── */}
       <Sidebar />
 

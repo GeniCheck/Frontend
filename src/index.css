@@ -2,14 +2,14 @@
 
 @layer components {
   .sr {
-    @apply opacity-0 translate-y-10 transition-all duration-700 ease-out;
+    @apply translate-y-10 opacity-0 transition-all duration-700 ease-out;
   }
   .sr.in {
-    @apply opacity-100 translate-y-0;
+    @apply translate-y-0 opacity-100;
   }
 
   .mesh-blob {
-    @apply absolute rounded-full blur-[90px] opacity-0 transition-opacity duration-1000;
+    @apply absolute rounded-full opacity-0 blur-[90px] transition-opacity duration-1000;
   }
 }
 

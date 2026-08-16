@@ -15,7 +15,7 @@ const CompanySignupForm: React.FC = () => {
     "w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm transition-all duration-300 focus:bg-white focus:border-[#5B50E8] focus:ring-4 focus:ring-[#5B50E8]/10 outline-none";
 
   return (
-    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+    <div className="animate-in slide-in-from-bottom-4 space-y-8 duration-500">
       <div className="space-y-2">
         <h2 className="text-3xl font-black text-[#1A1A2E]">반갑습니다!</h2>
         <p className="text-gray-500">
@@ -73,7 +73,7 @@ const CompanySignupForm: React.FC = () => {
         />
       </div>
 
-      <button className="w-full py-4 bg-[#5B50E8] hover:bg-[#4a42c4] active:scale-[0.98] transition-all text-white rounded-2xl font-bold shadow-xl shadow-[#5B50E8]/30">
+      <button className="w-full rounded-2xl bg-[#5B50E8] py-4 font-bold text-white shadow-xl shadow-[#5B50E8]/30 transition-all hover:bg-[#4a42c4] active:scale-[0.98]">
         기업 회원가입 완료
       </button>
     </div>
