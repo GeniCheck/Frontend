@@ -75,6 +75,9 @@ const SelfDeclarePage: React.FC = () => {
 
         <button
           type="button"
+          onClick={() => {
+            // TODO: 제출 API 연동 (이력서 업로드 → /declarations/answers → /declarations/free)
+          }}
           disabled={!isFormValid}
           className={`w-full py-3.5 rounded-2xl text-sm font-medium transition-colors ${
             isFormValid
