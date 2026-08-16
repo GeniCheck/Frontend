@@ -8,7 +8,9 @@ import CompanyQuestionList, {
 } from "../../components/verification/CompanyQuestionList";
 import FreeDeclarationField from "../../components/verification/FreeDeclarationField";
 import ResumeAttachment from "../../components/verification/ResumeAttachment";
-import ConsentCheckboxes from "../../components/verification/ConsentCheckboxes";
+import ConsentCheckboxes, {
+  CONSENT_LABELS,
+} from "../../components/verification/ConsentCheckboxes";
 
 const SelfDeclarePage: React.FC = () => {
   const { token } = useParams();
@@ -20,7 +22,9 @@ const SelfDeclarePage: React.FC = () => {
   const [freeText, setFreeText] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeLink, setResumeLink] = useState("");
-  const [consents, setConsents] = useState<boolean[]>([false, false, false]);
+  const [consents, setConsents] = useState<boolean[]>(
+    Array(CONSENT_LABELS.length).fill(false),
+  );
 
   if (status === "loading") {
     return (
