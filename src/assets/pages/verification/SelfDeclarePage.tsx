@@ -7,7 +7,11 @@ import CompanyQuestionList from "../../components/verification/CompanyQuestionLi
 import FreeDeclarationField from "../../components/verification/FreeDeclarationField";
 import ResumeAttachment from "../../components/verification/ResumeAttachment";
 import ConsentCheckboxes from "../../components/verification/ConsentCheckboxes";
-import { MOCK_QUESTIONS, CONSENT_LABELS } from "../../components/verification/mockData";
+import {
+  MOCK_QUESTIONS,
+  FREE_DECLARATION_QUESTIONS,
+  CONSENT_LABELS,
+} from "../../components/verification/mockData";
 
 const SelfDeclarePage: React.FC = () => {
   const { token } = useParams();
@@ -16,7 +20,9 @@ const SelfDeclarePage: React.FC = () => {
   const [answers, setAnswers] = useState<string[]>(
     Array(MOCK_QUESTIONS.length).fill(""),
   );
-  const [freeText, setFreeText] = useState("");
+  const [freeTexts, setFreeTexts] = useState<string[]>(
+    Array(FREE_DECLARATION_QUESTIONS.length).fill(""),
+  );
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeLink, setResumeLink] = useState("");
   const [consents, setConsents] = useState<boolean[]>(
@@ -37,6 +43,10 @@ const SelfDeclarePage: React.FC = () => {
 
   const handleAnswerChange = (index: number, value: string) => {
     setAnswers((prev) => prev.map((a, i) => (i === index ? value : a)));
+  };
+
+  const handleFreeTextChange = (index: number, value: string) => {
+    setFreeTexts((prev) => prev.map((t, i) => (i === index ? value : t)));
   };
 
   const handleConsentChange = (index: number, checked: boolean) => {
@@ -61,7 +71,10 @@ const SelfDeclarePage: React.FC = () => {
         </div>
 
         <CompanyQuestionList answers={answers} onChange={handleAnswerChange} />
-        <FreeDeclarationField value={freeText} onChange={setFreeText} />
+        <FreeDeclarationField
+          values={freeTexts}
+          onChange={handleFreeTextChange}
+        />
         <ResumeAttachment
           file={resumeFile}
           onFileChange={setResumeFile}
