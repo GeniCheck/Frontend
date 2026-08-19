@@ -21,7 +21,7 @@ const ApplicantSignupForm: React.FC = () => {
     "w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl transition-all duration-300 outline-none focus:bg-white focus:border-[#10B981] focus:ring-4 focus:ring-[#10B981]/10";
 
   return (
-    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+    <div className="animate-in slide-in-from-bottom-4 space-y-8 duration-500">
       <div className="space-y-2">
         <h2 className="text-3xl font-black text-[#1A1A2E]">반갑습니다!</h2>
         <p className="text-gray-500">
@@ -52,7 +52,7 @@ const ApplicantSignupForm: React.FC = () => {
 
       <button
         onClick={handleSubmit}
-        className="w-full py-4 bg-[#10B981] hover:bg-[#059669] active:scale-[0.98] transition-all text-white rounded-2xl font-bold shadow-lg shadow-[#10B981]/20"
+        className="w-full rounded-2xl bg-[#10B981] py-4 font-bold text-white shadow-lg shadow-[#10B981]/20 transition-all hover:bg-[#059669] active:scale-[0.98]"
       >
         지원자 가입 완료
       </button>
