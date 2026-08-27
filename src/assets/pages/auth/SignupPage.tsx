@@ -34,11 +34,23 @@ const SignupPage: React.FC = () => {
           </button>
 
           <div className="mb-8">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-bold text-[#5B50E8]">
+              <i className="ti ti-crown text-[13px]" />
+              대표(사업자 본인) 전용
+            </span>
             <h2 className="mb-2 text-3xl font-black">기업 회원가입</h2>
             <div className="h-1 w-16 rounded-full bg-[#5B50E8]" />
           </div>
 
           <CompanySignupForm />
+
+          <p className="mt-6 flex items-start gap-2 rounded-xl bg-gray-50 p-3.5 text-xs leading-relaxed text-[#4B5563]">
+            <i className="ti ti-info-circle mt-0.5 text-sm text-gray-400" />
+            <span>
+              인사팀장 계정은 대표가 로그인한 뒤 직접 생성합니다.
+              인사팀장·직원은 별도로 회원가입할 수 없어요.
+            </span>
+          </p>
         </div>
       </main>
     </div>
