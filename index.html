@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GeniCheck</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind은 빌드타임(PostCSS + src/index.css)에서 처리한다. 브랜드 토큰은 tailwind.config.js 참고. -->
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
 
@@ -17,29 +17,6 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
     />
-
-    <script>
-      // Tailwind 설정 확장 (브랜드 컬러 등록)
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: "#5B50E8",
-              brand2: "#8B5CF6",
-              "brand-light": "#EEF0FF",
-              text1: "#1A1A2E",
-              text2: "#4B5563",
-              text3: "#9CA3AF",
-              surface: "#F9FAFB",
-            },
-            fontFamily: {
-              bebas: ["Bebas Neue", "sans-serif"],
-              sans: ["Noto Sans KR", "sans-serif"],
-            },
-          },
-        },
-      };
-    </script>
   </head>
   <body>
     <div id="root"></div>

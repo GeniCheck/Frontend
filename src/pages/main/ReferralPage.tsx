@@ -94,11 +94,11 @@ const ReferralPage: React.FC = () => {
     /* 레이아웃 셸의 아웃렛 통로를 타고 꽂히는 구조이므로, 
        고정 사이드바 구역을 생략하고 주 서브 대시보드 스크롤 컨테이너만 선언합니다.
     */
-    <main className="flex min-h-screen flex-1 flex-col md:pl-[260px]">
+    <main className="flex min-h-screen flex-1 flex-col">
       {/* 상단 툴바 헤더 */}
-      <header className="sticky top-0 z-40 flex h-[68px] items-center justify-between border-b border-gray-200 bg-white px-6">
+      <header className="sticky top-0 z-40 flex h-17 items-center justify-between border-b border-gray-200 bg-white px-6">
         <div className="flex items-baseline gap-3 text-left">
-          <h1 className="text-base font-black tracking-tight text-[#1A1A2E]">
+          <h1 className="text-text1 text-base font-black tracking-tight">
             Referral
           </h1>
           <span className="text-xs font-semibold text-gray-400">
@@ -107,10 +107,10 @@ const ReferralPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold text-[#4B5563] shadow-sm transition-all hover:bg-gray-50 active:scale-95">
+          <button className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95">
             동의 링크 발송
           </button>
-          <button className="flex items-center gap-1.5 rounded-xl bg-[#5B50E8] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#5B50E8]/10 transition-all hover:bg-[#493fd1] active:scale-95">
+          <button className="bg-brand shadow-brand/10 hover:bg-brand-dark flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95">
             <i className="ti ti-user-plus text-sm" />
             인재 게시하기
           </button>
@@ -125,7 +125,7 @@ const ReferralPage: React.FC = () => {
               label: "내가 게시한 인재",
               value: "12",
               desc: "수익 활성화 상태",
-              icon: "ti-award text-[#5B50E8]",
+              icon: "ti-award text-brand",
             },
             {
               label: "스카웃 요청 수신",
@@ -151,13 +151,13 @@ const ReferralPage: React.FC = () => {
               className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm"
             >
               <div>
-                <span className="block text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+                <span className="text-2xs block font-bold tracking-wider text-gray-400 uppercase">
                   {kpi.label}
                 </span>
-                <div className="mt-1 text-2xl font-black text-[#1A1A2E]">
+                <div className="text-text1 mt-1 text-2xl font-black">
                   {kpi.value}
                 </div>
-                <span className="mt-0.5 block text-[10px] text-gray-400">
+                <span className="text-2xs mt-0.5 block text-gray-400">
                   {kpi.desc}
                 </span>
               </div>
@@ -170,7 +170,7 @@ const ReferralPage: React.FC = () => {
 
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
           <div className="space-y-5 lg:col-span-2">
-            <div className="space-y-4 rounded-[22px] border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
               <div className="flex gap-6 border-b border-gray-100 text-xs font-bold">
                 {[
                   { key: "전체 게시판", count: 248 },
@@ -184,18 +184,18 @@ const ReferralPage: React.FC = () => {
                     onClick={() => setActiveSubTab(sub.key)}
                     className={`relative pb-3 transition-all active:scale-98 ${
                       activeSubTab === sub.key
-                        ? "text-[#5B50E8]"
+                        ? "text-brand"
                         : "text-gray-400 hover:text-gray-600"
                     }`}
                   >
                     {sub.key}{" "}
                     <span
-                      className={`ml-0.5 rounded-full px-1.5 py-0.5 font-mono text-[10px] ${activeSubTab === sub.key ? "bg-[#5B50E8]/10 text-[#5B50E8]" : "bg-gray-100 text-gray-400"}`}
+                      className={`text-2xs ml-0.5 rounded-full px-1.5 py-0.5 tabular-nums ${activeSubTab === sub.key ? "bg-brand/10 text-brand" : "bg-gray-100 text-gray-400"}`}
                     >
                       {sub.count}
                     </span>
                     {activeSubTab === sub.key && (
-                      <span className="absolute right-0 bottom-0 left-0 h-0.5 bg-[#5B50E8]" />
+                      <span className="bg-brand absolute right-0 bottom-0 left-0 h-0.5" />
                     )}
                   </button>
                 ))}
@@ -207,11 +207,11 @@ const ReferralPage: React.FC = () => {
                   <input
                     type="text"
                     placeholder="직무, 스킬, 경력으로 검색..."
-                    className="w-full rounded-xl border border-gray-200 py-2 pr-4 pl-10 text-xs transition-all outline-none placeholder:text-gray-300 focus:border-[#5B50E8]"
+                    className="focus:border-brand w-full rounded-xl border border-gray-200 py-2 pr-4 pl-10 text-xs transition-all outline-none placeholder:text-gray-300"
                   />
                 </div>
 
-                <div className="flex gap-1 overflow-x-auto rounded-xl border border-gray-100 bg-gray-50 p-1 text-[11px] font-bold whitespace-nowrap">
+                <div className="text-2xs flex gap-1 overflow-x-auto rounded-xl border border-gray-100 bg-gray-50 p-1 font-bold whitespace-nowrap">
                   {["전체 직군", "개발", "마케팅", "디자인", "영업"].map(
                     (job) => (
                       <button
@@ -220,7 +220,7 @@ const ReferralPage: React.FC = () => {
                         onClick={() => setSelectedJob(job)}
                         className={`rounded-lg px-3 py-1.5 transition-all active:scale-95 ${
                           selectedJob === job
-                            ? "bg-white text-[#5B50E8] shadow-xs"
+                            ? "text-brand bg-white shadow-xs"
                             : "text-gray-400"
                         }`}
                       >
@@ -240,7 +240,7 @@ const ReferralPage: React.FC = () => {
               {talentList.map((talent, i) => (
                 <div
                   key={i}
-                  className="group relative flex flex-col justify-between rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm transition-shadow hover:shadow-md"
+                  className="group relative flex flex-col justify-between rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm transition-shadow hover:shadow-md"
                 >
                   <div>
                     <div className="mb-4 flex items-start justify-between">
@@ -251,35 +251,35 @@ const ReferralPage: React.FC = () => {
                           {talent.init}
                         </div>
                         <div>
-                          <div className="flex items-center gap-1.5 text-xs font-black text-[#1A1A2E]">
+                          <div className="text-text1 flex items-center gap-1.5 text-xs font-black">
                             {talent.name}
                             {talent.isNew && (
-                              <span className="scale-90 rounded bg-red-500 px-1.5 py-0.5 text-[8px] font-black tracking-wider text-white uppercase">
+                              <span className="text-3xs scale-90 rounded bg-red-500 px-1.5 py-0.5 font-black tracking-wider text-white uppercase">
                                 NEW
                               </span>
                             )}
                           </div>
-                          <p className="mt-0.5 text-[10px] text-gray-400">
+                          <p className="text-2xs mt-0.5 text-gray-400">
                             {talent.dept}
                           </p>
-                          <span className="mt-1 inline-flex origin-left scale-95 items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[9px] font-bold text-emerald-500">
+                          <span className="text-3xs mt-1 inline-flex origin-left scale-95 items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 font-bold text-emerald-500">
                             <span className="h-1 w-1 rounded-full bg-current" />
                             검증완료
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex h-12 w-12 flex-col items-center justify-center rounded-full border-2 border-[#5B50E8] shadow-xs">
-                        <span className="font-bebas text-lg leading-none font-black text-[#5B50E8]">
+                      <div className="border-brand flex h-12 w-12 flex-col items-center justify-center rounded-full border-2 shadow-xs">
+                        <span className="text-brand text-lg leading-none font-black">
                           {talent.score}
                         </span>
-                        <span className="mt-0.5 text-[7px] font-bold tracking-tighter text-gray-400">
+                        <span className="text-3xs mt-0.5 font-bold tracking-tighter text-gray-400">
                           HR점수
                         </span>
                       </div>
                     </div>
 
-                    <p className="mb-4 line-clamp-2 h-9 overflow-hidden text-[11px] leading-relaxed text-ellipsis text-[#4B5563]">
+                    <p className="text-text2 text-2xs mb-4 line-clamp-2 h-9 overflow-hidden leading-relaxed text-ellipsis">
                       {talent.desc}
                     </p>
 
@@ -287,7 +287,7 @@ const ReferralPage: React.FC = () => {
                       {talent.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded border border-gray-100 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-500"
+                          className="text-2xs rounded border border-gray-100 bg-gray-50 px-2 py-0.5 font-semibold text-gray-500"
                         >
                           {tag}
                         </span>
@@ -295,9 +295,9 @@ const ReferralPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between border-t border-gray-50 pt-3 text-[10px] font-semibold text-gray-400">
+                  <div className="text-2xs flex items-center justify-between border-t border-gray-50 pt-3 font-semibold text-gray-400">
                     <div>
-                      <span className="font-bold text-[#1A1A2E]">
+                      <span className="text-text1 font-bold">
                         {talent.company}
                       </span>
                       <span className="mx-1.5">·</span>
@@ -317,7 +317,7 @@ const ReferralPage: React.FC = () => {
                       </button>
                       <button
                         type="button"
-                        className="rounded-lg bg-[#5B50E8] px-2.5 py-1.5 font-bold text-white shadow-sm shadow-[#5B50E8]/10 transition-all hover:bg-[#493fd1] active:scale-95"
+                        className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-lg px-2.5 py-1.5 font-bold text-white shadow-sm transition-all active:scale-95"
                       >
                         스카웃
                       </button>
@@ -329,12 +329,12 @@ const ReferralPage: React.FC = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
+            <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xs font-black text-[#1A1A2E]">
+                <h3 className="text-text1 text-xs font-black">
                   스카웃 요청 현황
                 </h3>
-                <span className="cursor-pointer text-[10px] font-bold text-[#5B50E8] hover:underline">
+                <span className="text-brand text-2xs cursor-pointer font-bold hover:underline">
                   모두 보기
                 </span>
               </div>
@@ -370,19 +370,17 @@ const ReferralPage: React.FC = () => {
                     className="flex items-start justify-between border-b border-gray-50 pb-3.5 text-xs last:border-none last:pb-0"
                   >
                     <div>
-                      <div className="font-black text-[#1A1A2E]">
-                        {req.company}
-                      </div>
-                      <p className="mt-0.5 text-[10px] text-gray-400">
+                      <div className="text-text1 font-black">{req.company}</div>
+                      <p className="text-2xs mt-0.5 text-gray-400">
                         ➔ {req.target}
                       </p>
                       <span
-                        className={`mt-1.5 inline-block rounded px-2 py-0.5 text-[9px] font-bold ${req.color}`}
+                        className={`text-3xs mt-1.5 inline-block rounded px-2 py-0.5 font-bold ${req.color}`}
                       >
                         {req.label}
                       </span>
                     </div>
-                    <span className="shrink-0 text-[9px] font-medium text-gray-400">
+                    <span className="text-3xs shrink-0 font-medium text-gray-400">
                       {req.time}
                     </span>
                   </div>
@@ -390,8 +388,8 @@ const ReferralPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
-              <h3 className="mb-4 text-xs font-black text-[#1A1A2E]">
+            <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+              <h3 className="text-text1 mb-4 text-xs font-black">
                 게시 프로세스
               </h3>
               <div className="relative space-y-5 before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-[1px] before:bg-gray-100">
@@ -421,14 +419,14 @@ const ReferralPage: React.FC = () => {
                     key={proc.step}
                     className="relative z-10 flex items-start gap-3"
                   >
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#EEF0FF] text-[10px] font-black text-[#5B50E8]">
+                    <div className="bg-brand-light text-brand text-2xs flex h-5 w-5 shrink-0 items-center justify-center rounded-md font-black">
                       {proc.step}
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-[#1A1A2E]">
+                      <h4 className="text-text1 text-xs font-black">
                         {proc.title}
                       </h4>
-                      <p className="mt-0.5 text-[10px] leading-relaxed text-gray-400">
+                      <p className="text-2xs mt-0.5 leading-relaxed text-gray-400">
                         {proc.desc}
                       </p>
                     </div>
@@ -437,12 +435,12 @@ const ReferralPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
+            <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xs font-black text-[#1A1A2E]">
+                <h3 className="text-text1 text-xs font-black">
                   우리 회사 최근 게시
                 </h3>
-                <span className="cursor-pointer text-[10px] font-bold text-gray-400 hover:underline">
+                <span className="text-2xs cursor-pointer font-bold text-gray-400 hover:underline">
                   더보기
                 </span>
               </div>
@@ -475,21 +473,19 @@ const ReferralPage: React.FC = () => {
                     className="space-y-1 rounded-xl bg-gray-50 p-3 text-xs"
                   >
                     <div className="flex items-baseline justify-between">
-                      <span className="font-black text-[#1A1A2E]">
+                      <span className="text-text1 font-black">
                         {post.name}{" "}
-                        <span className="ml-0.5 text-[10px] font-normal text-gray-400">
+                        <span className="text-2xs ml-0.5 font-normal text-gray-400">
                           {post.role}
                         </span>
                       </span>
-                      <span className="text-[9px] font-medium text-gray-400">
+                      <span className="text-3xs font-medium text-gray-400">
                         {post.date}
                       </span>
                     </div>
-                    <div className="flex justify-between pt-1 text-[10px] font-semibold text-gray-400">
+                    <div className="text-2xs flex justify-between pt-1 font-semibold text-gray-400">
                       <span>{post.status}</span>
-                      <span className="font-bold text-[#5B50E8]">
-                        {post.sub}
-                      </span>
+                      <span className="text-brand font-bold">{post.sub}</span>
                     </div>
                   </div>
                 ))}

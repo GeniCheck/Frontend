@@ -23,10 +23,10 @@ const ROLE_OPTIONS: RoleOption[] = [
     title: "대표",
     desc: "전체 페이지를 이용합니다. 본인 이메일로 받은 인증번호로 로그인합니다.",
     hint: "ID · PW + 본인 이메일 인증",
-    iconBox: "bg-[#EEF0FF] text-[#5B50E8]",
-    hoverBorder: "hover:border-[#5B50E8]/30",
-    hoverText: "group-hover:text-[#5B50E8]",
-    overlay: "from-[#5B50E8]/5",
+    iconBox: "bg-brand-light text-brand",
+    hoverBorder: "hover:border-brand/30",
+    hoverText: "group-hover:text-brand",
+    overlay: "from-brand/5",
   },
   {
     key: "hr",
@@ -35,10 +35,10 @@ const ROLE_OPTIONS: RoleOption[] = [
     title: "인사팀장",
     desc: "인재 추천 게시판을 이용합니다. 대표님께 전달받은 인증번호로 로그인합니다.",
     hint: "ID · PW + 대표 전달 인증번호",
-    iconBox: "bg-[#FFFBEB] text-[#F59E0B]",
-    hoverBorder: "hover:border-[#F59E0B]/30",
-    hoverText: "group-hover:text-[#F59E0B]",
-    overlay: "from-[#F59E0B]/5",
+    iconBox: "bg-accent-light text-accent",
+    hoverBorder: "hover:border-accent/30",
+    hoverText: "group-hover:text-accent",
+    overlay: "from-accent/5",
   },
 ];
 
@@ -46,17 +46,17 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#F9FAFB] font-sans text-[#1A1A2E]">
+    <div className="bg-surface text-text1 min-h-screen overflow-hidden font-sans">
       {/* 1. 상단 네비게이션 바 */}
-      <nav className="fixed top-0 z-50 flex h-[68px] w-full items-center border-b border-gray-100 bg-white/80 px-8 backdrop-blur-md md:px-16">
+      <nav className="fixed top-0 z-50 flex h-17 w-full items-center border-b border-gray-100 bg-white/80 px-8 backdrop-blur-md md:px-16">
         <div
           className="flex cursor-pointer items-center gap-2.5"
           onClick={() => navigate("/")}
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#5B50E8] shadow-lg shadow-[#5B50E8]/30">
+          <div className="bg-brand shadow-brand/30 flex h-9 w-9 items-center justify-center rounded-xl shadow-lg">
             <i className="ti ti-shield-check text-xl text-white"></i>
           </div>
-          <span className="font-bebas text-[22px] tracking-[2px]">
+          <span className="text-[22px] font-black tracking-[2px]">
             GeniCheck
           </span>
         </div>
@@ -65,10 +65,10 @@ const LoginPage: React.FC = () => {
       {/* 2. 메인 컨텐츠 영역 */}
       <main className="flex min-h-screen items-center justify-center px-8 pt-32 pb-20">
         <div className="animate-in fade-in w-full max-w-4xl text-center duration-500">
-          <h1 className="font-bebas mb-4 text-[48px] text-[#1A1A2E]">
+          <h1 className="text-text1 mb-4 text-[34px] font-black tracking-tight">
             어떻게 로그인하시나요?
           </h1>
-          <p className="mb-16 text-lg text-[#4B5563]">
+          <p className="text-text2 mb-16 text-lg">
             계정 유형을 선택하면 맞는 인증 방식으로 안내해 드려요.
           </p>
 
@@ -92,11 +92,9 @@ const LoginPage: React.FC = () => {
                 >
                   {opt.title}
                 </h3>
-                <p className="mb-6 leading-relaxed text-[#4B5563]">
-                  {opt.desc}
-                </p>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-50 px-3 py-1.5 text-xs font-bold text-[#9CA3AF]">
-                  <i className="ti ti-key text-[13px]" />
+                <p className="text-text2 mb-6 leading-relaxed">{opt.desc}</p>
+                <span className="text-text3 inline-flex items-center gap-1.5 rounded-full bg-gray-50 px-3 py-1.5 text-xs font-bold">
+                  <i className="ti ti-key text-sm" />
                   {opt.hint}
                 </span>
               </button>
@@ -104,11 +102,11 @@ const LoginPage: React.FC = () => {
           </div>
 
           {/* 하단 회원가입 유도 */}
-          <p className="mt-14 text-sm text-[#4B5563]">
+          <p className="text-text2 mt-14 text-sm">
             아직 GeniCheck 계정이 없으신가요?{" "}
             <span
               onClick={() => navigate("/signup")}
-              className="cursor-pointer font-bold text-[#5B50E8] hover:underline"
+              className="text-brand cursor-pointer font-bold hover:underline"
             >
               기업 회원가입
             </span>

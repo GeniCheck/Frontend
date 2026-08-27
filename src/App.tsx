@@ -5,29 +5,29 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { RoleProvider } from "./assets/context/RoleProvider";
-import RoleGuard from "./assets/components/common/RoleGuard";
+import { RoleProvider } from "@/context/RoleProvider";
+import RoleGuard from "@/components/common/RoleGuard";
 
 // ─── 1. PUBLIC 도메인 영역 ───
-import LandingPage from "./assets/pages/public/LandingPage";
+import LandingPage from "@/pages/public/LandingPage";
 
 // ─── 2. AUTH 도메인 영역 ───
-import LoginPage from "./assets/pages/auth/LoginPage"; // 역할 선택 화면
-import CeoLoginPage from "./assets/pages/auth/CeoLoginPage";
-import HrLoginPage from "./assets/pages/auth/HrLoginPage";
-import SignupPage from "./assets/pages/auth/SignupPage"; // 여기서 내부 분기 처리
+import LoginPage from "@/pages/auth/LoginPage"; // 역할 선택 화면
+import CeoLoginPage from "@/pages/auth/CeoLoginPage";
+import HrLoginPage from "@/pages/auth/HrLoginPage";
+import SignupPage from "@/pages/auth/SignupPage"; // 여기서 내부 분기 처리
 
 // ─── 3. MAIN 대시보드 도메인 영역 ───
-import MainPage from "./assets/pages/main/MainPage";
-import DashboardPage from "./assets/pages/main/DashboardPage";
-import VerificationPage from "./assets/pages/main/VerificationPage";
-import ReferralPage from "./assets/pages/main/ReferralPage";
-import AIReportsPage from "./assets/pages/main/AIReportsPage";
-import SupportPage from "./assets/pages/main/SupportPage";
-import CreditsPage from "./assets/pages/main/CreditsPage";
+import MainPage from "@/pages/main/MainPage";
+import DashboardPage from "@/pages/main/DashboardPage";
+import VerificationPage from "@/pages/main/VerificationPage";
+import ReferralPage from "@/pages/main/ReferralPage";
+import AIReportsPage from "@/pages/main/AIReportsPage";
+import SupportPage from "@/pages/main/SupportPage";
+import CreditsPage from "@/pages/main/CreditsPage";
 
 // ─── 4. 에러/폴백 ───
-import NotFoundPage from "./assets/pages/error/NotFoundPage";
+import NotFoundPage from "@/pages/error/NotFoundPage";
 
 function App() {
   return (

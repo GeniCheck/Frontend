@@ -1,5 +1,5 @@
 import React from "react";
-import RoleLoginScreen from "../../components/auth/RoleLoginScreen";
+import RoleLoginScreen from "@/components/auth/RoleLoginScreen";
 
 // 대표(CEO) 로그인: ID/PW → 본인 이메일 인증번호 6자리 → role="ceo" 저장 → /main
 const CeoLoginPage: React.FC = () => (
@@ -20,7 +20,7 @@ const CeoLoginPage: React.FC = () => (
     idPlaceholder="아이디 또는 기업 이메일"
     otpNotice={
       <>
-        가입 시 등록한 <b className="font-bold text-[#1A1A2E]">본인 이메일</b>로
+        가입 시 등록한 <b className="text-text1 font-bold">본인 이메일</b>로
         인증번호 6자리를 발송했어요. 메일함을 확인해 주세요. (데모 코드: 123456)
       </>
     }

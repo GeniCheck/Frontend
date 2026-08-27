@@ -74,11 +74,11 @@ const VerificationPage: React.FC = () => {
     /* 부모(MainPage)가 이미 고정 사이드바를 품고 있으므로,
        이곳에서는 전체 flex 레이아웃 틀을 걷어내고 독립적인 우측 스크롤 본문 영역만 바로 기동합니다.
     */
-    <main className="flex min-h-screen flex-1 flex-col md:pl-[260px]">
+    <main className="flex min-h-screen flex-1 flex-col">
       {/* 상단 툴바 헤더 */}
-      <header className="sticky top-0 z-40 flex h-[68px] items-center justify-between border-b border-gray-200 bg-white px-6">
+      <header className="sticky top-0 z-40 flex h-17 items-center justify-between border-b border-gray-200 bg-white px-6">
         <div className="flex items-baseline gap-3 text-left">
-          <h1 className="text-base font-black tracking-tight text-[#1A1A2E]">
+          <h1 className="text-text1 text-base font-black tracking-tight">
             Verification
           </h1>
           <span className="text-xs font-semibold text-gray-400">
@@ -87,19 +87,19 @@ const VerificationPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold text-[#4B5563] shadow-sm transition-all hover:bg-gray-50 active:scale-95">
+          <button className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95">
             직원 추가
           </button>
-          <button className="flex items-center gap-1.5 rounded-xl bg-[#5B50E8] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#5B50E8]/10 transition-all hover:bg-[#493fd1] active:scale-95">
+          <button className="bg-brand shadow-brand/10 hover:bg-brand-dark flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95">
             평가 링크 발송
           </button>
         </div>
       </header>
 
       {/* 내부 실시간 데이터 대시보드 그리드 */}
-      <div className="mx-auto w-full max-w-[1200px] flex-1 space-y-6 p-6">
-        <div className="rounded-[22px] border border-gray-200 bg-white p-6 text-left shadow-sm">
-          <h2 className="mb-1 text-base font-black text-[#1A1A2E]">
+      <div className="mx-auto w-full max-w-300 flex-1 space-y-6 p-6">
+        <div className="rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
+          <h2 className="text-text1 mb-1 text-base font-black">
             Verification{" "}
             <span className="ml-1 text-xs font-normal text-gray-400">
               직원 자기선언 & 검증 관리
@@ -117,7 +117,7 @@ const VerificationPage: React.FC = () => {
               label: "총 재직 직원",
               value: "48",
               desc: "↑ 3명 이번 달 입사",
-              icon: "ti-users text-[#5B50E8]",
+              icon: "ti-users text-brand",
             },
             {
               label: "선언 완료",
@@ -143,13 +143,13 @@ const VerificationPage: React.FC = () => {
               className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm"
             >
               <div>
-                <span className="block text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+                <span className="text-2xs block font-bold tracking-wider text-gray-400 uppercase">
                   {card.label}
                 </span>
-                <div className="mt-1 text-2xl font-black text-[#1A1A2E]">
+                <div className="text-text1 mt-1 text-2xl font-black">
                   {card.value}
                 </div>
-                <span className="mt-0.5 block text-[10px] text-gray-400">
+                <span className="text-2xs mt-0.5 block text-gray-400">
                   {card.desc}
                 </span>
               </div>
@@ -161,10 +161,10 @@ const VerificationPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-          <div className="rounded-[22px] border border-gray-200 bg-white p-6 text-left shadow-sm lg:col-span-2">
+          <div className="rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm lg:col-span-2">
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="text-sm font-black text-[#1A1A2E]">직원 목록</h3>
-              <div className="flex gap-1 rounded-lg border border-gray-100 bg-gray-50 p-1 text-[11px] font-bold">
+              <h3 className="text-text1 text-sm font-black">직원 목록</h3>
+              <div className="text-2xs flex gap-1 rounded-lg border border-gray-100 bg-gray-50 p-1 font-bold">
                 {(["전체", "재직중", "퇴사"] as const).map((t) => (
                   <button
                     key={t}
@@ -172,7 +172,7 @@ const VerificationPage: React.FC = () => {
                     onClick={() => setFilter(t)}
                     className={`rounded-md px-3 py-1 transition-all active:scale-95 ${
                       filter === t
-                        ? "bg-white text-[#5B50E8] shadow-xs"
+                        ? "text-brand bg-white shadow-xs"
                         : "text-gray-400"
                     }`}
                   >
@@ -185,7 +185,7 @@ const VerificationPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-gray-100 text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+                  <tr className="text-2xs border-b border-gray-100 font-bold tracking-wider text-gray-400 uppercase">
                     <th className="pb-3 font-semibold">직원명 / 부서</th>
                     <th className="pb-3 font-semibold">상태</th>
                     <th className="pb-3 font-semibold">선언</th>
@@ -200,16 +200,14 @@ const VerificationPage: React.FC = () => {
                       className="transition-colors hover:bg-gray-50/50"
                     >
                       <td className="py-3.5">
-                        <div className="font-black text-[#1A1A2E]">
-                          {emp.name}
-                        </div>
-                        <div className="mt-0.5 text-[10px] text-gray-400">
+                        <div className="text-text1 font-black">{emp.name}</div>
+                        <div className="text-2xs mt-0.5 text-gray-400">
                           {emp.dept}
                         </div>
                       </td>
                       <td className="py-3.5">
                         <span
-                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                          className={`text-2xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold ${
                             emp.status === "퇴사"
                               ? "bg-red-50 text-red-500"
                               : emp.status === "재직중"
@@ -226,19 +224,19 @@ const VerificationPage: React.FC = () => {
                           className={`font-bold ${emp.declare === "완료" ? "text-emerald-500" : emp.declare === "미완료" ? "text-amber-500" : "text-gray-300"}`}
                         >
                           {emp.declare === "완료" && (
-                            <i className="ti ti-check mr-0.5 text-[11px]" />
+                            <i className="ti ti-check text-2xs mr-0.5" />
                           )}
                           {emp.declare === "미완료" && (
-                            <i className="ti ti-hourglass-low mr-0.5 text-[11px]" />
+                            <i className="ti ti-hourglass-low text-2xs mr-0.5" />
                           )}
                           {emp.declare}
                         </span>
                       </td>
                       <td className="py-3.5">
-                        <div className="font-sans font-bold text-[#1A1A2E]">
+                        <div className="text-text1 font-sans font-bold">
                           {emp.hrScore}
                           {emp.due && (
-                            <span className="mt-0.5 block text-[9px] font-normal text-red-400">
+                            <span className="text-3xs mt-0.5 block font-normal text-red-400">
                               {emp.due}
                             </span>
                           )}
@@ -247,11 +245,11 @@ const VerificationPage: React.FC = () => {
                       <td className="py-3.5 text-right">
                         <button
                           type="button"
-                          className={`rounded-lg px-3 py-1.5 text-[11px] font-bold shadow-xs transition-all active:scale-95 ${
+                          className={`text-2xs rounded-lg px-3 py-1.5 font-bold shadow-xs transition-all active:scale-95 ${
                             emp.action === "검증 입력"
-                              ? "bg-[#5B50E8]/10 text-[#5B50E8] hover:bg-[#5B50E8]/20"
+                              ? "bg-brand/10 text-brand hover:bg-brand/20"
                               : emp.action === "발송"
-                                ? "border border-gray-200 text-[#4B5563] hover:bg-gray-50"
+                                ? "text-text2 border border-gray-200 hover:bg-gray-50"
                                 : "cursor-default bg-gray-100 text-gray-400"
                           }`}
                         >
@@ -266,8 +264,8 @@ const VerificationPage: React.FC = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
-              <h3 className="mb-4 text-xs font-black text-[#1A1A2E]">
+            <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+              <h3 className="text-text1 mb-4 text-xs font-black">
                 검증 골든타임 현황
               </h3>
               <div className="space-y-3">
@@ -296,10 +294,10 @@ const VerificationPage: React.FC = () => {
                     className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 p-3.5"
                   >
                     <div>
-                      <div className="text-xs font-black text-[#1A1A2E]">
+                      <div className="text-text1 text-xs font-black">
                         {gold.name}
                       </div>
-                      <p className="mt-0.5 text-[10px] text-gray-400">
+                      <p className="text-2xs mt-0.5 text-gray-400">
                         {gold.role}
                       </p>
                     </div>
@@ -310,7 +308,7 @@ const VerificationPage: React.FC = () => {
                         {gold.days}
                       </span>
                       {gold.urgent && (
-                        <span className="mt-0.5 block animate-pulse text-[8px] font-bold text-red-400">
+                        <span className="text-3xs mt-0.5 block animate-pulse font-bold text-red-400">
                           ⚠️ 긴급 처리 필요
                         </span>
                       )}
@@ -318,16 +316,16 @@ const VerificationPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 rounded-xl border border-red-100/50 bg-red-50/50 p-3 text-[10px] leading-relaxed font-semibold text-red-500/80">
+              <div className="text-2xs mt-4 rounded-xl border border-red-100/50 bg-red-50/50 p-3 leading-relaxed font-semibold text-red-500/80">
                 ℹ️ 15일 초과 시 검증 권한이 자동 소멸됩니다. 기한 내 처리해
                 주세요.
               </div>
             </div>
 
-            <div className="rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
+            <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xs font-black text-[#1A1A2E]">최근 알림</h3>
-                <span className="cursor-pointer text-[10px] font-bold text-[#5B50E8] hover:underline">
+                <h3 className="text-text1 text-xs font-black">최근 알림</h3>
+                <span className="text-brand text-2xs cursor-pointer font-bold hover:underline">
                   모두 보기
                 </span>
               </div>
@@ -359,14 +357,12 @@ const VerificationPage: React.FC = () => {
                     className="flex items-start justify-between gap-3 border-b border-gray-50 pb-3 text-xs last:border-none last:pb-0"
                   >
                     <div>
-                      <div className="font-black text-[#1A1A2E]">
-                        {noti.title}
-                      </div>
-                      <p className="mt-0.5 text-[10px] text-gray-400">
+                      <div className="text-text1 font-black">{noti.title}</div>
+                      <p className="text-2xs mt-0.5 text-gray-400">
                         {noti.sub}
                       </p>
                     </div>
-                    <span className="shrink-0 text-[9px] font-medium text-gray-400">
+                    <span className="text-3xs shrink-0 font-medium text-gray-400">
                       {noti.time}
                     </span>
                   </div>
@@ -374,26 +370,26 @@ const VerificationPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
-              <h3 className="text-xs font-black text-[#1A1A2E]">포인트 현황</h3>
+            <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+              <h3 className="text-text1 text-xs font-black">포인트 현황</h3>
               <div className="space-y-2.5 border-b border-gray-50 pb-4 text-xs font-bold">
                 <div className="flex justify-between">
                   <span className="text-gray-400">보유 포인트</span>
-                  <span className="font-black text-[#5B50E8]">245,000 P</span>
+                  <span className="text-brand font-black">245,000 P</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">이번 달 적립</span>
-                  <span className="font-black text-[#1A1A2E]">+105,000 P</span>
+                  <span className="text-text1 font-black">+105,000 P</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">사용 가능 인출</span>
-                  <span className="font-black text-[#1A1A2E]">245,000원</span>
+                  <span className="text-text1 font-black">245,000원</span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => alert("인출 신청 창 연동")}
-                className="mt-4 w-full rounded-xl border border-gray-200 bg-white py-2.5 text-[11px] font-bold text-[#4B5563] shadow-xs transition-all hover:bg-gray-50 active:scale-[0.98]"
+                className="text-text2 text-2xs mt-4 w-full rounded-xl border border-gray-200 bg-white py-2.5 font-bold shadow-xs transition-all hover:bg-gray-50 active:scale-[0.98]"
               >
                 현금 인출 신청
               </button>

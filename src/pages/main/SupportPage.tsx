@@ -70,11 +70,11 @@ const SupportPage: React.FC = () => {
     /* 부모(MainPage)가 들고 있는 <Sidebar /> 우측 공간에 배치될 본문이므로
        최외곽 구조를 축소하고 <main> 구역만 가볍게 시작합니다.
     */
-    <main className="flex min-h-screen flex-1 flex-col md:pl-[260px]">
+    <main className="flex min-h-screen flex-1 flex-col">
       {/* 상단 헤더 툴바 */}
-      <header className="sticky top-0 z-40 flex h-[68px] items-center justify-between border-b border-gray-200 bg-white px-6">
+      <header className="sticky top-0 z-40 flex h-17 items-center justify-between border-b border-gray-200 bg-white px-6">
         <div className="flex items-baseline gap-3 text-left">
-          <h1 className="text-base font-black tracking-tight text-[#1A1A2E]">
+          <h1 className="text-text1 text-base font-black tracking-tight">
             Support
           </h1>
           <span className="text-xs font-semibold text-gray-400">
@@ -82,7 +82,7 @@ const SupportPage: React.FC = () => {
           </span>
         </div>
 
-        <button className="rounded-xl bg-[#5B50E8] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#5B50E8]/10 transition-all hover:bg-[#493fd1] active:scale-95">
+        <button className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95">
           문의 등록
         </button>
       </header>
@@ -121,15 +121,15 @@ const SupportPage: React.FC = () => {
               key={i}
               className="flex h-28 flex-col justify-between rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm"
             >
-              <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+              <span className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
                 {stat.label}
               </span>
               <div>
-                <div className="text-2xl font-black tracking-tight text-[#1A1A2E]">
+                <div className="text-text1 text-2xl font-black tracking-tight">
                   {stat.value}
                 </div>
                 <span
-                  className={`text-[10px] font-bold ${stat.subColor} mt-1 block`}
+                  className={`text-2xs font-bold ${stat.subColor} mt-1 block`}
                 >
                   {stat.sub}
                 </span>
@@ -143,12 +143,12 @@ const SupportPage: React.FC = () => {
           {/* 2컬럼: 문의 내역 및 이의제기 타임라인 */}
           <div className="space-y-6 lg:col-span-2">
             {/* 문의 내역 세그먼트 보드 */}
-            <div className="rounded-[22px] border border-gray-200 bg-white p-6 text-left shadow-sm">
+            <div className="rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
               <div className="mb-5 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-                <h3 className="text-sm font-black text-[#1A1A2E]">문의 내역</h3>
+                <h3 className="text-text1 text-sm font-black">문의 내역</h3>
 
                 {/* 세그먼트 버튼 칩 세트 */}
-                <div className="flex gap-1 rounded-lg border border-gray-100 bg-gray-50 p-1 text-[11px] font-bold">
+                <div className="text-2xs flex gap-1 rounded-lg border border-gray-100 bg-gray-50 p-1 font-bold">
                   {tabs.map((t) => (
                     <button
                       key={t.key}
@@ -156,12 +156,12 @@ const SupportPage: React.FC = () => {
                       onClick={() => setFilter(t.key)}
                       className={`rounded-md px-2.5 py-1 transition-all active:scale-95 ${
                         filter === t.key
-                          ? "bg-white text-[#5B50E8] shadow-xs"
+                          ? "text-brand bg-white shadow-xs"
                           : "text-gray-400"
                       }`}
                     >
                       {t.key}{" "}
-                      <span className="text-[9px] font-normal opacity-70">
+                      <span className="text-3xs font-normal opacity-70">
                         {t.count}
                       </span>
                     </button>
@@ -177,20 +177,20 @@ const SupportPage: React.FC = () => {
                     className="flex items-start justify-between gap-4 rounded-xl px-1 py-4 transition-colors first:pt-0 last:pb-0 hover:bg-gray-50/50"
                   >
                     <div className="min-w-0 space-y-1">
-                      <h4 className="truncate text-xs leading-relaxed font-black text-[#1A1A2E] sm:line-clamp-2 sm:whitespace-normal">
+                      <h4 className="text-text1 truncate text-xs leading-relaxed font-black sm:line-clamp-2 sm:whitespace-normal">
                         {ticket.title}
                       </h4>
-                      <span className="inline-block text-[10px] font-medium text-gray-400">
+                      <span className="text-2xs inline-block font-medium text-gray-400">
                         {ticket.category}
                       </span>
                     </div>
                     <div className="shrink-0 text-right">
                       <span
-                        className={`inline-flex rounded px-2 py-0.5 text-[9px] font-black tracking-tight ${ticket.statusColor}`}
+                        className={`text-3xs inline-flex rounded px-2 py-0.5 font-black tracking-tight ${ticket.statusColor}`}
                       >
                         {ticket.status}
                       </span>
-                      <span className="mt-1.5 block font-mono text-[9px] text-gray-300">
+                      <span className="text-3xs mt-1.5 block text-gray-300 tabular-nums">
                         {ticket.date}
                       </span>
                     </div>
@@ -200,12 +200,12 @@ const SupportPage: React.FC = () => {
             </div>
 
             {/* 이의제기 수신 현황 패널 위젯 */}
-            <div className="space-y-4 rounded-[22px] border border-gray-200 bg-white p-6 text-left shadow-sm">
+            <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-black text-[#1A1A2E]">
+                <h3 className="text-text1 text-sm font-black">
                   이의제기 수신 현황
                 </h3>
-                <span className="text-[10px] font-bold text-red-500">
+                <span className="text-2xs font-bold text-red-500">
                   1건 진행 중
                 </span>
               </div>
@@ -213,14 +213,14 @@ const SupportPage: React.FC = () => {
               <div className="space-y-4 rounded-2xl border border-red-100 bg-red-50/40 p-5">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-xs font-black text-[#1A1A2E]">
+                    <div className="text-text1 text-xs font-black">
                       이서연 — 마케팅팀 · 대리
                     </div>
-                    <p className="mt-1 text-[10px] text-gray-400">
+                    <p className="text-2xs mt-1 text-gray-400">
                       2026.05.03 이의제기 접수 · GeniCheck Admin 중재 중
                     </p>
                   </div>
-                  <span className="rounded bg-red-100 px-2 py-0.5 text-[9px] font-black text-red-500">
+                  <span className="text-3xs rounded bg-red-100 px-2 py-0.5 font-black text-red-500">
                     중재 중
                   </span>
                 </div>
@@ -228,7 +228,7 @@ const SupportPage: React.FC = () => {
                 {/* 자기 평가 vs 대표 검증 락업 점수 배지 */}
                 <div className="flex gap-2.5">
                   <div className="flex-1 rounded-xl border border-gray-100 bg-white p-3 text-center">
-                    <span className="mb-1 block text-[9px] font-bold text-gray-400">
+                    <span className="text-3xs mb-1 block font-bold text-gray-400">
                       자기 평가
                     </span>
                     <span className="text-sm font-black text-gray-700">
@@ -236,20 +236,20 @@ const SupportPage: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex-1 rounded-xl border border-gray-100 bg-white p-3 text-center">
-                    <span className="mb-1 block text-[9px] font-bold text-gray-400">
+                    <span className="text-3xs mb-1 block font-bold text-gray-400">
                       대표 검증
                     </span>
                     <span className="text-sm font-black text-red-500">3점</span>
                   </div>
                   <div className="flex-1 rounded-xl bg-red-500 p-3 text-center text-white shadow-md shadow-red-500/10">
-                    <span className="mb-1 block text-[9px] font-bold text-white/70">
+                    <span className="text-3xs mb-1 block font-bold text-white/70">
                       점수 차이
                     </span>
                     <span className="text-sm font-black">Δ 5점</span>
                   </div>
                 </div>
 
-                <p className="rounded-xl border border-gray-100 bg-white/80 p-3 text-[10px] leading-relaxed text-gray-400">
+                <p className="text-2xs rounded-xl border border-gray-100 bg-white/80 p-3 leading-relaxed text-gray-400">
                   결과는 이메일로 동시 통보됩니다. 허위 평가 확인 시 해당 점수가
                   블라인드 처리될 수 있습니다.
                 </p>
@@ -260,8 +260,8 @@ const SupportPage: React.FC = () => {
           {/* 우측 퀵 문의 채널 및 FAQ 락업 가이드 */}
           <div className="space-y-6">
             {/* 문의 채널 안내 패널 */}
-            <div className="space-y-4 rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
-              <h3 className="text-xs font-black text-[#1A1A2E]">문의 채널</h3>
+            <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+              <h3 className="text-text1 text-xs font-black">문의 채널</h3>
               <div className="space-y-3">
                 {[
                   {
@@ -288,15 +288,15 @@ const SupportPage: React.FC = () => {
                     className="group flex cursor-pointer items-center justify-between rounded-xl border border-gray-100 bg-gray-50 p-3.5 transition-all hover:bg-gray-100/60 active:scale-98"
                   >
                     <div>
-                      <div className="text-xs font-black text-[#1A1A2E]">
+                      <div className="text-text1 text-xs font-black">
                         {chan.type}
                       </div>
-                      <p className="mt-0.5 text-[10px] text-gray-400">
+                      <p className="text-2xs mt-0.5 text-gray-400">
                         {chan.desc}
                       </p>
                     </div>
                     <span
-                      className={`rounded px-2 py-0.5 text-[9px] font-black ${chan.tagColor}`}
+                      className={`text-3xs rounded px-2 py-0.5 font-black ${chan.tagColor}`}
                     >
                       {chan.tag}
                     </span>
@@ -306,10 +306,8 @@ const SupportPage: React.FC = () => {
             </div>
 
             {/* 자주 묻는 질문 FAQ 아코디언 컴포넌트 세트 */}
-            <div className="space-y-3.5 rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
-              <h3 className="text-xs font-black text-[#1A1A2E]">
-                자주 묻는 질문
-              </h3>
+            <div className="space-y-3.5 rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+              <h3 className="text-text1 text-xs font-black">자주 묻는 질문</h3>
               <div className="space-y-1 divide-y divide-gray-50 text-xs font-bold text-gray-600">
                 {[
                   "15일 골든타임을 놓치면 어떻게 되나요?",
@@ -320,7 +318,7 @@ const SupportPage: React.FC = () => {
                 ].map((faq, i) => (
                   <div
                     key={i}
-                    className="flex cursor-pointer items-center justify-between py-3 transition-colors transition-transform first:pt-0 last:pb-0 hover:text-[#5B50E8] active:translate-x-0.5"
+                    className="hover:text-brand flex cursor-pointer items-center justify-between py-3 transition-colors transition-transform first:pt-0 last:pb-0 active:translate-x-0.5"
                   >
                     <span className="truncate pr-4">{faq}</span>
                     <i className="ti ti-chevron-right shrink-0 text-xs text-gray-300" />

@@ -5,10 +5,14 @@ export default {
     extend: {
       colors: {
         brand: "#5B50E8",
+        "brand-dark": "#493FD1", // brand 버튼 hover
         brand2: "#8B5CF6",
         "brand-light": "#EEF0FF",
         accent: "#F59E0B",
+        "accent-dark": "#D98A09", // accent 버튼 hover
+        "accent-light": "#FFFBEB", // accent 아이콘/뱃지 배경 틴트
         accent2: "#10B981",
+        "accent2-light": "#ECFDF5", // accent2 아이콘 배경 틴트
         surface: "#F9FAFB",
         surface2: "#F3F4F6",
         text1: "#1A1A2E",
@@ -16,19 +20,13 @@ export default {
         text3: "#9CA3AF",
       },
       fontFamily: {
+        // 사이트 전체 단일 서체. Bebas Neue / Space Mono 제거.
         sans: ['"Noto Sans KR"', "sans-serif"],
-        bebas: ['"Bebas Neue"', "sans-serif"],
-        mono: ['"Space Mono"', "monospace"],
       },
-      animation: {
-        "blob-float": "blobFloat 20s linear infinite",
-      },
-      keyframes: {
-        blobFloat: {
-          "0%, 100%": { transform: "translate(0, 0) scale(1)", opacity: "1" },
-          "33%": { transform: "translate(30px, -20px) scale(1.05)" },
-          "66%": { transform: "translate(-20px, 30px) scale(0.97)" },
-        },
+      fontSize: {
+        // text-xs(12px) 아래 마이크로 라벨용. 두 단계만 유지한다.
+        "2xs": "11px",
+        "3xs": "9px",
       },
     },
   },

@@ -62,11 +62,11 @@ const CreditsPage: React.FC = () => {
     /* 부모(MainPage) 아웃렛 안으로 들어가는 알맹이 스펙이므로 
       독립적인 본문 레이아웃인 <main> 구역만 깔끔하게 오픈합니다.
     */
-    <main className="flex min-h-screen flex-1 flex-col md:pl-[260px]">
+    <main className="flex min-h-screen flex-1 flex-col">
       {/* 상단 헤더 툴바 */}
-      <header className="sticky top-0 z-40 flex h-[68px] items-center justify-between border-b border-gray-200 bg-white px-6">
+      <header className="sticky top-0 z-40 flex h-17 items-center justify-between border-b border-gray-200 bg-white px-6">
         <div className="flex items-baseline gap-3 text-left">
-          <h1 className="text-base font-black tracking-tight text-[#1A1A2E]">
+          <h1 className="text-text1 text-base font-black tracking-tight">
             Credits
           </h1>
           <span className="text-xs font-semibold text-gray-400">
@@ -75,17 +75,17 @@ const CreditsPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold text-[#4B5563] shadow-sm transition-all hover:bg-gray-50 active:scale-95">
+          <button className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95">
             내역 다운로드
           </button>
-          <button className="rounded-xl bg-[#5B50E8] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#5B50E8]/10 transition-all hover:bg-[#493fd1] active:scale-95">
+          <button className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95">
             크레딧 충전
           </button>
         </div>
       </header>
 
       {/* 대시보드 메인 콘텐트 바디 */}
-      <div className="mx-auto w-full max-w-[1250px] flex-1 space-y-6 p-6">
+      <div className="mx-auto w-full max-w-312.5 flex-1 space-y-6 p-6">
         {/* 상단 4열 핵심 서머리 스태츠 행 카드 위젯 */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
@@ -118,15 +118,15 @@ const CreditsPage: React.FC = () => {
               key={i}
               className="flex h-28 flex-col justify-between rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm"
             >
-              <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+              <span className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
                 {stat.label}
               </span>
               <div>
-                <div className="text-2xl font-black tracking-tight text-[#1A1A2E]">
+                <div className="text-text1 text-2xl font-black tracking-tight">
                   {stat.value}
                 </div>
                 <span
-                  className={`text-[10px] font-bold ${stat.subColor} mt-1 block`}
+                  className={`text-2xs font-bold ${stat.subColor} mt-1 block`}
                 >
                   {stat.sub}
                 </span>
@@ -140,34 +140,24 @@ const CreditsPage: React.FC = () => {
           {/* 2컬럼: 좌측 구독 플랜 상태 및 결제 내역 리스트 */}
           <div className="space-y-6 lg:col-span-2">
             {/* 구독 플랜 디스플레이 간판 컴포넌트 */}
-            <div className="space-y-6 rounded-[22px] border border-gray-200 bg-white p-6 text-left shadow-sm">
+            <div className="space-y-6 rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-black text-[#1A1A2E]">구독 플랜</h3>
-                <span className="font-mono text-[10px] font-bold text-gray-400">
+                <h3 className="text-text1 text-sm font-black">구독 플랜</h3>
+                <span className="text-2xs font-bold text-gray-400 tabular-nums">
                   다음 갱신 2026.06.09
                 </span>
               </div>
 
               {/* 선명한 보라색 메인 구독 등급 배너 배색 처리 */}
-              <div className="relative flex items-center justify-between overflow-hidden rounded-2xl bg-[#5B50E8] p-6 text-white shadow-lg shadow-[#5B50E8]/10">
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-[0.04]"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(#ffffff 1px, transparent 1px)",
-                    backgroundSize: "32px 32px",
-                  }}
-                />
+              <div className="bg-brand shadow-brand/10 relative flex items-center justify-between overflow-hidden rounded-2xl p-6 text-white shadow-lg">
                 <div className="z-10 space-y-1.5">
-                  <span className="inline-block rounded bg-white/20 px-2 py-0.5 text-[9px] font-black tracking-wider uppercase">
+                  <span className="text-3xs inline-block rounded bg-white/20 px-2 py-0.5 font-black tracking-wider uppercase">
                     현재 플랜
                   </span>
                   <h4 className="text-2xl font-black tracking-tight">
                     Business
                   </h4>
-                  <p className="text-[10px] text-white/70">
-                    2026.06.09 자동 갱신
-                  </p>
+                  <p className="text-2xs text-white/70">2026.06.09 자동 갱신</p>
                 </div>
                 <div className="z-10 space-y-3 text-right">
                   <div className="font-sans text-3xl font-black tracking-tight">
@@ -190,11 +180,11 @@ const CreditsPage: React.FC = () => {
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs font-bold">
                     <span className="text-gray-400">이번 달 크레딧 사용</span>
-                    <span className="text-[#1A1A2E]">{37} / 150건</span>
+                    <span className="text-text1">{37} / 150건</span>
                   </div>
                   <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
                     <div
-                      className="h-full rounded-full bg-[#5B50E8]"
+                      className="bg-brand h-full rounded-full"
                       style={{ width: "24.6%" }}
                     />
                   </div>
@@ -203,7 +193,7 @@ const CreditsPage: React.FC = () => {
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs font-bold">
                     <span className="text-gray-400">데이터 조회 승인</span>
-                    <span className="text-[#1A1A2E]">{3} / 10건</span>
+                    <span className="text-text1">{3} / 10건</span>
                   </div>
                   <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
                     <div
@@ -216,7 +206,7 @@ const CreditsPage: React.FC = () => {
 
               {/* 티켓 단가 상세 가격 테이블 가이드 */}
               <div className="space-y-3 border-t border-gray-100 pt-4">
-                <div className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+                <div className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
                   티켓 단가 (조회 권한 구매)
                 </div>
 
@@ -247,17 +237,17 @@ const CreditsPage: React.FC = () => {
                           <i className="ti ti-id text-sm" />
                         </div>
                         <div>
-                          <span className="font-black text-[#1A1A2E]">
+                          <span className="text-text1 font-black">
                             {tier.role}
                           </span>
-                          <span className="ml-2 text-[10px] text-gray-400">
+                          <span className="text-2xs ml-2 text-gray-400">
                             {tier.desc}
                           </span>
                         </div>
                       </div>
-                      <span className="font-sans font-bold text-[#1A1A2E]">
+                      <span className="text-text1 font-sans font-bold">
                         {tier.price}
-                        <span className="ml-0.5 text-[10px] font-normal text-gray-400">
+                        <span className="text-2xs ml-0.5 font-normal text-gray-400">
                           /건
                         </span>
                       </span>
@@ -268,10 +258,10 @@ const CreditsPage: React.FC = () => {
             </div>
 
             {/* 결제 내역 최근 6개월 테이블 시트 */}
-            <div className="space-y-4 rounded-[22px] border border-gray-200 bg-white p-6 text-left shadow-sm">
+            <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-black text-[#1A1A2E]">결제 내역</h3>
-                <span className="text-[10px] font-bold text-gray-400">
+                <h3 className="text-text1 text-sm font-black">결제 내역</h3>
+                <span className="text-2xs font-bold text-gray-400">
                   최근 6개월
                 </span>
               </div>
@@ -279,38 +269,36 @@ const CreditsPage: React.FC = () => {
               <div className="overflow-x-auto rounded-xl border border-gray-50">
                 <table className="w-full border-collapse text-left text-xs">
                   <thead>
-                    <tr className="border-b border-gray-100 bg-gray-50 text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                    <tr className="text-2xs border-b border-gray-100 bg-gray-50 font-bold tracking-wider text-gray-400 uppercase">
                       <th className="p-3">날짜</th>
                       <th className="p-3">항목</th>
                       <th className="p-3 text-right">금액</th>
                       <th className="p-3 text-right">상태</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50 text-[11px] font-bold text-gray-600">
+                  <tbody className="text-2xs divide-y divide-gray-50 font-bold text-gray-600">
                     {txHistory.map((tx, idx) => (
                       <tr
                         key={idx}
                         className="transition-colors hover:bg-gray-50/40"
                       >
-                        <td className="p-3 font-mono font-medium text-gray-400">
+                        <td className="p-3 font-medium text-gray-400 tabular-nums">
                           {tx.date}
                         </td>
                         <td className="p-3">
-                          <div className="font-black text-[#1A1A2E]">
-                            {tx.item}
-                          </div>
+                          <div className="text-text1 font-black">{tx.item}</div>
                           {tx.detail && (
-                            <div className="mt-0.5 text-[9px] font-normal text-gray-400">
+                            <div className="text-3xs mt-0.5 font-normal text-gray-400">
                               {tx.detail}
                             </div>
                           )}
                         </td>
-                        <td className="p-3 text-right font-sans font-black text-[#1A1A2E]">
+                        <td className="text-text1 p-3 text-right font-sans font-black">
                           {tx.amount}
                         </td>
                         <td className="p-3 text-right">
                           <span
-                            className={`inline-block rounded px-1.5 py-0.5 text-[10px] font-black tracking-tight ${tx.statusStyle}`}
+                            className={`text-2xs inline-block rounded px-1.5 py-0.5 font-black tracking-tight ${tx.statusStyle}`}
                           >
                             {tx.status}
                           </span>
@@ -326,20 +314,20 @@ const CreditsPage: React.FC = () => {
           {/* 1컬럼: 우측 퀵 정산 매트릭스 및 실시간 포인트 인출 보드 위젯 */}
           <div className="space-y-6">
             {/* 포인트 현황 인출 위젯 대시보드 */}
-            <div className="space-y-4 rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
-              <h3 className="text-xs font-black text-[#1A1A2E]">포인트 현황</h3>
-              <div className="rounded-xl border border-amber-100/60 bg-amber-50/50 p-3.5 text-[10px] leading-relaxed font-semibold text-amber-600">
+            <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+              <h3 className="text-text1 text-xs font-black">포인트 현황</h3>
+              <div className="text-2xs rounded-xl border border-amber-100/60 bg-amber-50/50 p-3.5 leading-relaxed font-semibold text-amber-600">
                 ℹ️ 인출은 월 1회, 최소 50,000포인트 이상 가능합니다.
               </div>
 
               <div className="space-y-2.5 border-b border-gray-50 pb-4 text-xs font-bold">
                 <div className="flex justify-between">
                   <span className="text-gray-400">총 보유 포인트</span>
-                  <span className="font-black text-[#5B50E8]">245,000 P</span>
+                  <span className="text-brand font-black">245,000 P</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">이번 달 적립</span>
-                  <span className="font-black text-[#1A1A2E]">+105,000 P</span>
+                  <span className="text-text1 font-black">+105,000 P</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">이번 달 사용</span>
@@ -347,26 +335,26 @@ const CreditsPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between pt-1.5 text-sm">
                   <span className="text-gray-700">인출 가능</span>
-                  <span className="font-black text-[#5B50E8]">182,000 P</span>
+                  <span className="text-brand font-black">182,000 P</span>
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => alert("현금 인출 신청 프로세스 연동")}
-                className="w-full rounded-xl bg-[#5B50E8] py-3 text-xs font-bold text-white shadow-md shadow-[#5B50E8]/10 transition-all hover:bg-[#493fd1] active:scale-[0.98]"
+                className="bg-brand shadow-brand/10 hover:bg-brand-dark w-full rounded-xl py-3 text-xs font-bold text-white shadow-md transition-all active:scale-[0.98]"
               >
                 현금 인출 신청
               </button>
             </div>
 
             {/* 포인트 적립 내역 히스토리 피드 위젯 */}
-            <div className="space-y-4 rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
+            <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black text-[#1A1A2E]">
+                <h3 className="text-text1 text-xs font-black">
                   포인트 적립 내역
                 </h3>
-                <span className="cursor-pointer text-[10px] font-bold text-gray-400 hover:underline">
+                <span className="text-2xs cursor-pointer font-bold text-gray-400 hover:underline">
                   전체 내역 보기
                 </span>
               </div>
@@ -399,10 +387,10 @@ const CreditsPage: React.FC = () => {
                     className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 p-3 text-xs"
                   >
                     <div>
-                      <div className="font-black text-[#1A1A2E]">
+                      <div className="text-text1 font-black">
                         {item.company}
                       </div>
-                      <span className="mt-0.5 block text-[9px] text-gray-400">
+                      <span className="text-3xs mt-0.5 block text-gray-400">
                         {item.desc}
                       </span>
                     </div>
@@ -415,12 +403,10 @@ const CreditsPage: React.FC = () => {
             </div>
 
             {/* 무료 티켓 혜택 가이드 배너 위젯 */}
-            <div className="space-y-4 rounded-[22px] border border-gray-200 bg-white p-5 text-left shadow-sm">
-              <h3 className="text-xs font-black text-[#1A1A2E]">
-                무료 티켓 혜택
-              </h3>
+            <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+              <h3 className="text-text1 text-xs font-black">무료 티켓 혜택</h3>
 
-              <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4 text-[11px] leading-relaxed font-medium text-emerald-800">
+              <div className="text-2xs rounded-xl border border-emerald-100 bg-emerald-50/60 p-4 leading-relaxed font-medium text-emerald-800">
                 <strong>1건 무료 사용 가능</strong>
                 <br />
                 퇴사 직원 평가를 완료하면, 같은 직급 열람 1건을 무료로 사용할 수
