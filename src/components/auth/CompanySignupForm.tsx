@@ -12,7 +12,7 @@ const CompanySignupForm: React.FC = () => {
   });
 
   const inputClass =
-    "w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm transition-all duration-300 focus:bg-white focus:border-[#5B50E8] focus:ring-4 focus:ring-[#5B50E8]/10 outline-none";
+    "w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm transition-all duration-300 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none";
 
   return (
     <div className="animate-in slide-in-from-bottom-4 space-y-8 duration-500">
@@ -66,7 +66,7 @@ const CompanySignupForm: React.FC = () => {
         />
       </div>
 
-      <button className="w-full rounded-2xl bg-[#5B50E8] py-4 font-bold text-white shadow-xl shadow-[#5B50E8]/30 transition-all hover:bg-[#4a42c4] active:scale-[0.98]">
+      <button className="bg-brand shadow-brand/30 hover:bg-brand-dark w-full rounded-2xl py-4 font-bold text-white shadow-xl transition-all active:scale-[0.98]">
         기업 회원가입 완료
       </button>
     </div>

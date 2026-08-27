@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useRole } from "../../context/roleContext";
+import { useRole } from "@/context/roleContext";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -40,17 +40,17 @@ const Sidebar: React.FC = () => {
   ].filter((item) => role !== "hr" || !item.ceoOnly);
 
   return (
-    <aside className="fixed top-0 left-0 z-50 hidden h-screen w-[260px] flex-col justify-between border-r border-gray-200 bg-white p-6 shadow-sm md:flex">
+    <aside className="fixed top-0 left-0 z-50 hidden h-screen w-65 flex-col justify-between border-r border-gray-200 bg-white p-6 shadow-sm md:flex">
       <div>
         {/* 로고 헤더 */}
         <div
           onClick={() => navigate("/")}
           className="mb-10 flex cursor-pointer items-center gap-2.5 transition-transform active:scale-95"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#5B50E8] shadow-md shadow-[#5B50E8]/30">
+          <div className="bg-brand shadow-brand/30 flex h-8 w-8 items-center justify-center rounded-xl shadow-md">
             <i className="ti ti-shield-check text-lg text-white"></i>
           </div>
-          <span className="font-bebas text-xl tracking-[1.5px] text-[#1A1A2E]">
+          <span className="text-text1 text-xl font-black tracking-[1.5px]">
             GeniCheck
           </span>
         </div>
@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
         {/* MAIN MENU 그룹 */}
         <div className="space-y-6">
           <div>
-            <div className="mb-2.5 px-3 text-left text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+            <div className="text-2xs mb-2.5 px-3 text-left font-bold tracking-wider text-gray-400 uppercase">
               MAIN MENU
             </div>
             <nav className="space-y-1">
@@ -74,16 +74,16 @@ const Sidebar: React.FC = () => {
                     }}
                     className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-xs font-bold transition-all active:scale-[0.98] ${
                       isActive
-                        ? "rounded-l-none border-l-4 border-[#5B50E8] bg-[#5B50E8]/10 pl-2.5 text-[#5B50E8]"
-                        : "text-[#4B5563] hover:bg-gray-50 hover:text-[#1A1A2E]"
+                        ? "border-brand bg-brand/10 text-brand rounded-l-none border-l-4 pl-2.5"
+                        : "text-text2 hover:text-text1 hover:bg-gray-50"
                     }`}
                   >
                     <i
-                      className={`ti ${item.icon} text-base ${isActive ? "text-[#5B50E8]" : ""}`}
+                      className={`ti ${item.icon} text-base ${isActive ? "text-brand" : ""}`}
                     />
                     <span className="flex-1 text-left">{item.name}</span>
                     {item.badge && (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                      <span className="text-2xs flex h-5 w-5 items-center justify-center rounded-full bg-red-500 font-bold text-white">
                         {item.badge}
                       </span>
                     )}
@@ -95,7 +95,7 @@ const Sidebar: React.FC = () => {
 
           {/* OTHER 그룹 */}
           <div>
-            <div className="mb-2.5 px-3 text-left text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+            <div className="text-2xs mb-2.5 px-3 text-left font-bold tracking-wider text-gray-400 uppercase">
               OTHER
             </div>
             <nav className="space-y-1">
@@ -117,12 +117,12 @@ const Sidebar: React.FC = () => {
                     }}
                     className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-xs font-bold transition-all active:scale-[0.98] ${
                       isActive
-                        ? "rounded-l-none border-l-4 border-[#5B50E8] bg-[#5B50E8]/10 pl-2.5 text-[#5B50E8]"
-                        : "text-[#4B5563] hover:bg-gray-50 hover:text-[#1A1A2E]"
+                        ? "border-brand bg-brand/10 text-brand rounded-l-none border-l-4 pl-2.5"
+                        : "text-text2 hover:text-text1 hover:bg-gray-50"
                     }`}
                   >
                     <i
-                      className={`ti ${item.icon} text-base ${isActive ? "text-[#5B50E8]" : ""}`}
+                      className={`ti ${item.icon} text-base ${isActive ? "text-brand" : ""}`}
                     />
                     <span className="text-left">{item.name}</span>
                   </button>
@@ -135,12 +135,12 @@ const Sidebar: React.FC = () => {
 
       {/* 최하단 사용자 프로필 */}
       <div className="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-2 transition-all hover:bg-gray-100/70 active:scale-95">
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#8B5CF6] to-[#5B50E8] text-xs font-bold text-white shadow-md">
+        <div className="from-brand2 to-brand flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br text-xs font-bold text-white shadow-md">
           ES
         </div>
         <div className="min-w-0 flex-1 text-left">
           <div className="truncate text-xs font-black">Elizabeth Stone</div>
-          <span className="mt-0.5 inline-block rounded border border-[#FEBC2E]/30 bg-[#FFFBEB] px-1.5 py-0.5 text-[9px] font-black tracking-tighter text-[#F59E0B]">
+          <span className="text-accent border-accent/30 bg-accent-light text-3xs mt-0.5 inline-block rounded border px-1.5 py-0.5 font-black tracking-tighter">
             {role === "hr" ? "HR Manager" : "Master Account"}
           </span>
         </div>

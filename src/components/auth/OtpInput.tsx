@@ -18,7 +18,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
   onChange,
   length = 6,
   autoFocus = false,
-  focusClass = "focus:border-[#5B50E8] focus:ring-[#5B50E8]/25",
+  focusClass = "focus:border-brand focus:ring-brand/25",
 }) => {
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -74,7 +74,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
           value={digit}
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
-          className={`h-14 w-full rounded-xl border border-gray-200 text-center text-xl font-black text-[#1A1A2E] transition-all outline-none focus:ring-2 ${focusClass}`}
+          className={`text-text1 h-14 w-full rounded-xl border border-gray-200 text-center text-xl font-black transition-all outline-none focus:ring-2 ${focusClass}`}
         />
       ))}
     </div>

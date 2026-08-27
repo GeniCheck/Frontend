@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { useRole } from "../../context/roleContext";
-import type { Role } from "../../context/roleContext";
-import NotFoundPage from "../../pages/error/NotFoundPage";
+import { useRole } from "@/context/roleContext";
+import type { Role } from "@/context/roleContext";
+import NotFoundPage from "@/pages/error/NotFoundPage";
 
 interface RoleGuardProps {
   allow: Role[];
