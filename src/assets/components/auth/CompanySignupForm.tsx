@@ -16,13 +16,6 @@ const CompanySignupForm: React.FC = () => {
 
   return (
     <div className="animate-in slide-in-from-bottom-4 space-y-8 duration-500">
-      <div className="space-y-2">
-        <h2 className="text-3xl font-black text-[#1A1A2E]">반갑습니다!</h2>
-        <p className="text-gray-500">
-          기업 회원가입을 통해 HR 데이터를 혁신해 보세요.
-        </p>
-      </div>
-
       <div className="space-y-6">
         <input
           name="companyName"

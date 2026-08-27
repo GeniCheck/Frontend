@@ -34,12 +34,13 @@ const SignupPage: React.FC = () => {
           </button>
 
           <div className="mb-8">
-            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-bold text-[#5B50E8]">
+            <span className="mb-3 flex w-fit items-center gap-1.5 rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-bold text-[#5B50E8]">
               <i className="ti ti-crown text-[13px]" />
               대표(사업자 본인) 전용
             </span>
-            <h2 className="mb-2 text-3xl font-black">기업 회원가입</h2>
-            <div className="h-1 w-16 rounded-full bg-[#5B50E8]" />
+            <h2 className="inline-block border-b-4 border-[#5B50E8] pb-2 text-3xl font-black">
+              기업 회원가입
+            </h2>
           </div>
 
           <CompanySignupForm />
