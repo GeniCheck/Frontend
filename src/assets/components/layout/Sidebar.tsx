@@ -1,9 +1,43 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useRole } from "../../context/roleContext";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { role } = useRole();
+
+  // 인사팀장(hr)은 인재 추천 게시판만 이용 — ceoOnly 항목은 숨긴다
+  const mainMenu = [
+    {
+      name: "Dashboard",
+      icon: "ti-layout-dashboard",
+      path: "/main",
+      badge: null,
+      ceoOnly: true,
+    },
+    {
+      name: "Verification",
+      icon: "ti-checkbox",
+      path: "/main/verification",
+      badge: "3",
+      ceoOnly: true,
+    },
+    {
+      name: "Referral",
+      icon: "ti-users",
+      path: "/main/referral",
+      badge: null,
+      ceoOnly: false,
+    },
+    {
+      name: "AI Reports",
+      icon: "ti-brain",
+      path: "/main/ai-reports",
+      badge: null,
+      ceoOnly: true,
+    },
+  ].filter((item) => role !== "hr" || !item.ceoOnly);
 
   return (
     <aside className="fixed top-0 left-0 z-50 hidden h-screen w-[260px] flex-col justify-between border-r border-gray-200 bg-white p-6 shadow-sm md:flex">
@@ -28,32 +62,7 @@ const Sidebar: React.FC = () => {
               MAIN MENU
             </div>
             <nav className="space-y-1">
-              {[
-                {
-                  name: "Dashboard",
-                  icon: "ti-layout-dashboard",
-                  path: "/main",
-                  badge: null,
-                },
-                {
-                  name: "Verification",
-                  icon: "ti-checkbox",
-                  path: "/main/verification",
-                  badge: "3",
-                },
-                {
-                  name: "Referral",
-                  icon: "ti-users",
-                  path: "/main/referral",
-                  badge: null,
-                },
-                {
-                  name: "AI Reports",
-                  icon: "ti-brain",
-                  path: "/main/ai-reports",
-                  badge: null,
-                },
-              ].map((item) => {
+              {mainMenu.map((item) => {
                 // 실시간 브라우저 중첩 주소 포맷과 일치하는 탭 라이트 활성화
                 const isActive = location.pathname === item.path;
                 return (
@@ -132,7 +141,7 @@ const Sidebar: React.FC = () => {
         <div className="min-w-0 flex-1 text-left">
           <div className="truncate text-xs font-black">Elizabeth Stone</div>
           <span className="mt-0.5 inline-block rounded border border-[#FEBC2E]/30 bg-[#FFFBEB] px-1.5 py-0.5 text-[9px] font-black tracking-tighter text-[#F59E0B]">
-            Master Account
+            {role === "hr" ? "HR Manager" : "Master Account"}
           </span>
         </div>
         <i className="ti ti-selector text-sm text-gray-400" />
