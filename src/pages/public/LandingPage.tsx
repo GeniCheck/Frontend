@@ -43,7 +43,7 @@ const LandingPage: React.FC = () => {
     <div className="font-sans text-text1 bg-white overflow-x-hidden selection:bg-brand/20">
       {/* ─── 1. NAVIGATION ─── */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-[200] px-8 md:px-16 h-17 flex items-center transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-200 px-8 md:px-16 h-17 flex items-center transition-all duration-500 ${
           isScrolled
             ? "bg-white/90 backdrop-blur-xl border-b border-gray-200 shadow-sm"
             : "bg-transparent border-transparent"
@@ -53,7 +53,7 @@ const LandingPage: React.FC = () => {
           className="flex items-center gap-2.5 group cursor-pointer"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <div className="w-9 h-9 bg-gradient-to-br from-brand to-brand2 rounded-xl flex items-center justify-center shadow-lg shadow-brand/30 group-hover:rotate-[-8deg] group-hover:scale-110 transition-transform">
+          <div className="w-9 h-9 bg-linear-to-br from-brand to-brand2 rounded-xl flex items-center justify-center shadow-lg shadow-brand/30 group-hover:rotate-[-8deg] group-hover:scale-110 transition-transform">
             <i className="ti ti-shield-check text-white text-xl"></i>
           </div>
           <span className="font-black text-[22px] text-text1">
@@ -68,7 +68,7 @@ const LandingPage: React.FC = () => {
               className="text-sm font-bold text-text2 hover:text-brand relative pb-1 group transition-colors"
             >
               {item}
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-brand group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand group-hover:w-full transition-all duration-300"></span>
             </a>
           ))}
         </div>
@@ -81,7 +81,7 @@ const LandingPage: React.FC = () => {
           </button>
           <button
             onClick={() => navigate("/signup")}
-            className="px-5 py-2.5 rounded-lg text-sm font-bold bg-brand text-white shadow-lg hover:translate-y-[-2px] transition-all"
+            className="px-5 py-2.5 rounded-lg text-sm font-bold bg-brand text-white shadow-lg hover:-translate-y-0.5 transition-all"
           >
             무료로 시작하기
           </button>
@@ -96,7 +96,7 @@ const LandingPage: React.FC = () => {
           <span className="block text-brand">데이터로 증명한다</span>
         </h1>
 
-        <p className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-400 max-w-[580px] text-text2 text-lg leading-relaxed mb-12">
+        <p className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-400 max-w-145 text-text2 text-lg leading-relaxed mb-12">
           입사부터 퇴사까지. 직원 스스로 선언하고, 대표가 검증하고, AI가
           분석합니다.
           <br />
@@ -120,7 +120,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         {/* DASHBOARD MOCKUP */}
-        <div className="reveal opacity-0 translate-y-16 transition-all duration-1000 delay-600 w-full max-w-[900px] relative">
+        <div className="reveal opacity-0 translate-y-16 transition-all duration-1000 delay-600 w-full max-w-225 relative">
           <div className="bg-white/80 backdrop-blur-md border border-brand/10 rounded-2xl shadow-2xl overflow-hidden">
             <div className="h-10 bg-surface border-b border-gray-100 flex items-center px-5 gap-1.5">
               <div className="flex gap-1.5">
@@ -128,7 +128,7 @@ const LandingPage: React.FC = () => {
                 <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]"></div>
                 <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]"></div>
               </div>
-              <div className="flex-1 max-w-[400px] h-6 bg-white border border-gray-200 rounded-md mx-auto flex items-center justify-center text-2xs text-text3 tabular-nums">
+              <div className="flex-1 max-w-100 h-6 bg-white border border-gray-200 rounded-md mx-auto flex items-center justify-center text-2xs text-text3 tabular-nums">
                 app.genicheck.io/dashboard
               </div>
             </div>
@@ -255,7 +255,7 @@ const LandingPage: React.FC = () => {
             ].map((step, idx) => (
               <div
                 key={idx}
-                className="reveal opacity-0 translate-y-8 transition-all duration-700 group bg-white border border-gray-200 rounded-3xl p-10 relative overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all"
+                className="reveal opacity-0 translate-y-8 transition-all duration-700 group bg-white border border-gray-200 rounded-3xl p-10 relative overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2"
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
                 <div className="absolute right-6 top-0 font-black text-[100px] text-gray-100 leading-none select-none opacity-20">
@@ -298,7 +298,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 col-span-1 md:col-span-2 bg-white border border-gray-200 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row gap-10 items-center justify-between overflow-hidden">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 col-span-1 md:col-span-2 bg-white border border-gray-200 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-md flex flex-col md:flex-row gap-10 items-center justify-between overflow-hidden">
               <div className="flex-1 text-left">
                 <div className="w-12 h-12 bg-brand-light text-brand rounded-xl flex items-center justify-center text-xl mb-6">
                   <i className="ti ti-chart-arrows-vertical"></i>
@@ -368,7 +368,7 @@ const LandingPage: React.FC = () => {
                       </div>
                       <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className={`h-full rounded-full bg-gradient-to-r ${row.color} transition-all duration-[1200ms] ease-out`}
+                          className={`h-full rounded-full bg-linear-to-r ${row.color} transition-all duration-1200 ease-out`}
                           style={{ width: animateChart ? row.targetW : "0%" }}
                         />
                       </div>
@@ -391,7 +391,7 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md">
               <div className="w-11 h-11 rounded-xl bg-brand-light text-brand flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-clock-hour-4"></i>
               </div>
@@ -406,7 +406,7 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md">
               <div className="w-11 h-11 rounded-xl bg-accent2-light text-accent2 flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-users-group"></i>
               </div>
@@ -421,7 +421,7 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md">
               <div className="w-11 h-11 rounded-xl bg-accent-light text-accent flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-coin"></i>
               </div>
@@ -436,7 +436,7 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md transition-shadow">
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md">
               <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-shield-lock"></i>
               </div>
@@ -481,7 +481,7 @@ const LandingPage: React.FC = () => {
             {/* 1. Starter 플랜 카드 */}
             <div
               onClick={() => setSelectedPlan("starter")}
-              className={`reveal opacity-0 translate-y-8 transition-all duration-700 rounded-3xl p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 relative ${
+              className={`reveal opacity-0 translate-y-8 rounded-3xl p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 relative ${
                 selectedPlan === "starter"
                   ? "border-brand ring-4 ring-brand/30 shadow-xl scale-[1.04] z-20 opacity-100"
                   : "border-gray-200 shadow-sm hover:border-gray-300 opacity-60 scale-100"
@@ -501,7 +501,7 @@ const LandingPage: React.FC = () => {
                   / 월 · 최대 10명
                 </div>
               </div>
-              <div className="w-full h-[1px] bg-gray-100 my-4" />
+              <div className="w-full h-px bg-gray-100 my-4" />
               <ul className="space-y-4 text-left flex-1 mb-8">
                 {[
                   { text: "직원 10명까지", check: true },
@@ -540,7 +540,7 @@ const LandingPage: React.FC = () => {
             {/* 2. Business 플랜 카드 */}
             <div
               onClick={() => setSelectedPlan("business")}
-              className={`reveal opacity-0 translate-y-8 transition-all duration-700 relative rounded-3xl p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 ${
+              className={`reveal opacity-0 translate-y-8 relative rounded-3xl p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 ${
                 selectedPlan === "business"
                   ? "border-brand ring-4 ring-brand/30 shadow-xl scale-[1.04] z-20 opacity-100"
                   : "border-gray-200 shadow-sm hover:border-gray-300 opacity-60 scale-100"
@@ -564,7 +564,7 @@ const LandingPage: React.FC = () => {
                   / 월 · 최대 50명
                 </div>
               </div>
-              <div className="w-full h-[1px] bg-gray-100 my-4" />
+              <div className="w-full h-px bg-gray-100 my-4" />
               <ul className="space-y-4 text-left flex-1 mb-8">
                 {[
                   { text: "직원 50명까지" },
@@ -601,7 +601,7 @@ const LandingPage: React.FC = () => {
             {/* 3. Enterprise 플랜 카드 */}
             <div
               onClick={() => setSelectedPlan("enterprise")}
-              className={`reveal opacity-0 translate-y-8 transition-all duration-700 rounded-3xl p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 relative ${
+              className={`reveal opacity-0 translate-y-8 rounded-3xl p-8 flex flex-col cursor-pointer bg-white border transition-all duration-300 relative ${
                 selectedPlan === "enterprise"
                   ? "border-brand ring-4 ring-brand/30 shadow-xl scale-[1.04] z-20 opacity-100"
                   : "border-gray-200 shadow-sm hover:border-gray-300 opacity-60 scale-100"
@@ -621,7 +621,7 @@ const LandingPage: React.FC = () => {
                   / 맞춤 계약 · 무제한
                 </div>
               </div>
-              <div className="w-full h-[1px] bg-gray-100 my-4" />
+              <div className="w-full h-px bg-gray-100 my-4" />
               <ul className="space-y-4 text-left flex-1 mb-8">
                 {[
                   "직원 무제한",

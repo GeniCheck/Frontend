@@ -85,7 +85,7 @@ const AIReportsPage: React.FC = () => {
       </header>
 
       {/* 가이드 영역 및 메인 콘텐츠 패널 */}
-      <div className="mx-auto w-full max-w-[1250px] flex-1 space-y-6 p-6">
+      <div className="mx-auto w-full max-w-312.5 flex-1 space-y-6 p-6">
         <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
           <p className="text-xs text-gray-500">
             자기 선언과 대표 검증 점수를 대조 분석하여 객관적인 HR 신용점수를
@@ -128,7 +128,7 @@ const AIReportsPage: React.FC = () => {
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
           {/* COLUMN 1 */}
           <div className="space-y-6">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-indigo-900 to-indigo-700 p-6 text-left text-white shadow-xl">
+            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-indigo-950 via-indigo-900 to-indigo-700 p-6 text-left text-white shadow-xl">
               <div className="text-2xs font-black tracking-wider text-white/50 uppercase">
                 HR 신용점수
               </div>
@@ -220,7 +220,7 @@ const AIReportsPage: React.FC = () => {
               <h3 className="text-text1 text-xs font-black">
                 기업별 누적 이력
               </h3>
-              <div className="relative space-y-3 before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-[1px] before:bg-gray-100">
+              <div className="relative space-y-3 before:absolute before:top-2 before:bottom-2 before:left-2.75 before:w-px before:bg-gray-100">
                 <div className="relative z-10 flex items-start gap-3">
                   <span className="bg-brand text-3xs flex h-5 w-5 shrink-0 items-center justify-center rounded-md font-bold text-white">
                     현
@@ -347,7 +347,7 @@ const AIReportsPage: React.FC = () => {
                 기업별 성장 추이
               </h3>
               <div className="relative flex h-28 items-end justify-between border-b border-gray-100 px-10 pb-4">
-                <div className="absolute inset-x-10 bottom-8 h-[2px] border-b border-dashed bg-indigo-50" />
+                <div className="absolute inset-x-10 bottom-8 h-0.5 border-b border-dashed bg-indigo-50" />
                 <div className="z-10 flex flex-col items-center gap-2">
                   <span className="text-2xs font-black text-gray-400 tabular-nums">
                     60

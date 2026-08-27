@@ -38,9 +38,9 @@ const DashboardPage: React.FC = () => {
       </header>
 
       {/* 메인 데이터 패널 콘텐트 */}
-      <div className="mx-auto w-full max-w-[1250px] flex-1 space-y-6 p-6">
+      <div className="mx-auto w-full max-w-312.5 flex-1 space-y-6 p-6">
         {/* TOP BANNER */}
-        <div className="relative flex items-center justify-between overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-indigo-700 p-6 text-left text-white shadow-xl">
+        <div className="relative flex items-center justify-between overflow-hidden rounded-3xl bg-linear-to-r from-indigo-950 via-indigo-900 to-indigo-700 p-6 text-left text-white shadow-xl">
           <div className="z-10 space-y-1">
             <h2 className="text-xl font-black tracking-tight">
               좋은 아침이에요, Elizabeth 👋
@@ -154,7 +154,7 @@ const DashboardPage: React.FC = () => {
                   <span className="bg-brand2/20 h-2.5 w-2.5 rounded-sm" />
                   자기 평가
                 </div>
-                <div className="text-brand/100 flex items-center gap-1.5">
+                <div className="text-brand flex items-center gap-1.5">
                   <span className="bg-brand h-2.5 w-2.5 rounded-sm" />
                   검증 완료
                 </div>
@@ -292,7 +292,7 @@ const DashboardPage: React.FC = () => {
             <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
               <h3 className="text-text1 mb-4 text-xs font-black">직원 현황</h3>
               <div className="flex items-center gap-6">
-                <div className="border-t-accent2 border-r-accent border-l-brand flex h-20 w-20 shrink-0 rotate-45 items-center justify-center rounded-full border-[10px] border-b-gray-100" />
+                <div className="border-t-accent2 border-r-accent border-l-brand flex h-20 w-20 shrink-0 rotate-45 items-center justify-center rounded-full border-10 border-b-gray-100" />
                 <div className="text-2xs flex-1 space-y-2 font-bold text-gray-400">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -348,7 +348,7 @@ const DashboardPage: React.FC = () => {
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
                   <div
-                    className="from-brand to-brand2 h-full rounded-full bg-gradient-to-r"
+                    className="from-brand to-brand2 h-full rounded-full bg-linear-to-r"
                     style={{ width: "74%" }}
                   />
                 </div>

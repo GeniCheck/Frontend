@@ -85,7 +85,7 @@ const CreditsPage: React.FC = () => {
       </header>
 
       {/* 대시보드 메인 콘텐트 바디 */}
-      <div className="mx-auto w-full max-w-[1250px] flex-1 space-y-6 p-6">
+      <div className="mx-auto w-full max-w-312.5 flex-1 space-y-6 p-6">
         {/* 상단 4열 핵심 서머리 스태츠 행 카드 위젯 */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
