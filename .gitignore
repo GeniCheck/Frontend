@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Claude Code (개인 설정 / 런타임 로그 / 프리뷰 툴 설정은 커밋하지 않음)
+.claude/settings.local.json
+.claude/logs/
+.claude/launch.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
