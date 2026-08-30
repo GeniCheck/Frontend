@@ -4,23 +4,108 @@ type QuestionType = "점수형" | "선택형" | "서술형";
 
 interface TemplateQuestion {
   id: string;
-  title: string;
+  name: string; // 라이브러리 목록에 표시되는 짧은 이름
+  content: string; // 질문지에 실제로 표시되는 질문 문구
   type: QuestionType;
   options?: string[];
 }
 
-// 좌측 "추천 질문" 탭에 노출되는 임시 목업 데이터
+// 좌측 "추천 질문" 탭에 노출되는 임시 목업 데이터. 유형(점수형 → 선택형 → 서술형)별로 묶어 정렬한다.
 const RECOMMENDED_QUESTIONS: TemplateQuestion[] = [
-  { id: "rec-1", title: "대표 성과 기술", type: "서술형" },
-  { id: "rec-2", title: "성장 영역 기술", type: "서술형" },
-  { id: "rec-3", title: "협업 기여도", type: "점수형" },
-  { id: "rec-4", title: "조직 문화 기여도", type: "점수형" },
-  { id: "rec-5", title: "납기 준수 능력", type: "점수형" },
+  // 점수형
+  {
+    id: "rec-1",
+    name: "신뢰",
+    content:
+      "동료와 상사로부터 신뢰받았다고 생각하는 정도를 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  {
+    id: "rec-2",
+    name: "성실성",
+    content: "업무에 임하는 성실성과 책임감을 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  {
+    id: "rec-3",
+    name: "업무 수행",
+    content: "담당 업무의 목표 달성도와 완성도를 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  {
+    id: "rec-4",
+    name: "협업·소통",
+    content: "동료와의 협업 및 의사소통 능력을 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  {
+    id: "rec-5",
+    name: "직무 전문성",
+    content: "담당 직무에 대한 전문성 수준을 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
   {
     id: "rec-6",
-    title: "이직 사유",
+    name: "협업 기여도",
+    content: "팀 내 협업 기여도를 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  {
+    id: "rec-7",
+    name: "조직 문화 기여도",
+    content: "조직 문화에 대한 기여도를 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  {
+    id: "rec-8",
+    name: "납기 준수 능력",
+    content: "업무 납기 준수 능력을 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  {
+    id: "rec-9",
+    name: "의사결정 능력",
+    content: "의사결정 능력을 1~10점으로 평가해 주세요.",
+    type: "점수형",
+  },
+  // 선택형
+  {
+    id: "rec-10",
+    name: "이직 사유",
+    content: "이직을 결심하게 된 주된 사유를 선택해 주세요.",
     type: "선택형",
     options: ["개인 사정", "이직/전직", "계약 만료", "기타"],
+  },
+  {
+    id: "rec-11",
+    name: "강점 유형 선택",
+    content: "본인의 주요 강점 유형을 선택해 주세요.",
+    type: "선택형",
+    options: [
+      "실행력 / 추진력",
+      "분석력 / 논리력",
+      "창의력 / 기획력",
+      "소통력 / 협업력",
+    ],
+  },
+  // 서술형
+  {
+    id: "rec-12",
+    name: "대표 성과 기술",
+    content: "재직 중 가장 대표적인 성과를 구체적으로 기술해 주세요.",
+    type: "서술형",
+  },
+  {
+    id: "rec-13",
+    name: "성장 영역 기술",
+    content: "재직 중 아쉬웠던 점이나 더 성장이 필요했던 영역을 기술해 주세요.",
+    type: "서술형",
+  },
+  {
+    id: "rec-14",
+    name: "종합 기여",
+    content: "재직 기간 동안 조직에 기여한 바를 종합적으로 서술해 주세요.",
+    type: "서술형",
   },
 ];
 
@@ -28,22 +113,26 @@ const RECOMMENDED_QUESTIONS: TemplateQuestion[] = [
 const INITIAL_QUESTIONS: TemplateQuestion[] = [
   {
     id: "q-1",
-    title: "팀 내 협업 기여도를 1~10점으로 평가해 주세요.",
+    name: "협업 기여도",
+    content: "팀 내 협업 기여도를 1~10점으로 평가해 주세요.",
     type: "점수형",
   },
   {
     id: "q-2",
-    title: "데이터 기반 의사결정 능력을 1~10점으로 평가해 주세요.",
+    name: "의사결정 능력",
+    content: "의사결정 능력을 1~10점으로 평가해 주세요.",
     type: "점수형",
   },
   {
     id: "q-3",
-    title: "재직 중 가장 대표적인 성과를 구체적으로 기술해 주세요.",
+    name: "대표 성과 기술",
+    content: "재직 중 가장 대표적인 성과를 구체적으로 기술해 주세요.",
     type: "서술형",
   },
   {
     id: "q-4",
-    title: "본인의 주요 강점 유형을 선택해 주세요.",
+    name: "강점 유형 선택",
+    content: "본인의 주요 강점 유형을 선택해 주세요.",
     type: "선택형",
     options: [
       "실행력 / 추진력",
@@ -101,6 +190,10 @@ const QuestionTemplatePage: React.FC = () => {
   // 드래그 핸들(그립 아이콘)에서 마우스를 누른 경우에만 행 드래그를 허용
   const dragHandleArmed = useRef(false);
 
+  // 라이브러리 질문을 질문지 쪽으로 드래그 중일 때 담아두는 값
+  const [draggedLibraryQuestion, setDraggedLibraryQuestion] =
+    useState<TemplateQuestion | null>(null);
+
   const handleOptionChange = (index: number, value: string) => {
     setDraftOptions((prev) =>
       prev.map((opt, i) => (i === index ? value : opt)),
@@ -128,7 +221,8 @@ const QuestionTemplatePage: React.FC = () => {
 
   const buildDraftQuestion = (): TemplateQuestion => ({
     id: `draft-${Date.now()}`,
-    title: draftContent || draftName || "이름 없는 질문",
+    name: draftName || draftContent || "이름 없는 질문",
+    content: draftContent || draftName || "내용 없음",
     type: draftType,
     options:
       draftType === "선택형"
@@ -231,15 +325,18 @@ const QuestionTemplatePage: React.FC = () => {
                   <button
                     key={q.id}
                     type="button"
+                    draggable
+                    onDragStart={() => setDraggedLibraryQuestion(q)}
+                    onDragEnd={() => setDraggedLibraryQuestion(null)}
                     onClick={() => handleAddQuestion(q)}
-                    className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
+                    className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
                   >
                     <div className="flex items-center gap-3">
                       <span
                         className={`h-8 w-8 shrink-0 rounded-lg ${TYPE_STYLES[q.type].tint}`}
                       />
                       <span className="text-text1 text-xs font-bold">
-                        {q.title}
+                        {q.name}
                       </span>
                     </div>
                     <span
@@ -265,15 +362,18 @@ const QuestionTemplatePage: React.FC = () => {
                     <button
                       key={q.id}
                       type="button"
+                      draggable
+                      onDragStart={() => setDraggedLibraryQuestion(q)}
+                      onDragEnd={() => setDraggedLibraryQuestion(null)}
                       onClick={() => handleAddQuestion(q)}
-                      className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
+                      className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
                     >
                       <div className="flex items-center gap-3">
                         <span
                           className={`h-8 w-8 shrink-0 rounded-lg ${TYPE_STYLES[q.type].tint}`}
                         />
                         <span className="text-text1 text-xs font-bold">
-                          {q.title}
+                          {q.name}
                         </span>
                       </div>
                       <span
@@ -445,7 +545,15 @@ const QuestionTemplatePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => {
+                if (!draggedLibraryQuestion) return;
+                handleAddQuestion(draggedLibraryQuestion);
+                setDraggedLibraryQuestion(null);
+              }}
+              className="space-y-4"
+            >
               {questions.map((q, i) => (
                 <div
                   key={q.id}
@@ -459,7 +567,7 @@ const QuestionTemplatePage: React.FC = () => {
                         {i + 1}
                       </span>
                       <span className="text-text1 text-xs font-bold">
-                        {q.title}
+                        {q.content}
                       </span>
                       <span
                         className={`text-2xs shrink-0 rounded px-2 py-0.5 font-bold ${TYPE_STYLES[q.type].badge}`}
@@ -511,8 +619,14 @@ const QuestionTemplatePage: React.FC = () => {
                 </div>
               ))}
 
-              {/* 드래그 앤 드롭 안내 영역 (시각적 목업, 실제 드래그 연동 없음) */}
-              <div className="text-2xs rounded-2xl border-2 border-dashed border-gray-200 p-8 text-center leading-relaxed text-gray-400">
+              {/* 드래그 앤 드롭 안내 영역: 라이브러리 질문을 여기로 드래그하면 질문지에 추가됨 */}
+              <div
+                className={`text-2xs rounded-2xl border-2 border-dashed p-8 text-center leading-relaxed transition-all ${
+                  draggedLibraryQuestion
+                    ? "border-brand bg-brand-light text-brand"
+                    : "border-gray-200 text-gray-400"
+                }`}
+              >
                 여기로 질문을 드래그하거나
                 <br />
                 왼쪽 라이브러리에서 클릭하여 추가
