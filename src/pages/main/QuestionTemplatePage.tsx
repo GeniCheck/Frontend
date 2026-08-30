@@ -294,13 +294,13 @@ const QuestionTemplatePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-          {/* 좌측: 질문 라이브러리 */}
-          <div className="rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
-            <h3 className="text-text1 mb-4 text-sm font-black">
+          {/* 좌측: 질문 라이브러리 (뷰포트 높이만큼만 차지, 넘치는 목록은 내부 스크롤) */}
+          <div className="sticky top-17 flex max-h-[calc(100vh-7.25rem)] flex-col rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
+            <h3 className="text-text1 mb-4 shrink-0 text-sm font-black">
               질문 라이브러리
             </h3>
 
-            <div className="text-2xs mb-5 flex gap-1 rounded-lg border border-gray-100 bg-gray-50 p-1 font-bold">
+            <div className="text-2xs mb-5 flex shrink-0 gap-1 rounded-lg border border-gray-100 bg-gray-50 p-1 font-bold">
               {(["추천 질문", "저장된 질문", "직접 작성"] as const).map(
                 (tab) => (
                   <button
@@ -319,46 +319,10 @@ const QuestionTemplatePage: React.FC = () => {
               )}
             </div>
 
-            {activeTab === "추천 질문" && (
-              <div className="space-y-2.5">
-                {RECOMMENDED_QUESTIONS.map((q) => (
-                  <button
-                    key={q.id}
-                    type="button"
-                    draggable
-                    onDragStart={() => setDraggedLibraryQuestion(q)}
-                    onDragEnd={() => setDraggedLibraryQuestion(null)}
-                    onClick={() => handleAddQuestion(q)}
-                    className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`h-8 w-8 shrink-0 rounded-lg ${TYPE_STYLES[q.type].tint}`}
-                      />
-                      <span className="text-text1 text-xs font-bold">
-                        {q.name}
-                      </span>
-                    </div>
-                    <span
-                      className={`text-2xs shrink-0 rounded px-2 py-0.5 font-bold ${TYPE_STYLES[q.type].badge}`}
-                    >
-                      {q.type}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {activeTab === "저장된 질문" && (
-              <div className="space-y-2.5">
-                {savedQuestions.length === 0 ? (
-                  <p className="text-2xs rounded-xl border border-dashed border-gray-200 p-6 text-center leading-relaxed text-gray-400">
-                    아직 저장된 질문이 없습니다.
-                    <br />
-                    &quot;직접 작성&quot; 탭에서 질문을 저장해 보세요.
-                  </p>
-                ) : (
-                  savedQuestions.map((q) => (
+            <div className="-mr-2 flex-1 overflow-y-auto pr-2">
+              {activeTab === "추천 질문" && (
+                <div className="space-y-2.5">
+                  {RECOMMENDED_QUESTIONS.map((q) => (
                     <button
                       key={q.id}
                       type="button"
@@ -382,147 +346,185 @@ const QuestionTemplatePage: React.FC = () => {
                         {q.type}
                       </span>
                     </button>
-                  ))
-                )}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
 
-            {activeTab === "직접 작성" && (
-              <div className="space-y-4">
-                <div>
-                  <span className="text-2xs mb-2 block font-bold text-gray-400">
-                    질문 형태
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    {QUESTION_TYPES.map((t) => (
+              {activeTab === "저장된 질문" && (
+                <div className="space-y-2.5">
+                  {savedQuestions.length === 0 ? (
+                    <p className="text-2xs rounded-xl border border-dashed border-gray-200 p-6 text-center leading-relaxed text-gray-400">
+                      아직 저장된 질문이 없습니다.
+                      <br />
+                      &quot;직접 작성&quot; 탭에서 질문을 저장해 보세요.
+                    </p>
+                  ) : (
+                    savedQuestions.map((q) => (
                       <button
-                        key={t}
+                        key={q.id}
                         type="button"
-                        onClick={() => setDraftType(t)}
-                        className={`rounded-xl border px-3 py-2 text-xs font-bold transition-all active:scale-95 ${
-                          draftType === t
-                            ? TYPE_STYLES[t].toggle
-                            : "text-text2 border-gray-200 hover:bg-gray-50"
-                        }`}
+                        draggable
+                        onDragStart={() => setDraggedLibraryQuestion(q)}
+                        onDragEnd={() => setDraggedLibraryQuestion(null)}
+                        onClick={() => handleAddQuestion(q)}
+                        className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
                       >
-                        {t}
+                        <div className="flex items-center gap-3">
+                          <span
+                            className={`h-8 w-8 shrink-0 rounded-lg ${TYPE_STYLES[q.type].tint}`}
+                          />
+                          <span className="text-text1 text-xs font-bold">
+                            {q.name}
+                          </span>
+                        </div>
+                        <span
+                          className={`text-2xs shrink-0 rounded px-2 py-0.5 font-bold ${TYPE_STYLES[q.type].badge}`}
+                        >
+                          {q.type}
+                        </span>
                       </button>
-                    ))}
-                  </div>
+                    ))
+                  )}
                 </div>
+              )}
 
-                <div>
-                  <span className="text-2xs mb-2 block font-bold text-gray-400">
-                    질문 이름
-                  </span>
-                  <input
-                    type="text"
-                    value={draftName}
-                    onChange={(e) => setDraftName(e.target.value)}
-                    placeholder="이름을 입력해주세요"
-                    className="text-text1 w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
-                  />
-                  <span className="text-3xs mt-1 block text-gray-400">
-                    * 목록에 표시될 짧은 이름
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-2xs mb-2 block font-bold text-gray-400">
-                    질문 내용
-                  </span>
-                  <textarea
-                    value={draftContent}
-                    onChange={(e) => setDraftContent(e.target.value)}
-                    placeholder="질문 내용을 입력해주세요"
-                    rows={4}
-                    className="text-text1 w-full resize-none rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
-                  />
-                </div>
-
-                {draftType === "선택형" && (
+              {activeTab === "직접 작성" && (
+                <div className="space-y-4">
                   <div>
                     <span className="text-2xs mb-2 block font-bold text-gray-400">
-                      선택지
+                      질문 형태
                     </span>
-                    <div className="space-y-2">
-                      {draftOptions.map((opt, i) => (
-                        <div
-                          key={i}
-                          draggable
-                          onDragStart={(e) => {
-                            if (!dragHandleArmed.current) {
-                              e.preventDefault();
-                              return;
-                            }
-                            setDraggedOptionIndex(i);
-                          }}
-                          onDragEnd={() => {
-                            dragHandleArmed.current = false;
-                            setDraggedOptionIndex(null);
-                          }}
-                          onDragOver={(e) => e.preventDefault()}
-                          onDrop={() => handleDropOption(i)}
-                          className="flex items-center gap-2"
+                    <div className="grid grid-cols-3 gap-2">
+                      {QUESTION_TYPES.map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setDraftType(t)}
+                          className={`rounded-xl border px-3 py-2 text-xs font-bold transition-all active:scale-95 ${
+                            draftType === t
+                              ? TYPE_STYLES[t].toggle
+                              : "text-text2 border-gray-200 hover:bg-gray-50"
+                          }`}
                         >
-                          <span
-                            onMouseDown={() => {
-                              dragHandleArmed.current = true;
-                            }}
-                            className="flex h-4 w-4 shrink-0 cursor-grab items-center justify-center text-gray-300 active:cursor-grabbing"
-                            aria-label="선택지 순서 변경"
-                          >
-                            <i className="ti ti-grip-vertical text-sm" />
-                          </span>
-                          <span className="h-4 w-4 shrink-0 rounded-full border border-gray-300" />
-                          <input
-                            type="text"
-                            value={opt}
-                            onChange={(e) =>
-                              handleOptionChange(i, e.target.value)
-                            }
-                            placeholder={`선택지 ${i + 1}`}
-                            className="text-text1 w-full flex-1 rounded-lg border border-gray-200 px-3 py-2 text-xs placeholder:text-gray-300 focus:outline-none"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveOption(i)}
-                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-all hover:bg-gray-100 active:scale-90"
-                            aria-label="선택지 삭제"
-                          >
-                            <i className="ti ti-x text-xs" />
-                          </button>
-                        </div>
+                          {t}
+                        </button>
                       ))}
                     </div>
+                  </div>
+
+                  <div>
+                    <span className="text-2xs mb-2 block font-bold text-gray-400">
+                      질문 이름
+                    </span>
+                    <input
+                      type="text"
+                      value={draftName}
+                      onChange={(e) => setDraftName(e.target.value)}
+                      placeholder="이름을 입력해주세요"
+                      className="text-text1 w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
+                    />
+                    <span className="text-3xs mt-1 block text-gray-400">
+                      * 목록에 표시될 짧은 이름
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-2xs mb-2 block font-bold text-gray-400">
+                      질문 내용
+                    </span>
+                    <textarea
+                      value={draftContent}
+                      onChange={(e) => setDraftContent(e.target.value)}
+                      placeholder="질문 내용을 입력해주세요"
+                      rows={4}
+                      className="text-text1 w-full resize-none rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
+                    />
+                  </div>
+
+                  {draftType === "선택형" && (
+                    <div>
+                      <span className="text-2xs mb-2 block font-bold text-gray-400">
+                        선택지
+                      </span>
+                      <div className="space-y-2">
+                        {draftOptions.map((opt, i) => (
+                          <div
+                            key={i}
+                            draggable
+                            onDragStart={(e) => {
+                              if (!dragHandleArmed.current) {
+                                e.preventDefault();
+                                return;
+                              }
+                              setDraggedOptionIndex(i);
+                            }}
+                            onDragEnd={() => {
+                              dragHandleArmed.current = false;
+                              setDraggedOptionIndex(null);
+                            }}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={() => handleDropOption(i)}
+                            className="flex items-center gap-2"
+                          >
+                            <span
+                              onMouseDown={() => {
+                                dragHandleArmed.current = true;
+                              }}
+                              className="flex h-4 w-4 shrink-0 cursor-grab items-center justify-center text-gray-300 active:cursor-grabbing"
+                              aria-label="선택지 순서 변경"
+                            >
+                              <i className="ti ti-grip-vertical text-sm" />
+                            </span>
+                            <span className="h-4 w-4 shrink-0 rounded-full border border-gray-300" />
+                            <input
+                              type="text"
+                              value={opt}
+                              onChange={(e) =>
+                                handleOptionChange(i, e.target.value)
+                              }
+                              placeholder={`선택지 ${i + 1}`}
+                              className="text-text1 w-full flex-1 rounded-lg border border-gray-200 px-3 py-2 text-xs placeholder:text-gray-300 focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveOption(i)}
+                              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-all hover:bg-gray-100 active:scale-90"
+                              aria-label="선택지 삭제"
+                            >
+                              <i className="ti ti-x text-xs" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleAddOption}
+                        className="text-text2 mt-2 w-full rounded-xl border border-dashed border-gray-200 py-2 text-xs font-bold transition-all hover:bg-gray-50 active:scale-[0.99]"
+                      >
+                        + 선택지 추가
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end gap-2">
                     <button
                       type="button"
-                      onClick={handleAddOption}
-                      className="text-text2 mt-2 w-full rounded-xl border border-dashed border-gray-200 py-2 text-xs font-bold transition-all hover:bg-gray-50 active:scale-[0.99]"
+                      onClick={handleSaveDraft}
+                      className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95"
                     >
-                      + 선택지 추가
+                      질문 저장
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleAddDraft}
+                      className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95"
+                    >
+                      추가
                     </button>
                   </div>
-                )}
-
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={handleSaveDraft}
-                    className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95"
-                  >
-                    질문 저장
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleAddDraft}
-                    className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95"
-                  >
-                    추가
-                  </button>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* 우측: 폼 기본 정보 */}
