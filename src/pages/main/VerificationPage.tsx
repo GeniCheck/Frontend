@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const VerificationPage: React.FC = () => {
   // 페이지 진입 시 스크롤 최상단 리셋
@@ -134,10 +135,12 @@ const VerificationPage: React.FC = () => {
         {/* 액션 툴바: 보조 버튼(좌) · 주요 버튼(우) */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {/* 질문 템플릿 생성: 현재 코드에 대응 기능·데이터 없음 — *추가필요* */}
-            <button className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95">
+            <Link
+              to="question-template"
+              className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95"
+            >
               질문 템플릿 생성
-            </button>
+            </Link>
             <button className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95">
               평가 링크 발송
             </button>

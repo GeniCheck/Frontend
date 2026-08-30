@@ -21,6 +21,7 @@ import SignupPage from "@/pages/auth/SignupPage"; // 여기서 내부 분기 처
 import MainPage from "@/pages/main/MainPage";
 import DashboardPage from "@/pages/main/DashboardPage";
 import VerificationPage from "@/pages/main/VerificationPage";
+import QuestionTemplatePage from "@/pages/main/QuestionTemplatePage";
 import ReferralPage from "@/pages/main/ReferralPage";
 import AIReportsPage from "@/pages/main/AIReportsPage";
 import SupportPage from "@/pages/main/SupportPage";
@@ -51,6 +52,10 @@ function App() {
             <Route element={<RoleGuard allow={["ceo"]} />}>
               <Route index element={<DashboardPage />} />
               <Route path="verification" element={<VerificationPage />} />
+              <Route
+                path="verification/question-template"
+                element={<QuestionTemplatePage />}
+              />
               <Route path="ai-reports" element={<AIReportsPage />} />
             </Route>
 
