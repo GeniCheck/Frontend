@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AddEmployeeModal, {
   type NewEmployeeInput,
 } from "@/components/common/AddEmployeeModal";
@@ -8,6 +8,8 @@ import EmployeeDetailModal, {
 } from "@/components/common/EmployeeDetailModal";
 
 const VerificationPage: React.FC = () => {
+  const navigate = useNavigate();
+
   // 페이지 진입 시 스크롤 최상단 리셋
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -129,7 +131,9 @@ const VerificationPage: React.FC = () => {
   const handleResignEmployee = (id: string, resignedAt: string) => {
     setEmployeeList((prev) =>
       prev.map((emp) =>
-        emp.id === id ? { ...emp, status: "퇴사", resignedAt } : emp,
+        emp.id === id
+          ? { ...emp, status: "퇴사", resignedAt, action: "검증 입력" }
+          : emp,
       ),
     );
   };
@@ -289,6 +293,14 @@ const VerificationPage: React.FC = () => {
                       <td className="py-3.5 text-right">
                         <button
                           type="button"
+                          onClick={
+                            emp.action === "검증 입력"
+                              ? () =>
+                                  navigate(`evaluation/${emp.id}`, {
+                                    state: { employee: emp },
+                                  })
+                              : undefined
+                          }
                           className={`text-2xs rounded-lg px-3 py-1.5 font-bold shadow-xs transition-all active:scale-95 ${
                             emp.action === "검증 입력"
                               ? "bg-brand/10 text-brand hover:bg-brand/20"

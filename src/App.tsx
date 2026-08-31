@@ -22,6 +22,7 @@ import MainPage from "@/pages/main/MainPage";
 import DashboardPage from "@/pages/main/DashboardPage";
 import VerificationPage from "@/pages/main/VerificationPage";
 import QuestionTemplatePage from "@/pages/main/QuestionTemplatePage";
+import EvaluationPage from "@/pages/main/EvaluationPage";
 import ReferralPage from "@/pages/main/ReferralPage";
 import AIReportsPage from "@/pages/main/AIReportsPage";
 import SupportPage from "@/pages/main/SupportPage";
@@ -55,6 +56,10 @@ function App() {
               <Route
                 path="verification/question-template"
                 element={<QuestionTemplatePage />}
+              />
+              <Route
+                path="verification/evaluation/:employeeId"
+                element={<EvaluationPage />}
               />
               <Route path="ai-reports" element={<AIReportsPage />} />
             </Route>
