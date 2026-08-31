@@ -3,19 +3,9 @@ import { Link } from "react-router-dom";
 import AddEmployeeModal, {
   type NewEmployeeInput,
 } from "@/components/common/AddEmployeeModal";
-
-interface Employee {
-  name: string;
-  dept: string; // "부서 · 직급"
-  status: string;
-  declare: string;
-  hrScore: string;
-  due: string | null;
-  action: string;
-  email?: string;
-  phone?: string;
-  employmentStartDate?: string;
-}
+import EmployeeDetailModal, {
+  type Employee,
+} from "@/components/common/EmployeeDetailModal";
 
 const VerificationPage: React.FC = () => {
   // 페이지 진입 시 스크롤 최상단 리셋
@@ -24,72 +14,99 @@ const VerificationPage: React.FC = () => {
   }, []);
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    null,
+  );
 
   const [employeeList, setEmployeeList] = useState<Employee[]>([
     {
+      id: "emp-1",
       name: "김민준",
-      dept: "개발팀 · 과장",
+      department: "개발팀",
+      position: "과장",
       status: "퇴사",
       declare: "완료",
+      evaluationStatus: "NOT_OPENED",
       hrScore: "—",
       due: "D-3 마감",
       action: "검증 입력",
     },
     {
+      id: "emp-2",
       name: "이서연",
-      dept: "마케팅팀 · 대리",
+      department: "마케팅팀",
+      position: "대리",
       status: "퇴사",
       declare: "완료",
+      evaluationStatus: "NOT_OPENED",
       hrScore: "—",
       due: "D-9 마감",
       action: "검증 입력",
     },
     {
+      id: "emp-3",
       name: "박지호",
-      dept: "영업팀 · 사원",
+      department: "영업팀",
+      position: "사원",
       status: "재직중",
       declare: "완료",
+      evaluationStatus: "NOT_OPENED",
       hrScore: "82",
       due: null,
-      action: "조회",
+      action: "완료",
     },
     {
+      id: "emp-4",
       name: "최유나",
-      dept: "디자인팀 · 대리",
+      department: "디자인팀",
+      position: "대리",
       status: "재직중",
       declare: "미완료",
+      evaluationStatus: "NOT_OPENED",
       hrScore: "—",
       due: null,
       action: "발송",
     },
     {
+      id: "emp-5",
       name: "강태양",
-      dept: "개발팀 · 부장",
+      department: "개발팀",
+      position: "부장",
       status: "퇴사",
       declare: "완료",
+      evaluationStatus: "NOT_OPENED",
       hrScore: "76",
       due: null,
       action: "완료",
     },
     {
+      id: "emp-6",
       name: "윤하은",
-      dept: "HR팀 · 과장",
+      department: "HR팀",
+      position: "과장",
       status: "대기중",
       declare: "미발송",
+      evaluationStatus: "NOT_OPENED",
       hrScore: "—",
       due: null,
       action: "발송",
     },
   ]);
 
+  const selectedEmployee =
+    employeeList.find((emp) => emp.id === selectedEmployeeId) ?? null;
+
   const handleAddEmployee = (input: NewEmployeeInput) => {
     setEmployeeList((prev) => [
       ...prev,
       {
+        id: crypto.randomUUID(),
         name: input.name,
-        dept: `${input.department} · ${input.position}`,
+        department: input.department,
+        position: input.position,
         status: "재직중",
         declare: "미발송",
+        evaluationStatus: "NOT_OPENED",
         hrScore: "—",
         due: null,
         action: "발송",
@@ -98,6 +115,23 @@ const VerificationPage: React.FC = () => {
         employmentStartDate: input.employmentStartDate,
       },
     ]);
+  };
+
+  const handleUpdateEmployee = (
+    id: string,
+    updates: { department: string; position: string; phone: string },
+  ) => {
+    setEmployeeList((prev) =>
+      prev.map((emp) => (emp.id === id ? { ...emp, ...updates } : emp)),
+    );
+  };
+
+  const handleResignEmployee = (id: string, resignedAt: string) => {
+    setEmployeeList((prev) =>
+      prev.map((emp) =>
+        emp.id === id ? { ...emp, status: "퇴사", resignedAt } : emp,
+      ),
+    );
   };
 
   return (
@@ -201,75 +235,82 @@ const VerificationPage: React.FC = () => {
                     <th className="pb-3 font-semibold">자기선언</th>
                     <th className="pb-3 font-semibold">HR 점수</th>
                     <th className="pb-3 text-right font-semibold">액션</th>
+                    <th className="pb-3 text-right font-semibold">상세</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50 text-xs">
-                  {employeeList.map((emp, i) => {
-                    const [dept, position] = emp.dept.split(" · ");
-                    return (
-                      <tr
-                        key={i}
-                        className="transition-colors hover:bg-gray-50/50"
-                      >
-                        <td className="text-text1 py-3.5 font-black">
-                          {emp.name}
-                        </td>
-                        <td className="text-text2 py-3.5">{dept}</td>
-                        <td className="text-text2 py-3.5">{position}</td>
-                        <td className="py-3.5">
-                          <span
-                            className={`text-2xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold ${
-                              emp.status === "퇴사"
-                                ? "bg-red-50 text-red-500"
-                                : emp.status === "재직중"
-                                  ? "bg-emerald-50 text-emerald-500"
-                                  : "bg-amber-50 text-amber-500"
-                            }`}
-                          >
-                            <span className="h-1 w-1 rounded-full bg-current" />
-                            {emp.status}
-                          </span>
-                        </td>
-                        <td className="py-3.5">
-                          <span
-                            className={`font-bold ${emp.declare === "완료" ? "text-emerald-500" : emp.declare === "미완료" ? "text-amber-500" : "text-gray-300"}`}
-                          >
-                            {emp.declare === "완료" && (
-                              <i className="ti ti-check text-2xs mr-0.5" />
-                            )}
-                            {emp.declare === "미완료" && (
-                              <i className="ti ti-hourglass-low text-2xs mr-0.5" />
-                            )}
-                            {emp.declare}
-                          </span>
-                        </td>
-                        <td className="py-3.5">
-                          <div className="text-text1 font-sans font-bold">
-                            {emp.hrScore}
-                            {emp.due && (
-                              <span className="text-3xs mt-0.5 block font-normal text-red-400">
-                                {emp.due}
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="py-3.5 text-right">
-                          <button
-                            type="button"
-                            className={`text-2xs rounded-lg px-3 py-1.5 font-bold shadow-xs transition-all active:scale-95 ${
-                              emp.action === "검증 입력"
-                                ? "bg-brand/10 text-brand hover:bg-brand/20"
-                                : emp.action === "발송"
-                                  ? "text-text2 border border-gray-200 hover:bg-gray-50"
-                                  : "cursor-default bg-gray-100 text-gray-400"
-                            }`}
-                          >
-                            {emp.action}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {employeeList.map((emp) => (
+                    <tr
+                      key={emp.id}
+                      className="transition-colors hover:bg-gray-50/50"
+                    >
+                      <td className="text-text1 py-3.5 font-black">
+                        {emp.name}
+                      </td>
+                      <td className="text-text2 py-3.5">{emp.department}</td>
+                      <td className="text-text2 py-3.5">{emp.position}</td>
+                      <td className="py-3.5">
+                        <span
+                          className={`text-2xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold ${
+                            emp.status === "퇴사"
+                              ? "bg-red-50 text-red-500"
+                              : emp.status === "재직중"
+                                ? "bg-emerald-50 text-emerald-500"
+                                : "bg-amber-50 text-amber-500"
+                          }`}
+                        >
+                          <span className="h-1 w-1 rounded-full bg-current" />
+                          {emp.status}
+                        </span>
+                      </td>
+                      <td className="py-3.5">
+                        <span
+                          className={`font-bold ${emp.declare === "완료" ? "text-emerald-500" : emp.declare === "미완료" ? "text-amber-500" : "text-gray-300"}`}
+                        >
+                          {emp.declare === "완료" && (
+                            <i className="ti ti-check text-2xs mr-0.5" />
+                          )}
+                          {emp.declare === "미완료" && (
+                            <i className="ti ti-hourglass-low text-2xs mr-0.5" />
+                          )}
+                          {emp.declare}
+                        </span>
+                      </td>
+                      <td className="py-3.5">
+                        <div className="text-text1 font-sans font-bold">
+                          {emp.hrScore}
+                          {emp.due && (
+                            <span className="text-3xs mt-0.5 block font-normal text-red-400">
+                              {emp.due}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3.5 text-right">
+                        <button
+                          type="button"
+                          className={`text-2xs rounded-lg px-3 py-1.5 font-bold shadow-xs transition-all active:scale-95 ${
+                            emp.action === "검증 입력"
+                              ? "bg-brand/10 text-brand hover:bg-brand/20"
+                              : emp.action === "발송"
+                                ? "text-text2 border border-gray-200 hover:bg-gray-50"
+                                : "cursor-default bg-gray-100 text-gray-400"
+                          }`}
+                        >
+                          {emp.action}
+                        </button>
+                      </td>
+                      <td className="py-3.5 text-right">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedEmployeeId(emp.id)}
+                          className="text-text2 text-2xs rounded-lg border border-gray-200 px-3 py-1.5 font-bold shadow-xs transition-all hover:bg-gray-50 active:scale-95"
+                        >
+                          조회
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -280,6 +321,13 @@ const VerificationPage: React.FC = () => {
         open={isAddModalOpen}
         onClose={() => setAddModalOpen(false)}
         onAdd={handleAddEmployee}
+      />
+      <EmployeeDetailModal
+        open={selectedEmployee !== null}
+        employee={selectedEmployee}
+        onClose={() => setSelectedEmployeeId(null)}
+        onSave={handleUpdateEmployee}
+        onResign={handleResignEmployee}
       />
     </>
   );
