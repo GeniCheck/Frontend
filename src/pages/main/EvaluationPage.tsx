@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import type { Employee } from "@/components/common/EmployeeDetailModal";
-
-type ScoreValue = number | "NA";
+import ScoreSelector, {
+  type ScoreValue,
+} from "@/components/common/ScoreSelector";
 
 interface EvaluationItem {
   id: string;
@@ -55,41 +56,6 @@ const ALL_ITEM_IDS = [
   ...DECLARATION_ITEMS.map((item) => item.id),
   ...CATEGORY_ITEMS.map((item) => item.id),
 ];
-
-interface ScoreSelectorProps {
-  value: ScoreValue | undefined;
-  onChange: (value: ScoreValue) => void;
-}
-
-const ScoreSelector: React.FC<ScoreSelectorProps> = ({ value, onChange }) => (
-  <div className="flex flex-wrap items-center gap-2">
-    {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-      <button
-        key={n}
-        type="button"
-        onClick={() => onChange(n)}
-        className={`text-2xs flex h-8 w-8 items-center justify-center rounded-full border font-bold transition-all active:scale-90 ${
-          value === n
-            ? "bg-brand border-brand text-white"
-            : "text-text2 border-gray-200 hover:bg-gray-50"
-        }`}
-      >
-        {n}
-      </button>
-    ))}
-    <button
-      type="button"
-      onClick={() => onChange("NA")}
-      className={`text-2xs rounded-full border px-3 py-1.5 font-bold transition-all active:scale-95 ${
-        value === "NA"
-          ? "border-gray-400 bg-gray-400 text-white"
-          : "text-text2 border-gray-200 hover:bg-gray-50"
-      }`}
-    >
-      해당 없음
-    </button>
-  </div>
-);
 
 const EvaluationPage: React.FC = () => {
   const { employeeId } = useParams();
