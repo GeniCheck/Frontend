@@ -17,7 +17,10 @@ import CeoLoginPage from "@/pages/auth/CeoLoginPage";
 import HrLoginPage from "@/pages/auth/HrLoginPage";
 import SignupPage from "@/pages/auth/SignupPage"; // 여기서 내부 분기 처리
 
-// ─── 3. MAIN 대시보드 도메인 영역 ───
+// ─── 3. VERIFICATION 도메인 영역 (링크 토큰 기반, 로그인 불필요) ───
+import SelfDeclarePage from "@/pages/verification/SelfDeclarePage";
+
+// ─── 4. MAIN 대시보드 도메인 영역 ───
 import MainPage from "@/pages/main/MainPage";
 import DashboardPage from "@/pages/main/DashboardPage";
 import VerificationPage from "@/pages/main/VerificationPage";
@@ -28,7 +31,7 @@ import AIReportsPage from "@/pages/main/AIReportsPage";
 import SupportPage from "@/pages/main/SupportPage";
 import CreditsPage from "@/pages/main/CreditsPage";
 
-// ─── 4. 에러/폴백 ───
+// ─── 5. 에러/폴백 ───
 import NotFoundPage from "@/pages/error/NotFoundPage";
 
 function App() {
@@ -46,6 +49,12 @@ function App() {
 
           {/* 회원가입 루트 경로 */}
           <Route path="/signup" element={<SignupPage />} />
+
+          {/* 직원용 자기선언 페이지: 1회성 링크 토큰 기반, 로그인 불필요 */}
+          <Route
+            path="/verification/self-declare/:token"
+            element={<SelfDeclarePage />}
+          />
 
           {/* 대시보드 백오피스 내부 중첩 라우트 */}
           <Route path="/main" element={<MainPage />}>
