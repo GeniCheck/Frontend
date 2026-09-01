@@ -6,7 +6,7 @@ interface ConsentCheckboxesProps {
   onChange: (id: ConsentItemId, value: boolean) => void;
 }
 
-// 기능명세서 2.3: 법적 사전 동의 취득.
+// 법적 사전 동의 취득.
 // "동의 기록 보관" 항목은 사용자가 체크하는 UI가 아니라, 아래 두 동의를
 // 제출할 때 IP/User-Agent/타임스탬프를 서버가 자동으로 남기는 백엔드 처리라
 // 화면엔 안내 문구로만 표시.

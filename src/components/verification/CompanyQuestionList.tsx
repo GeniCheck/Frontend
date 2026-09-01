@@ -9,7 +9,7 @@ interface CompanyQuestionListProps {
   onChange: (questionId: string, value: string) => void;
 }
 
-// 기능명세서 2.1: 기업이 만든 질문 리스트에 서술형으로 답변.
+// 기업이 만든 질문 리스트에 서술형으로 답변.
 // 질문 자체는 대표가 QuestionTemplatePage에서 100자 이내로 작성하고,
 // 여기서는 답변만 500자 이내로 받는다. 모든 질문은 필수(*).
 const CompanyQuestionList: React.FC<CompanyQuestionListProps> = ({

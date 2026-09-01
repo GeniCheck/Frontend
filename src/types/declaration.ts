@@ -1,5 +1,5 @@
-// 자기선언(기능명세서 2장) 도메인 공통 타입.
-// 퇴사 시 자기평가 페이지(3장)에서도 같은 "선언 항목" 단위를 그대로 재사용한다.
+// 자기선언 도메인 공통 타입.
+// 퇴사 시 자기평가 페이지에서도 같은 "선언 항목" 단위를 그대로 재사용한다.
 
 export interface DeclarationQuestion {
   id: string;
@@ -21,7 +21,7 @@ export interface DeclarationLinkContext {
   employeeId: string;
 }
 
-// 기능명세서 2.3: 법적 사전 동의 항목. ConsentCheckboxes와 SelfDeclarePage가 공유.
+// 법적 사전 동의 항목. ConsentCheckboxes와 SelfDeclarePage가 공유.
 export const CONSENT_ITEMS = [
   {
     id: "capability-verification",

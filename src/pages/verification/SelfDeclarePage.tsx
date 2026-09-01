@@ -13,9 +13,13 @@ const EMPTY_CONSENTS = CONSENT_ITEMS.reduce(
   {} as Record<ConsentItemId, boolean>,
 );
 
-// 기능명세서 2장(자기 선언). 대표가 QuestionTemplatePage에서 "질문지 발송"으로
-// 보낸 1회성 링크(/verification/self-declare/:token)로 접근하는, 로그인이
-// 필요 없는 직원용 페이지.
+interface SubmitError {
+  answers?: string;
+  resume?: string;
+}
+
+// 대표가 QuestionTemplatePage에서 "질문지 발송"으로 보낸 1회성 링크
+// (/verification/self-declare/:token)로 접근하는, 로그인이 필요 없는 직원용 페이지.
 const SelfDeclarePage: React.FC = () => {
   const { token } = useParams();
   const { status, context } = useTokenValidation(token);
@@ -29,6 +33,7 @@ const SelfDeclarePage: React.FC = () => {
   const [consents, setConsents] =
     useState<Record<ConsentItemId, boolean>>(EMPTY_CONSENTS);
   const [isSubmitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<SubmitError>({});
 
   if (status === "loading") {
     return (
@@ -55,25 +60,53 @@ const SelfDeclarePage: React.FC = () => {
     questions.every((q) => (answers[q.id] ?? "").trim().length > 0);
   const allConsentsChecked = Object.values(consents).every(Boolean);
   const isFormValid = allQuestionsAnswered && allConsentsChecked;
+  const hasResume = Boolean(resumeFile || resumeLink);
+
+  // TODO: 실제 연동 시 POST /declarations/answers 호출로 교체.
+  // 지금 answers는 { questionId: answerText } 객체라, 배열 payload가
+  // 필요하면 Object.entries(answers).map(([questionId, answerText]) => ({...}))
+  // 형태로 변환해서 보내야 함.
+  const submitAnswers = async () => {
+    console.log("submit declaration answers", { context, answers });
+  };
+
+  // TODO: 실제 연동 시 POST /declarations/resume 호출로 교체.
+  // resumeFile은 S3 Presigned URL 발급 후 업로드, resumeLink는 URL 그대로
+  // 등록 — 두 값 다 있으면 둘 다 보낸다 (파일/링크 동시 제출 허용).
+  const submitResume = async () => {
+    console.log("submit resume", { resumeFile, resumeLink });
+  };
 
   const handleSubmit = async () => {
     if (!isFormValid || !context) return;
 
     setSubmitting(true);
+    setSubmitError({});
+
     try {
-      // TODO: 백엔드 연동 지점
-      // 1) POST /declarations/answers { token, answers }
-      // 2) POST /declarations/resume  S3 Presigned URL 발급 → 업로드 or 링크 등록
-      console.log("submit self-declaration", {
-        context,
-        answers,
-        resumeFile,
-        resumeLink,
-        consents,
-      });
-    } finally {
+      await submitAnswers();
+    } catch {
+      setSubmitError((prev) => ({
+        ...prev,
+        answers: "답변 제출에 실패했어요. 다시 시도해주세요.",
+      }));
       setSubmitting(false);
+      return; // 답변 제출이 실패하면 이력서 업로드는 시도하지 않음
     }
+
+    if (hasResume) {
+      try {
+        await submitResume();
+      } catch {
+        setSubmitError((prev) => ({
+          ...prev,
+          resume:
+            "이력서 업로드에 실패했어요. 답변은 정상 제출됐고, 이력서만 다시 첨부해주세요.",
+        }));
+      }
+    }
+
+    setSubmitting(false);
   };
 
   return (
@@ -109,6 +142,21 @@ const SelfDeclarePage: React.FC = () => {
         />
 
         <ConsentCheckboxes checked={consents} onChange={handleConsentChange} />
+
+        {(submitError.answers || submitError.resume) && (
+          <div className="space-y-1 rounded-xl border border-red-100 bg-red-50 p-3">
+            {submitError.answers && (
+              <p className="text-2xs font-bold text-red-500">
+                {submitError.answers}
+              </p>
+            )}
+            {submitError.resume && (
+              <p className="text-2xs font-bold text-red-500">
+                {submitError.resume}
+              </p>
+            )}
+          </div>
+        )}
 
         <button
           type="button"
