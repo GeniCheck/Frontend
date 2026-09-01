@@ -24,7 +24,7 @@ const CompanyQuestionList: React.FC<CompanyQuestionListProps> = ({
       <div>
         <h2 className="text-text1 text-lg font-black">기업 질문</h2>
         <p className="mt-1 text-xs text-gray-400">
-          각 질문에 500자 이내로 답변해주세요. 모든 질문은 필수예요.
+          각 질문에 500자 이내로 답변해주세요.
         </p>
       </div>
 
