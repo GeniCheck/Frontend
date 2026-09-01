@@ -13,6 +13,13 @@ export interface DeclarationAnswerInput {
   answerText: string;
 }
 
+// 퇴사 시 자기평가 페이지에서 읽기 전용으로 보여줄, 질문 + 입사 시 본인
+// 답변 묶음 한 건.
+export interface DeclarationRecord {
+  question: DeclarationQuestion;
+  answerText: string;
+}
+
 // { questionId: answerText } 형태(폼 상태)를 POST /declarations/answers가
 // 받을 배열 payload로 변환한다.
 export function toDeclarationAnswers(
