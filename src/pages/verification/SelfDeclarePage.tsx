@@ -78,7 +78,7 @@ const SelfDeclarePage: React.FC = () => {
 
   return (
     <div className="bg-surface min-h-screen px-6 py-10">
-      <div className="mx-auto max-w-lg space-y-4">
+      <div className="mx-auto max-w-2xl space-y-4">
         <div>
           <h1 className="text-text1 text-2xl font-black">자기선언</h1>
           <p className="text-2xs mt-1.5 text-gray-400">

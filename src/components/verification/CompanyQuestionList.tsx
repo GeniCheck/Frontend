@@ -20,20 +20,20 @@ const CompanyQuestionList: React.FC<CompanyQuestionListProps> = ({
   if (questions.length === 0) return null;
 
   return (
-    <div className="space-y-5 rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
+    <div className="space-y-6 rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
       <div>
-        <h2 className="text-text1 text-base font-black">기업 질문</h2>
-        <p className="text-2xs mt-1 text-gray-400">
+        <h2 className="text-text1 text-lg font-black">기업 질문</h2>
+        <p className="mt-1 text-xs text-gray-400">
           각 질문에 500자 이내로 답변해주세요. 모든 질문은 필수예요.
         </p>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         {questions.map((q, i) => {
           const value = answers[q.id] ?? "";
           return (
             <div key={q.id}>
-              <label className="mb-2 block text-xs font-bold text-gray-500">
+              <label className="mb-2.5 block text-sm font-bold text-gray-500">
                 Q{i + 1}. {q.question}
                 <span className="text-red-400"> *</span>
               </label>
@@ -43,9 +43,9 @@ const CompanyQuestionList: React.FC<CompanyQuestionListProps> = ({
                 onChange={(e) => onChange(q.id, e.target.value)}
                 rows={4}
                 placeholder="답변을 입력해주세요"
-                className="text-text1 w-full resize-none rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
+                className="text-text1 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm placeholder:text-gray-300 focus:outline-none"
               />
-              <span className="text-3xs mt-1 block text-right text-gray-300">
+              <span className="text-2xs mt-1 block text-right text-gray-300">
                 {value.length} / {ANSWER_MAX_LENGTH}
               </span>
             </div>
