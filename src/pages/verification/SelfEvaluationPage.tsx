@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTokenValidation } from "@/hooks/useTokenValidation";
 import { useMyDeclaration } from "@/hooks/useMyDeclaration";
-import { type ScoreValue } from "@/components/common/ScoreSelector";
+import { type ScoreValue, toDeclarationScores } from "@/types/declaration";
 import LinkStatusMessage from "@/components/verification/LinkStatusMessage";
 import DeclarationSelfScoreItem from "@/components/verification/DeclarationSelfScoreItem";
 
@@ -49,10 +49,7 @@ const SelfEvaluationPage: React.FC = () => {
     try {
       const payload = {
         token: context.token,
-        scores: Object.entries(scores).map(([questionId, value]) => ({
-          questionId,
-          value,
-        })),
+        scores: toDeclarationScores(scores),
       };
       console.log("submit self evaluation", payload);
     } catch {

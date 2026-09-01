@@ -1,3 +1,7 @@
+import type { ScoreValue } from "@/components/common/ScoreSelector";
+
+export type { ScoreValue };
+
 // 자기선언 도메인 공통 타입.
 // 퇴사 시 자기평가 페이지에서도 같은 "선언 항목" 단위를 그대로 재사용한다.
 
@@ -28,6 +32,22 @@ export function toDeclarationAnswers(
   return Object.entries(answers).map(([questionId, answerText]) => ({
     questionId,
     answerText,
+  }));
+}
+
+export interface DeclarationScoreInput {
+  questionId: string;
+  value: ScoreValue;
+}
+
+// { questionId: ScoreValue } 형태(폼 상태)를 POST /evaluation/self/:token이
+// 받을 배열 payload로 변환한다.
+export function toDeclarationScores(
+  scores: Record<string, ScoreValue>,
+): DeclarationScoreInput[] {
+  return Object.entries(scores).map(([questionId, value]) => ({
+    questionId,
+    value,
   }));
 }
 
