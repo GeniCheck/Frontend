@@ -32,6 +32,9 @@ interface UseDeclarationQuestionsResult {
   isLoading: boolean;
 }
 
+// companyId도 useTokenValidation의 token과 마찬가지로 페이지 마운트 중엔
+// 바뀌지 않는 값이라, 초기 로딩 상태는 useState 초기값으로만 잡는다
+// (react-hooks/set-state-in-effect 대응).
 export function useDeclarationQuestions(
   companyId: string | undefined,
 ): UseDeclarationQuestionsResult {
@@ -39,13 +42,8 @@ export function useDeclarationQuestions(
   const [isLoading, setLoading] = useState(Boolean(companyId));
 
   useEffect(() => {
-    if (!companyId) {
-      setQuestions([]);
-      setLoading(false);
-      return;
-    }
+    if (!companyId) return;
 
-    setLoading(true);
     const timer = setTimeout(() => {
       const list = MOCK_QUESTIONS_BY_COMPANY[companyId] ?? [];
       setQuestions([...list].sort((a, b) => a.orderIndex - b.orderIndex));

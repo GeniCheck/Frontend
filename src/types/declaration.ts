@@ -20,3 +20,19 @@ export interface DeclarationLinkContext {
   companyId: string;
   employeeId: string;
 }
+
+// 기능명세서 2.3: 법적 사전 동의 항목. ConsentCheckboxes와 SelfDeclarePage가 공유.
+export const CONSENT_ITEMS = [
+  {
+    id: "capability-verification",
+    label:
+      "퇴사 후 대표가 자기 선언에 대해 1~10점으로 검증 점수를 부여하는 것에 동의합니다.",
+  },
+  {
+    id: "data-access",
+    label:
+      "검증 완료 데이터를 타 기업이 대표 승인 후 유료로 열람하는 것에 동의합니다.",
+  },
+] as const;
+
+export type ConsentItemId = (typeof CONSENT_ITEMS)[number]["id"];
