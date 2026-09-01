@@ -5,7 +5,6 @@ import { useDeclarationQuestions } from "@/hooks/useDeclarationQuestions";
 import { CONSENT_ITEMS, type ConsentItemId } from "@/types/declaration";
 import LinkStatusMessage from "@/components/verification/LinkStatusMessage";
 import CompanyQuestionList from "@/components/verification/CompanyQuestionList";
-import FreeDeclarationField from "@/components/verification/FreeDeclarationField";
 import ResumeAttachment from "@/components/verification/ResumeAttachment";
 import ConsentCheckboxes from "@/components/verification/ConsentCheckboxes";
 
@@ -25,7 +24,6 @@ const SelfDeclarePage: React.FC = () => {
   );
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [freeText, setFreeText] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeLink, setResumeLink] = useState("");
   const [consents, setConsents] =
@@ -65,12 +63,10 @@ const SelfDeclarePage: React.FC = () => {
     try {
       // TODO: 백엔드 연동 지점
       // 1) POST /declarations/answers { token, answers }
-      // 2) POST /declarations/free    { token, freeText }      (freeText 있을 때만)
-      // 3) POST /declarations/resume  S3 Presigned URL 발급 → 업로드 or 링크 등록
+      // 2) POST /declarations/resume  S3 Presigned URL 발급 → 업로드 or 링크 등록
       console.log("submit self-declaration", {
         context,
         answers,
-        freeText,
         resumeFile,
         resumeLink,
         consents,
@@ -104,8 +100,6 @@ const SelfDeclarePage: React.FC = () => {
             onChange={handleAnswerChange}
           />
         )}
-
-        <FreeDeclarationField value={freeText} onChange={setFreeText} />
 
         <ResumeAttachment
           file={resumeFile}

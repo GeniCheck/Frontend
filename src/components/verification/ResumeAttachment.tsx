@@ -52,7 +52,7 @@ const ResumeAttachment: React.FC<ResumeAttachmentProps> = ({
       <div>
         <h2 className="text-text1 text-sm font-black">
           이력서 첨부{" "}
-          <span className="text-2xs font-normal text-gray-300">(선택)</span>
+          <span className="text-2xs font-bold text-gray-500">(선택)</span>
         </h2>
         <p className="text-2xs mt-1 text-gray-400">
           파일 업로드(PDF, DOCX / 최대 10MB) 또는 링크 중 하나로 제출할 수
