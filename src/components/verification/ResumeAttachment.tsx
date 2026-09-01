@@ -20,8 +20,7 @@ const TABS: { key: Tab; label: string }[] = [
 const isAcceptedFile = (file: File) =>
   ACCEPTED_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext));
 
-// 이력서 파일 첨부(PDF, DOCX / 최대 10MB) 또는 링크, 둘 다 제출 가능.
-// 선택 항목이라 둘 다 비워도 제출 가능.
+// 선택 항목 — 파일/링크 둘 다 비워도 제출 가능, 둘 다 채워도 됨.
 const ResumeAttachment: React.FC<ResumeAttachmentProps> = ({
   file,
   onFileChange,

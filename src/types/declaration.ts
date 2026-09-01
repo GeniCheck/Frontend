@@ -4,13 +4,24 @@
 export interface DeclarationQuestion {
   id: string;
   companyId: string;
-  question: string; // 서술형 질문, 100자 이내 (2.1)
+  question: string;
   orderIndex: number;
 }
 
 export interface DeclarationAnswerInput {
   questionId: string;
-  answerText: string; // 500자 이내 (2.1)
+  answerText: string;
+}
+
+// { questionId: answerText } 형태(폼 상태)를 POST /declarations/answers가
+// 받을 배열 payload로 변환한다.
+export function toDeclarationAnswers(
+  answers: Record<string, string>,
+): DeclarationAnswerInput[] {
+  return Object.entries(answers).map(([questionId, answerText]) => ({
+    questionId,
+    answerText,
+  }));
 }
 
 // 자기선언 링크(GET /employee/link/:token) 검증 성공 시 확보되는 컨텍스트.

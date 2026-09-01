@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTokenValidation } from "@/hooks/useTokenValidation";
 import { useDeclarationQuestions } from "@/hooks/useDeclarationQuestions";
-import { CONSENT_ITEMS, type ConsentItemId } from "@/types/declaration";
+import {
+  CONSENT_ITEMS,
+  toDeclarationAnswers,
+  type ConsentItemId,
+} from "@/types/declaration";
 import LinkStatusMessage from "@/components/verification/LinkStatusMessage";
 import CompanyQuestionList from "@/components/verification/CompanyQuestionList";
 import ResumeAttachment from "@/components/verification/ResumeAttachment";
@@ -63,16 +67,16 @@ const SelfDeclarePage: React.FC = () => {
   const hasResume = Boolean(resumeFile || resumeLink);
 
   // TODO: 실제 연동 시 POST /declarations/answers 호출로 교체.
-  // 지금 answers는 { questionId: answerText } 객체라, 배열 payload가
-  // 필요하면 Object.entries(answers).map(([questionId, answerText]) => ({...}))
-  // 형태로 변환해서 보내야 함.
   const submitAnswers = async () => {
-    console.log("submit declaration answers", { context, answers });
+    const payload = {
+      token: context?.token,
+      answers: toDeclarationAnswers(answers),
+    };
+    console.log("submit declaration answers", payload);
   };
 
   // TODO: 실제 연동 시 POST /declarations/resume 호출로 교체.
-  // resumeFile은 S3 Presigned URL 발급 후 업로드, resumeLink는 URL 그대로
-  // 등록 — 두 값 다 있으면 둘 다 보낸다 (파일/링크 동시 제출 허용).
+  // 파일/링크 둘 다 있으면 둘 다 보낸다.
   const submitResume = async () => {
     console.log("submit resume", { resumeFile, resumeLink });
   };
