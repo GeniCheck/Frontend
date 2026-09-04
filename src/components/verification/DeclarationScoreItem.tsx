@@ -24,7 +24,7 @@ const ScoreBadge: React.FC<{ label: string; value: ScoreValue | undefined }> = (
 }) => (
   <div>
     <p className="text-2xs mb-2 font-bold text-gray-400">{label}</p>
-    <span className="text-text1 inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-gray-100 px-3 text-base font-black">
+    <span className="text-text1 inline-flex h-9 min-w-9 items-center justify-center rounded-full bg-gray-100 px-3 text-sm font-black">
       {formatScore(value)}
     </span>
   </div>
