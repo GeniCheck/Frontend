@@ -11,9 +11,26 @@ interface DeclarationScoreItemProps {
   onChange?: (value: ScoreValue) => void;
   label?: string;
   readOnly?: boolean;
+  compareValue?: ScoreValue;
+  compareLabel?: string;
 }
 
-// 자기평가·대표 검증은 입력형, 직원 결과 확인 화면은 readOnly로 함께 쓰는 카드.
+const formatScore = (value: ScoreValue | undefined) =>
+  value === undefined ? "—" : value === "NA" ? "해당 없음" : value;
+
+const ScoreBadge: React.FC<{ label: string; value: ScoreValue | undefined }> = ({
+  label,
+  value,
+}) => (
+  <div>
+    <p className="text-2xs mb-2 font-bold text-gray-400">{label}</p>
+    <span className="text-text1 inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-gray-100 px-3 text-base font-black">
+      {formatScore(value)}
+    </span>
+  </div>
+);
+
+// 자기평가·대표 검증은 입력형, 직원 결과 확인 화면은 readOnly(+비교 점수)로 함께 쓰는 카드.
 const DeclarationScoreItem: React.FC<DeclarationScoreItemProps> = ({
   index,
   record,
@@ -21,6 +38,8 @@ const DeclarationScoreItem: React.FC<DeclarationScoreItemProps> = ({
   onChange = () => {},
   label = "이 항목에 대한 자기평가",
   readOnly = false,
+  compareValue,
+  compareLabel,
 }) => {
   return (
     <div className="space-y-3 rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm">
@@ -32,19 +51,21 @@ const DeclarationScoreItem: React.FC<DeclarationScoreItemProps> = ({
           {record.answerText}
         </div>
       </div>
-      <div>
-        <p className="text-2xs mb-2 font-bold text-gray-400">
-          {label}
-          {!readOnly && <span className="text-red-400"> *</span>}
-        </p>
-        {readOnly ? (
-          <span className="text-2xs text-text1 inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-gray-100 px-3 font-bold">
-            {value === undefined ? "—" : value === "NA" ? "해당 없음" : value}
-          </span>
-        ) : (
+      {readOnly ? (
+        <div className="flex flex-wrap gap-6">
+          <ScoreBadge label={label} value={value} />
+          {compareLabel && (
+            <ScoreBadge label={compareLabel} value={compareValue} />
+          )}
+        </div>
+      ) : (
+        <div>
+          <p className="text-2xs mb-2 font-bold text-gray-400">
+            {label} <span className="text-red-400">*</span>
+          </p>
           <ScoreSelector value={value} onChange={onChange} />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
