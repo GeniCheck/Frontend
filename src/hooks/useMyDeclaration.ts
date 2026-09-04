@@ -39,6 +39,29 @@ const MOCK_RECORDS_BY_EMPLOYEE: Record<string, DeclarationRecord[]> = {
         "결제 시스템 리뉴얼 외에도 신입 개발자 온보딩 문서를 정비해 적응 기간을 단축했습니다.",
     },
   ],
+  // VerificationPage emp-1(김민준) 자기선언 — 대표 검증화면에서 employee.id로 조회.
+  "emp-1": [
+    {
+      question: {
+        id: "emp1-q1",
+        companyId: "mock-company-1",
+        question: "재직 중 가장 대표적인 성과를 구체적으로 기술해 주세요.",
+        orderIndex: 0,
+      },
+      answerText:
+        "팀 내 협업 프로세스를 개선해 스프린트 지연을 줄이는 데 기여했습니다.",
+    },
+    {
+      question: {
+        id: "emp1-q2",
+        companyId: "mock-company-1",
+        question:
+          "재직 중 아쉬웠던 점이나 더 성장이 필요했던 영역을 기술해 주세요.",
+        orderIndex: 1,
+      },
+      answerText: "타 부서와의 요구사항 조율에 더 적극적이었으면 좋았을 것 같습니다.",
+    },
+  ],
 };
 
 interface UseMyDeclarationResult {

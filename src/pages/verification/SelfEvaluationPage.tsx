@@ -4,7 +4,7 @@ import { useTokenValidation } from "@/hooks/useTokenValidation";
 import { useMyDeclaration } from "@/hooks/useMyDeclaration";
 import { type ScoreValue, toDeclarationScores } from "@/types/declaration";
 import LinkStatusMessage from "@/components/verification/LinkStatusMessage";
-import DeclarationSelfScoreItem from "@/components/verification/DeclarationSelfScoreItem";
+import DeclarationScoreItem from "@/components/verification/DeclarationScoreItem";
 
 // 대표가 퇴사 처리(EmployeeDetailModal "퇴사 처리 확정")를 하면 시스템이
 // 자동 발송하는 1회성 링크(/evaluation/self/:token)로 접근하는, 로그인이
@@ -79,7 +79,7 @@ const SelfEvaluationPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {records.map((record, i) => (
-              <DeclarationSelfScoreItem
+              <DeclarationScoreItem
                 key={record.question.id}
                 index={i}
                 record={record}
