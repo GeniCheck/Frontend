@@ -4,26 +4,16 @@ import type { Employee } from "@/components/common/EmployeeDetailModal";
 import ScoreSelector, {
   type ScoreValue,
 } from "@/components/common/ScoreSelector";
+import { useMyDeclaration } from "@/hooks/useMyDeclaration";
+import { toDeclarationScores } from "@/types/declaration";
+import DeclarationScoreItem from "@/components/verification/DeclarationScoreItem";
 
 interface EvaluationItem {
   id: string;
   title: string;
 }
 
-// 자기선언 질문별 이행도: 직원이 자기선언에서 답변했던 걸 기반으로 질문 (현재는 임시 문항)
-const DECLARATION_ITEMS: EvaluationItem[] = [
-  {
-    id: "decl-1",
-    title:
-      "자기선언에서 응답한 '팀 내 협업 기여도' 항목의 신뢰도를 1~10점으로 평가해 주세요.",
-  },
-  {
-    id: "decl-2",
-    title:
-      "자기선언에서 서술한 대표 성과 내용의 구체성과 신뢰도를 1~10점으로 평가해 주세요.",
-  },
-];
-
+// 자기선언과 무관한, 대표가 매기는 공통 역량 카테고리 6개.
 const CATEGORY_ITEMS: EvaluationItem[] = [
   {
     id: "trust",
@@ -52,15 +42,14 @@ const CATEGORY_ITEMS: EvaluationItem[] = [
   },
 ];
 
-const ALL_ITEM_IDS = [
-  ...DECLARATION_ITEMS.map((item) => item.id),
-  ...CATEGORY_ITEMS.map((item) => item.id),
-];
-
 const EvaluationPage: React.FC = () => {
   const { employeeId } = useParams();
   const location = useLocation();
   const employee = (location.state as { employee?: Employee } | null)?.employee;
+
+  const { records, isLoading: recordsLoading } = useMyDeclaration(
+    employee?.id ?? employeeId,
+  );
 
   const [scores, setScores] = useState<Record<string, ScoreValue>>({});
 
@@ -68,10 +57,34 @@ const EvaluationPage: React.FC = () => {
     setScores((prev) => ({ ...prev, [itemId]: value }));
   };
 
-  const isComplete = ALL_ITEM_IDS.every((id) => scores[id] !== undefined);
+  const allItemIds = [
+    ...records.map((record) => record.question.id),
+    ...CATEGORY_ITEMS.map((item) => item.id),
+  ];
+  const isComplete =
+    !recordsLoading &&
+    records.length > 0 &&
+    allItemIds.every((id) => scores[id] !== undefined);
 
   const handleSubmit = () => {
     if (!isComplete) return;
+
+    // 카테고리 점수는 declaration_questions에 대응하지 않아 페이로드를 분리한다.
+    const declarationScores = toDeclarationScores(
+      Object.fromEntries(
+        records.map((record) => [record.question.id, scores[record.question.id]]),
+      ),
+    );
+    const categoryScores = CATEGORY_ITEMS.map((item) => ({
+      categoryId: item.id,
+      value: scores[item.id],
+    }));
+
+    console.log("submit ceo evaluation", {
+      employeeId: employee?.id ?? employeeId,
+      declarationScores,
+      categoryScores,
+    });
     alert("연동 필요");
   };
 
@@ -126,17 +139,28 @@ const EvaluationPage: React.FC = () => {
               </span>
             </div>
             <div className="space-y-4 pl-9">
-              {DECLARATION_ITEMS.map((item, i) => (
-                <div key={item.id}>
-                  <p className="text-2xs mb-2 font-bold text-gray-500">
-                    Q{i + 1}. {item.title}
-                  </p>
-                  <ScoreSelector
-                    value={scores[item.id]}
-                    onChange={(value) => handleScoreChange(item.id, value)}
+              {recordsLoading ? (
+                <span className="text-2xs font-bold text-gray-400">
+                  자기선언 내용을 불러오는 중...
+                </span>
+              ) : records.length === 0 ? (
+                <span className="text-2xs font-bold text-gray-400">
+                  이 직원의 자기선언 데이터를 찾을 수 없어요.
+                </span>
+              ) : (
+                records.map((record, i) => (
+                  <DeclarationScoreItem
+                    key={record.question.id}
+                    index={i}
+                    record={record}
+                    value={scores[record.question.id]}
+                    onChange={(value) =>
+                      handleScoreChange(record.question.id, value)
+                    }
+                    label="대표 검증 점수"
                   />
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
