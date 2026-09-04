@@ -20,6 +20,7 @@ import SignupPage from "@/pages/auth/SignupPage"; // 여기서 내부 분기 처
 // ─── 3. VERIFICATION 도메인 영역 (링크 토큰 기반, 로그인 불필요) ───
 import SelfDeclarePage from "@/pages/verification/SelfDeclarePage";
 import SelfEvaluationPage from "@/pages/verification/SelfEvaluationPage";
+import EvaluationResultPage from "@/pages/verification/EvaluationResultPage";
 
 // ─── 4. MAIN 대시보드 도메인 영역 ───
 import MainPage from "@/pages/main/MainPage";
@@ -62,6 +63,13 @@ function App() {
           <Route
             path="/evaluation/self/:token"
             element={<SelfEvaluationPage />}
+          />
+
+          {/* 직원용 검증 결과 확인 페이지: 대표 검증 완료 통보 시 발송되는
+              링크, 로그인 불필요 */}
+          <Route
+            path="/evaluation/result/:token"
+            element={<EvaluationResultPage />}
           />
 
           {/* 대시보드 백오피스 내부 중첩 라우트 */}
