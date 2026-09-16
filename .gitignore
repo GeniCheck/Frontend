@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# 로컬 환경변수 (팀원마다 값이 다를 수 있어 커밋 안 함, 예시는 .env.example 참고)
+.env
+
 # Claude Code (개인 설정 / 런타임 로그 / 프리뷰 툴 설정은 커밋하지 않음)
 .claude/settings.local.json
 .claude/logs/
