@@ -25,7 +25,7 @@ const SignupPage: React.FC = () => {
 
       {/* 2. 메인 컨텐츠 영역 */}
       <main className="flex min-h-screen items-center justify-center px-8 pt-32 pb-20">
-        <div className="animate-in zoom-in-95 w-full max-w-[500px] rounded-[32px] border border-gray-100 bg-white p-10 shadow-xl shadow-gray-200/50 duration-500">
+        <div className="animate-in zoom-in-95 w-full max-w-125 rounded-4xl border border-gray-100 bg-white p-10 shadow-xl shadow-gray-200/50 duration-500">
           <button
             onClick={() => navigate("/")}
             className="hover:text-text1 mb-8 flex items-center gap-2 text-sm font-bold text-gray-400"
@@ -35,7 +35,6 @@ const SignupPage: React.FC = () => {
 
           <div className="mb-8">
             <span className="bg-brand-light text-brand mb-3 flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold">
-              <i className="ti ti-crown text-sm" />
               대표(사업자 본인) 전용
             </span>
             <h2 className="border-brand inline-block border-b-4 pb-2 text-3xl font-black">
