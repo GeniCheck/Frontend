@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthControllerLogout } from "@/api/generated/endpoints/auth/auth";
+import { useRole } from "@/context/roleContext";
 
 const ReferralPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { clearSession } = useRole();
+  const { mutateAsync: logoutMutation, isPending: isLoggingOut } =
+    useAuthControllerLogout();
+
+  const logout = async () => {
+    try {
+      await logoutMutation();
+    } finally {
+      clearSession();
+      navigate("/");
+    }
+  };
+
   const [activeSubTab, setActiveSubTab] = useState("전체 게시판");
   const [selectedJob, setSelectedJob] = useState("전체 직군");
 
@@ -113,6 +130,15 @@ const ReferralPage: React.FC = () => {
           <button className="bg-brand shadow-brand/10 hover:bg-brand-dark flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95">
             <i className="ti ti-user-plus text-sm" />
             인재 게시하기
+          </button>
+          <button
+            type="button"
+            onClick={logout}
+            disabled={isLoggingOut}
+            className="text-text2 flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <i className="ti ti-logout text-sm" />
+            {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
           </button>
         </div>
       </header>
