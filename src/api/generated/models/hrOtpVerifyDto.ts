@@ -9,6 +9,6 @@
 export interface HrOtpVerifyDto {
   /** 등록/로그인 1단계에서 발급된 임시 토큰 */
   tempToken: string;
-  /** OTP 코드 (숫자 6자리) */
+  /** 회사 대표 이메일 인증 코드 (숫자 6자리) */
   otpCode: string;
 }

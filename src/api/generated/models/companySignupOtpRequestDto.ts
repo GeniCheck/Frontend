@@ -7,10 +7,6 @@
  */
 
 export interface CompanySignupOtpRequestDto {
-  /** 기업 대표 전화번호 (형식: 010-0000-0000) */
-  phone: string;
-  /** 대표자 성명 */
-  representativeName: string;
-  /** 사업자등록번호 (형식: 000-00-00000) */
-  businessNumber: string;
+  /** 기업 대표 이메일 */
+  email: string;
 }

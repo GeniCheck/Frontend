@@ -7,8 +7,8 @@
  */
 
 export interface HrLoginDto {
-  /** HR 담당자 전화번호 */
-  phone: string;
-  /** 기업 코드 */
-  companyCode: string;
+  /** HR 로그인 이메일 */
+  email: string;
+  /** HR 로그인 비밀번호 */
+  password: string;
 }

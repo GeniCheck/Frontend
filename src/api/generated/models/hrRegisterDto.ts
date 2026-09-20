@@ -7,8 +7,12 @@
  */
 
 export interface HrRegisterDto {
+  /** 가입할 회사 코드 */
+  companyCode: string;
+  /** HR 로그인 이메일 */
+  email: string;
+  /** HR 로그인 비밀번호 */
+  password: string;
   /** HR 담당자 이름 */
   name: string;
-  /** HR 담당자 전화번호 (형식: 010-0000-0000) */
-  phone: string;
 }

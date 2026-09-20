@@ -24,6 +24,7 @@ import type {
 import type {
   ApplicantLoginDto,
   ApplicantSignupDto,
+  CompanyBusinessVerifyDto,
   CompanyLoginDto,
   CompanyOtpVerifyDto,
   CompanySignupDto,
@@ -449,6 +450,105 @@ export const useAuthControllerCompanySignup = <
   );
 };
 /**
+ * @summary 기업가입 1단계 - 사업자 정보 인증
+ */
+export const authControllerVerifyCompanyBusiness = (
+  companyBusinessVerifyDto: CompanyBusinessVerifyDto,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/v1/auth/company/signup/business/verify`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: companyBusinessVerifyDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getAuthControllerVerifyCompanyBusinessMutationKey = () =>
+  ["authControllerVerifyCompanyBusiness"] as const;
+
+export const getAuthControllerVerifyCompanyBusinessMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof authControllerVerifyCompanyBusiness>>,
+    TError,
+    AuthControllerVerifyCompanyBusinessMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof authControllerVerifyCompanyBusiness>>,
+  TError,
+  AuthControllerVerifyCompanyBusinessMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAuthControllerVerifyCompanyBusinessMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof authControllerVerifyCompanyBusiness>>,
+    AuthControllerVerifyCompanyBusinessMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return authControllerVerifyCompanyBusiness(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AuthControllerVerifyCompanyBusinessMutationResult = NonNullable<
+  Awaited<ReturnType<typeof authControllerVerifyCompanyBusiness>>
+>;
+export type AuthControllerVerifyCompanyBusinessMutationBody =
+  CompanyBusinessVerifyDto;
+export type AuthControllerVerifyCompanyBusinessMutationError = void;
+export type AuthControllerVerifyCompanyBusinessMutationVariables = {
+  data: CompanyBusinessVerifyDto;
+};
+
+/**
+ * @summary 기업가입 1단계 - 사업자 정보 인증
+ */
+export const useAuthControllerVerifyCompanyBusiness = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof authControllerVerifyCompanyBusiness>>,
+      TError,
+      AuthControllerVerifyCompanyBusinessMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof authControllerVerifyCompanyBusiness>>,
+  TError,
+  AuthControllerVerifyCompanyBusinessMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getAuthControllerVerifyCompanyBusinessMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary CEO 로그인 1단계 - 이메일/비밀번호 인증
  */
 export const authControllerCompanyLogin = (
@@ -645,7 +745,7 @@ export const useAuthControllerCompanyOtpVerify = <
   );
 };
 /**
- * @summary HR 매니저 등록 1단계 - CEO 인증 OTP 발송 (COMPANY 권한 필요)
+ * @summary HR signup - company code and personal email verification
  */
 export const authControllerHrRegister = (
   hrRegisterDto: HrRegisterDto,
@@ -713,7 +813,7 @@ export type AuthControllerHrRegisterMutationError = void;
 export type AuthControllerHrRegisterMutationVariables = { data: HrRegisterDto };
 
 /**
- * @summary HR 매니저 등록 1단계 - CEO 인증 OTP 발송 (COMPANY 권한 필요)
+ * @summary HR signup - company code and personal email verification
  */
 export const useAuthControllerHrRegister = <TError = void, TContext = unknown>(
   options?: {
@@ -738,7 +838,7 @@ export const useAuthControllerHrRegister = <TError = void, TContext = unknown>(
   );
 };
 /**
- * @summary HR 매니저 등록 2단계 - OTP 검증 및 HR 계정 생성 (COMPANY 권한 필요)
+ * @summary HR signup step 2 - verify personal email and create account
  */
 export const authControllerHrRegisterVerify = (
   hrOtpVerifyDto: HrOtpVerifyDto,
@@ -808,7 +908,7 @@ export type AuthControllerHrRegisterVerifyMutationVariables = {
 };
 
 /**
- * @summary HR 매니저 등록 2단계 - OTP 검증 및 HR 계정 생성 (COMPANY 권한 필요)
+ * @summary HR signup step 2 - verify personal email and create account
  */
 export const useAuthControllerHrRegisterVerify = <
   TError = void,
@@ -836,7 +936,7 @@ export const useAuthControllerHrRegisterVerify = <
   );
 };
 /**
- * @summary HR 매니저 로그인 1단계 - 전화번호/기업코드 확인 후 OTP 발송
+ * @summary HR login step 1 - email/password, then company email verification
  */
 export const authControllerHrLogin = (
   hrLoginDto: HrLoginDto,
@@ -904,7 +1004,7 @@ export type AuthControllerHrLoginMutationError = void;
 export type AuthControllerHrLoginMutationVariables = { data: HrLoginDto };
 
 /**
- * @summary HR 매니저 로그인 1단계 - 전화번호/기업코드 확인 후 OTP 발송
+ * @summary HR login step 1 - email/password, then company email verification
  */
 export const useAuthControllerHrLogin = <TError = void, TContext = unknown>(
   options?: {
@@ -929,7 +1029,7 @@ export const useAuthControllerHrLogin = <TError = void, TContext = unknown>(
   );
 };
 /**
- * @summary HR 매니저 로그인 2단계 - OTP 검증 및 토큰 발급
+ * @summary HR login step 2 - verify company official email code
  */
 export const authControllerHrOtpVerify = (
   hrOtpVerifyDto: HrOtpVerifyDto,
@@ -999,7 +1099,7 @@ export type AuthControllerHrOtpVerifyMutationVariables = {
 };
 
 /**
- * @summary HR 매니저 로그인 2단계 - OTP 검증 및 토큰 발급
+ * @summary HR login step 2 - verify company official email code
  */
 export const useAuthControllerHrOtpVerify = <TError = void, TContext = unknown>(
   options?: {

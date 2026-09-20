@@ -7,8 +7,6 @@
  */
 
 export interface ResendOtpDto {
-  /** 전화번호(하위 호환용, 서버는 tempToken 기준으로 OTP 수신 번호를 결정) */
-  phone?: string;
   /** 로그인/승인 1단계에서 발급된 임시 토큰 */
   tempToken: string;
 }

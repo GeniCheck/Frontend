@@ -12,6 +12,7 @@ export * from "./applicantSignupDto";
 export * from "./ceoEvaluationDto";
 export * from "./ceoEvaluationDtoRehireIntent";
 export * from "./ceoEvaluationScoreItemDto";
+export * from "./companyBusinessVerifyDto";
 export * from "./companyLoginDto";
 export * from "./companyOtpVerifyDto";
 export * from "./companySignupDto";
