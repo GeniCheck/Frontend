@@ -161,8 +161,8 @@ const ReferralPage: React.FC = () => {
                   {kpi.desc}
                 </span>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-lg">
-                <i className={kpi.icon} />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-xl">
+                <i className={`ti ${kpi.icon}`} />
               </div>
             </div>
           ))}
