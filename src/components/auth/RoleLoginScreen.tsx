@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRole } from "@/context/roleContext";
 import type { Role } from "@/context/roleContext";
+import { extractErrorMessage } from "@/api/extractErrorMessage";
 import OtpInput from "./OtpInput";
 
-// 백엔드 연동 전까지 고정 데모 인증번호
-const MOCK_OTP = "123456";
 const RESEND_COOLDOWN = 30;
 
 type Tone = "purple" | "amber";
@@ -60,6 +59,15 @@ export interface RoleLoginScreenProps {
   redirectTo: string;
   // 하단 반대 역할 안내 링크
   switchPrompt: { question: string; linkLabel: string; to: string };
+  // 1단계: 자격증명 확인 → 임시 토큰 발급
+  login: (id: string, password: string) => Promise<{ tempToken: string }>;
+  // 2단계: 인증번호 확인 → 로그인 토큰 발급
+  verifyOtp: (
+    tempToken: string,
+    otpCode: string,
+  ) => Promise<{ accessToken: string; refreshToken: string }>;
+  // 인증번호 재발송 (CEO 로그인만 지원)
+  resendOtp?: (tempToken: string) => Promise<void>;
 }
 
 const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
@@ -75,31 +83,28 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
   allowResend,
   redirectTo,
   switchPrompt,
+  login,
+  verifyOtp,
+  resendOtp,
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { setRole } = useRole();
+  const { setSession } = useRole();
   const t = TONES[tone];
-  // 회원가입 직후 1회 한정으로 로그인 OTP를 건너뛴다. 히스토리 state에 그대로
-  // 두면 뒤로가기로 재진입했을 때도 계속 남아있으므로, 마운트 시 한 번만
-  // 값을 읽어 보관하고 히스토리에서는 즉시 지운다.
-  const [skipLoginOtp] = useState(() =>
-    Boolean((location.state as { skipLoginOtp?: boolean } | null)?.skipLoginOtp),
-  );
-
-  useEffect(() => {
-    if ((location.state as { skipLoginOtp?: boolean } | null)?.skipLoginOtp) {
-      navigate(location.pathname, { replace: true, state: null });
-    }
-  }, [location, navigate]);
 
   const [step, setStep] = useState<"credentials" | "otp">("credentials");
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
+  const [tempToken, setTempToken] = useState<string | null>(null);
   const [code, setCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [credentialsError, setCredentialsError] = useState<string | null>(
+    null,
+  );
+  const [otpError, setOtpError] = useState<string | null>(null);
   const [resent, setResent] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
   // 재발송 쿨다운 카운트다운
   useEffect(() => {
@@ -108,42 +113,69 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
     return () => clearTimeout(timer);
   }, [cooldown]);
 
-  const goToOtp = (e: React.FormEvent) => {
+  const goToOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginId.trim() || !password.trim()) return;
-    if (skipLoginOtp) {
-      setRole(role);
-      navigate(redirectTo, { replace: true });
-      return;
+    if (!loginId.trim() || !password.trim() || isLoggingIn) return;
+    setCredentialsError(null);
+    setIsLoggingIn(true);
+    try {
+      const { tempToken: nextTempToken } = await login(loginId, password);
+      setTempToken(nextTempToken);
+      setStep("otp");
+      setOtpError(null);
+      setCode("");
+      setResent(false);
+      if (allowResend) setCooldown(RESEND_COOLDOWN);
+    } catch (err) {
+      setCredentialsError(
+        extractErrorMessage(err, "로그인에 실패했어요. 다시 시도해주세요."),
+      );
+    } finally {
+      setIsLoggingIn(false);
     }
-    setStep("otp");
-    setError(null);
-    setCode("");
-    if (allowResend) setCooldown(RESEND_COOLDOWN);
   };
 
   const backToCredentials = () => {
     setStep("credentials");
-    setError(null);
+    setOtpError(null);
     setCode("");
     setResent(false);
+    setTempToken(null);
   };
 
-  const verify = () => {
-    if (code !== MOCK_OTP) {
-      setError("인증번호가 올바르지 않습니다. 다시 확인해 주세요.");
-      return;
+  const verify = async () => {
+    if (code.length < 6 || !tempToken || isVerifying) return;
+    setOtpError(null);
+    setIsVerifying(true);
+    try {
+      const { accessToken, refreshToken } = await verifyOtp(tempToken, code);
+      setSession(role, { accessToken, refreshToken });
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      setOtpError(
+        extractErrorMessage(err, "인증번호가 올바르지 않아요. 다시 확인해 주세요."),
+      );
+    } finally {
+      setIsVerifying(false);
     }
-    setRole(role);
-    navigate(redirectTo, { replace: true });
   };
 
-  const resend = () => {
-    if (cooldown > 0) return;
-    setCode("");
-    setError(null);
-    setResent(true);
+  const resend = async () => {
+    if (cooldown > 0 || isResending || !resendOtp || !tempToken) return;
+    setOtpError(null);
+    setResent(false);
+    // 성공/실패와 무관하게 재발송 시도 자체를 막기 위해 먼저 쿨다운을 건다.
     setCooldown(RESEND_COOLDOWN);
+    setIsResending(true);
+    try {
+      await resendOtp(tempToken);
+      setCode("");
+      setResent(true);
+    } catch (err) {
+      setOtpError(extractErrorMessage(err, "재발송에 실패했어요. 다시 시도해주세요."));
+    } finally {
+      setIsResending(false);
+    }
   };
 
   const inputClass = `w-full rounded-xl border border-gray-200 py-3.5 pr-4 pl-11 text-sm transition-all placeholder:text-gray-300 focus:ring-1 focus:outline-none ${t.inputFocus}`;
@@ -167,7 +199,7 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg shadow-black/10 transition-transform group-hover:rotate-[-8deg]">
               <i className={`ti ti-shield-check text-2xl ${t.link}`}></i>
             </div>
-            <span className="text-[26px] font-black tracking-[2px] text-white opacity-90">
+            <span className="text-[26px] font-black text-white opacity-90">
               GeniCheck
             </span>
           </div>
@@ -191,7 +223,16 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
           <div className="bg-brand flex h-8 w-8 items-center justify-center rounded-lg shadow-md">
             <i className="ti ti-shield-check text-base text-white"></i>
           </div>
-          <span className="text-xl font-black tracking-[1px]">GeniCheck</span>
+          <span className="text-xl font-black">GeniCheck</span>
+        </div>
+
+        {/* 좌측 상단 돌아가기 */}
+        <div
+          onClick={() => navigate("/login")}
+          className="hover:text-brand absolute top-20 left-6 z-10 flex cursor-pointer items-center gap-1.5 text-xs font-bold text-gray-400 transition-colors lg:top-6"
+        >
+          <i className="ti ti-arrow-back text-base" />
+          역할 선택으로
         </div>
 
         <div className="mx-auto w-full max-w-md text-left">
@@ -239,11 +280,19 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
                   </div>
                 </div>
 
+                {credentialsError && (
+                  <p className="flex items-center gap-1.5 text-xs font-bold text-red-500">
+                    <i className="ti ti-alert-circle text-sm" />
+                    {credentialsError}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className={`mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] ${t.solid}`}
+                  disabled={isLoggingIn}
+                  className={`mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
                 >
-                  인증번호 받기
+                  {isLoggingIn ? "확인 중..." : "인증번호 받기"}
                 </button>
               </form>
             </>
@@ -275,19 +324,19 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
                 value={code}
                 onChange={(next) => {
                   setCode(next);
-                  if (error) setError(null);
+                  if (otpError) setOtpError(null);
                 }}
                 autoFocus
                 focusClass={t.otpFocus}
               />
 
-              {error && (
+              {otpError && (
                 <p className="mt-3 flex items-center gap-1.5 text-xs font-bold text-red-500">
                   <i className="ti ti-alert-circle text-sm" />
-                  {error}
+                  {otpError}
                 </p>
               )}
-              {resent && !error && (
+              {resent && !otpError && (
                 <p className="mt-3 flex items-center gap-1.5 text-xs font-bold text-emerald-600">
                   <i className="ti ti-check text-sm" />
                   인증번호를 다시 보냈어요.
@@ -297,19 +346,19 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
               <button
                 type="button"
                 onClick={verify}
-                disabled={code.length < 6}
+                disabled={code.length < 6 || isVerifying}
                 className={`mt-6 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
               >
-                로그인
+                {isVerifying ? "확인 중..." : "로그인"}
               </button>
 
-              {allowResend && (
+              {allowResend && resendOtp && (
                 <div className="text-text2 mt-4 text-center text-xs">
                   인증번호를 못 받으셨나요?{" "}
                   <button
                     type="button"
                     onClick={resend}
-                    disabled={cooldown > 0}
+                    disabled={cooldown > 0 || isResending}
                     className={`font-bold hover:underline disabled:cursor-not-allowed disabled:text-gray-300 disabled:no-underline ${t.link}`}
                   >
                     {cooldown > 0 ? `재발송 (${cooldown}초)` : "재발송"}
@@ -329,15 +378,6 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
               {switchPrompt.linkLabel}
             </span>
           </div>
-        </div>
-
-        {/* 최하단 돌아가기 */}
-        <div
-          onClick={() => navigate("/login")}
-          className="hover:text-brand absolute right-6 bottom-6 flex cursor-pointer items-center gap-1.5 text-xs font-bold text-gray-400 transition-colors"
-        >
-          <i className="ti ti-arrow-back text-base" />
-          역할 선택으로
         </div>
       </div>
     </div>
