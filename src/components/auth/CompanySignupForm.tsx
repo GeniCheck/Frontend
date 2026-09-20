@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { isAxiosError } from "axios";
 import {
   useAuthControllerRequestCompanySignupOtp,
   useAuthControllerVerifyCompanySignupOtp,
   useAuthControllerVerifyCompanyBusiness,
   useAuthControllerCompanySignup,
 } from "@/api/generated/endpoints/auth/auth";
+import { extractErrorMessage } from "@/api/extractErrorMessage";
+import { extractRequired } from "@/api/extractRequired";
+import { COMPANY_CODE_STORAGE_KEY } from "@/context/roleContext";
 import OtpInput from "./OtpInput";
+import FormField, { inputClass } from "./FormField";
+import {
+  PASSWORD_REGEX,
+  BUSINESS_NUMBER_REGEX,
+  COMPANY_NAME_REGEX,
+  EMAIL_REGEX,
+} from "./validators";
 
-type Step = "form" | "otp";
-
-const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,10}$/;
-const BUSINESS_NUMBER_REGEX = /^\d{3}-\d{2}-\d{5}$/;
-const COMPANY_NAME_REGEX = /^[가-힣a-zA-Z0-9\s]{2,50}$/;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+type Step = "form" | "otp" | "done";
 
 interface CompanySignupOtpVerifyResponse {
   emailVerificationToken: string;
@@ -23,48 +26,9 @@ interface CompanySignupOtpVerifyResponse {
 interface CompanyBusinessVerifyResponse {
   businessVerificationToken: string;
 }
-
-const extractErrorMessage = (err: unknown, fallback: string): string => {
-  if (isAxiosError<{ message?: string }>(err)) {
-    return err.response?.data?.message ?? fallback;
-  }
-  return fallback;
-};
-
-const inputClass =
-  "w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm transition-all duration-300 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none";
-
-interface FormFieldProps {
-  name: string;
-  type?: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-  errorMessage?: string;
+interface CompanySignupResponse {
+  companyCode: string;
 }
-
-const FormField: React.FC<FormFieldProps> = ({
-  name,
-  type = "text",
-  value,
-  onChange,
-  placeholder,
-  errorMessage,
-}) => (
-  <div className="space-y-1.5">
-    <input
-      name={name}
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      className={inputClass}
-    />
-    {value.length > 0 && errorMessage && (
-      <p className="text-2xs px-1 font-bold text-red-500">{errorMessage}</p>
-    )}
-  </div>
-);
 
 const CompanySignupForm: React.FC = () => {
   const navigate = useNavigate();
@@ -81,6 +45,10 @@ const CompanySignupForm: React.FC = () => {
   const [businessVerificationToken, setBusinessVerificationToken] = useState<
     string | null
   >(null);
+  const [companyCode, setCompanyCode] = useState<string | null>(null);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
+    "idle",
+  );
   const [error, setError] = useState<string | null>(null);
 
   const { mutateAsync: requestOtpMutation, isPending: isRequestingOtp } =
@@ -130,12 +98,11 @@ const CompanySignupForm: React.FC = () => {
           startDate: normalizedStartDate,
         },
       });
-      const businessToken = (
-        businessResult as unknown as CompanyBusinessVerifyResponse | undefined
-      )?.businessVerificationToken;
-      if (!businessToken) {
-        throw new Error("사업자 인증 응답에 토큰이 없어요.");
-      }
+      const businessToken = extractRequired(
+        businessResult as unknown as CompanyBusinessVerifyResponse | undefined,
+        "businessVerificationToken",
+        "사업자 인증 응답에 토큰이 없어요.",
+      );
 
       await requestOtpMutation({ data: { email: formData.email } });
 
@@ -161,12 +128,13 @@ const CompanySignupForm: React.FC = () => {
       const verifyResult = (await verifyOtpMutation({
         data: { email: formData.email, otpCode },
       })) as unknown as CompanySignupOtpVerifyResponse | undefined;
-      const emailVerificationToken = verifyResult?.emailVerificationToken;
-      if (!emailVerificationToken) {
-        throw new Error("이메일 인증 응답에 토큰이 없어요.");
-      }
+      const emailVerificationToken = extractRequired(
+        verifyResult,
+        "emailVerificationToken",
+        "이메일 인증 응답에 토큰이 없어요.",
+      );
 
-      await signupMutation({
+      const signupResult = (await signupMutation({
         data: {
           ...formData,
           companyName: formData.companyName.trim(),
@@ -175,17 +143,88 @@ const CompanySignupForm: React.FC = () => {
           emailVerificationToken,
           businessVerificationToken,
         },
-      });
+      })) as unknown as CompanySignupResponse | undefined;
 
-      navigate("/login/ceo", { replace: true, state: { skipLoginOtp: true } });
+      if (signupResult?.companyCode) {
+        window.localStorage.setItem(
+          COMPANY_CODE_STORAGE_KEY,
+          signupResult.companyCode,
+        );
+        setCompanyCode(signupResult.companyCode);
+      }
+      setStep("done");
     } catch (err) {
       setError(extractErrorMessage(err, "회원가입에 실패했어요. 다시 시도해주세요."));
     }
   };
 
+  const copyCompanyCode = () => {
+    if (!companyCode) return;
+    navigator.clipboard
+      .writeText(companyCode)
+      .then(() => setCopyState("copied"))
+      .catch(() => setCopyState("failed"));
+    setTimeout(() => setCopyState("idle"), 2000);
+  };
+
   return (
     <div className="animate-in slide-in-from-bottom-4 space-y-8 duration-500">
-      {step === "form" ? (
+      {step === "done" ? (
+        <div className="space-y-6 text-center">
+          <div className="bg-brand-light text-brand mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl">
+            <i className="ti ti-check" />
+          </div>
+          <div>
+            <h2 className="text-text1 mb-2 text-xl font-black">
+              회원가입이 완료됐어요
+            </h2>
+            <p className="text-text2 text-xs leading-relaxed font-medium">
+              아래 회사 코드는 인사팀장 계정을 만들 때 필요해요. 다시 확인할
+              수 없으니 꼭 저장해두세요.
+            </p>
+          </div>
+          {companyCode && (
+            <div className="flex items-center justify-center gap-2 rounded-2xl bg-gray-50 px-5 py-4">
+              <span className="text-text1 text-lg font-black tracking-widest">
+                {companyCode}
+              </span>
+              <button
+                type="button"
+                onClick={copyCompanyCode}
+                className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-bold transition-all active:scale-95 ${
+                  copyState === "copied"
+                    ? "bg-emerald-50 text-emerald-600"
+                    : copyState === "failed"
+                      ? "bg-red-50 text-red-500"
+                      : "text-text2 hover:text-text1 hover:bg-gray-100"
+                }`}
+              >
+                <i
+                  className={`ti text-sm ${
+                    copyState === "copied"
+                      ? "ti-check"
+                      : copyState === "failed"
+                        ? "ti-alert-circle"
+                        : "ti-copy"
+                  }`}
+                />
+                {copyState === "copied"
+                  ? "복사됨"
+                  : copyState === "failed"
+                    ? "복사 실패"
+                    : "복사"}
+              </button>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => navigate("/login/ceo", { replace: true })}
+            className="bg-brand shadow-brand/30 hover:bg-brand-dark w-full rounded-2xl py-4 font-bold text-white shadow-xl transition-all active:scale-[0.98]"
+          >
+            로그인하러 가기
+          </button>
+        </div>
+      ) : step === "form" ? (
         <>
           <div className="space-y-6">
             <FormField
