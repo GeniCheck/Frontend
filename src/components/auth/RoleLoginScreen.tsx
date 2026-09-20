@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRole } from "@/context/roleContext";
 import type { Role } from "@/context/roleContext";
 import OtpInput from "./OtpInput";
@@ -77,8 +77,21 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
   switchPrompt,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setRole } = useRole();
   const t = TONES[tone];
+  // 회원가입 직후 1회 한정으로 로그인 OTP를 건너뛴다. 히스토리 state에 그대로
+  // 두면 뒤로가기로 재진입했을 때도 계속 남아있으므로, 마운트 시 한 번만
+  // 값을 읽어 보관하고 히스토리에서는 즉시 지운다.
+  const [skipLoginOtp] = useState(() =>
+    Boolean((location.state as { skipLoginOtp?: boolean } | null)?.skipLoginOtp),
+  );
+
+  useEffect(() => {
+    if ((location.state as { skipLoginOtp?: boolean } | null)?.skipLoginOtp) {
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location, navigate]);
 
   const [step, setStep] = useState<"credentials" | "otp">("credentials");
   const [loginId, setLoginId] = useState("");
@@ -98,7 +111,11 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
   const goToOtp = (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginId.trim() || !password.trim()) return;
-    // 백엔드 없음: ID/PW 검증은 생략하고 인증번호 단계로 이동
+    if (skipLoginOtp) {
+      setRole(role);
+      navigate(redirectTo, { replace: true });
+      return;
+    }
     setStep("otp");
     setError(null);
     setCode("");
