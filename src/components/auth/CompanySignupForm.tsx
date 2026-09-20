@@ -286,6 +286,8 @@ const CompanySignupForm: React.FC = () => {
             <p className="text-text2 mb-6 text-xs leading-relaxed font-medium">
               대표 이메일(<b className="text-text1 font-bold">{formData.email}</b>)로
               인증번호 6자리를 발송했어요. 메일함을 확인해주세요.
+              <br />
+              메일이 보이지 않으면 스팸함도 확인해주세요.
             </p>
           </div>
 
