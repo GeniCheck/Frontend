@@ -7,8 +7,8 @@
  */
 
 export interface CompanySignupOtpVerifyDto {
-  /** 기업 대표 전화번호 (형식: 010-0000-0000) */
-  phone: string;
-  /** OTP 코드 (숫자 6자리) */
+  /** 기업 대표 이메일 */
+  email: string;
+  /** 이메일 인증 코드 */
   otpCode: string;
 }

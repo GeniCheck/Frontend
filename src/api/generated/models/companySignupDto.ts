@@ -7,20 +7,20 @@
  */
 
 export interface CompanySignupDto {
-  /** 기업 이메일 (최대 50자) */
+  /** 기업 대표 이메일 */
   email: string;
-  /** 비밀번호 (6~10자, 영문 대소문자·숫자·특수문자(!@#$%^&*) 각 1개 이상) */
+  /** 비밀번호 */
   password: string;
-  /** 기업명 (2~50자, 한글·영문·숫자·공백만 허용) */
+  /** 기업명 */
   companyName: string;
-  /** 사업자등록번호 (형식: 000-00-00000) */
+  /** 사업자등록번호 */
   businessNumber: string;
-  /** 기업 대표 전화번호 (형식: 010-0000-0000) */
-  phone: string;
   /** 대표자 성명 */
   representativeName: string;
-  /** 개업일자 (YYYYMMDD 형식) */
+  /** 개업일자 (YYYYMMDD) */
   startDate: string;
-  /** 대표폰 OTP 인증 완료 후 발급되는 회원가입 인증 토큰 */
-  phoneVerificationToken: string;
+  /** 대표 이메일 인증 완료 토큰 */
+  emailVerificationToken: string;
+  /** 사업자 정보 인증 완료 토큰 */
+  businessVerificationToken: string;
 }
