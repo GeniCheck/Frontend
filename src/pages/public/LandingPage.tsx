@@ -109,7 +109,7 @@ const LandingPage: React.FC = () => {
             onClick={() => navigate("/signup")}
             className="px-10 py-4 bg-brand text-white rounded-xl font-bold shadow-xl shadow-brand/20 hover:scale-105 transition-all"
           >
-            기업 회원가입 — 무료 체험
+            기업 회원가입 (무료 체험)
           </button>
           <button
             onClick={() => navigate("/main")}
