@@ -56,9 +56,7 @@ const LoginPage: React.FC = () => {
           <div className="bg-brand shadow-brand/30 flex h-9 w-9 items-center justify-center rounded-xl shadow-lg">
             <i className="ti ti-shield-check text-xl text-white"></i>
           </div>
-          <span className="text-[22px] font-black tracking-[2px]">
-            GeniCheck
-          </span>
+          <span className="text-[22px] font-black">GeniCheck</span>
         </div>
       </nav>
 

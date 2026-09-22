@@ -1,6 +1,23 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthControllerLogout } from "@/api/generated/endpoints/auth/auth";
+import { useRole } from "@/context/roleContext";
 
 const DashboardPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { displayName, clearSession } = useRole();
+  const { mutateAsync: logoutMutation, isPending: isLoggingOut } =
+    useAuthControllerLogout();
+
+  const logout = async () => {
+    try {
+      await logoutMutation();
+    } finally {
+      clearSession();
+      navigate("/");
+    }
+  };
+
   const monthlyStats = [
     { month: "12월", self: 40, verify: 60 },
     { month: "1월", self: 75, verify: 90 },
@@ -24,16 +41,22 @@ const DashboardPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95">
-            리포트 내보내기
-          </button>
-          <button className="bg-brand shadow-brand/10 hover:bg-brand-dark flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95">
+          <button
+            type="button"
+            onClick={() => navigate("/main/team")}
+            className="bg-brand shadow-brand/10 hover:bg-brand-dark flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95"
+          >
             <i className="ti ti-user-plus text-sm" /> 직원 등록
           </button>
-          <div className="hover:text-brand relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-gray-50 text-gray-400 transition-colors">
-            <i className="ti ti-bell text-base" />
-            <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-red-500" />
-          </div>
+          <button
+            type="button"
+            onClick={logout}
+            disabled={isLoggingOut}
+            className="text-text2 flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <i className="ti ti-logout text-sm" />
+            {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
+          </button>
         </div>
       </header>
 
@@ -43,7 +66,7 @@ const DashboardPage: React.FC = () => {
         <div className="relative flex items-center justify-between overflow-hidden rounded-3xl bg-linear-to-r from-indigo-950 via-indigo-900 to-indigo-700 p-6 text-left text-white shadow-xl">
           <div className="z-10 space-y-1">
             <h2 className="text-xl font-black tracking-tight">
-              좋은 아침이에요, Elizabeth 👋
+              좋은 아침이에요, {displayName ?? "대표"}님 👋
             </h2>
             <p className="max-w-xl text-xs leading-relaxed text-white/80">
               검증 대기 중인 직원이{" "}

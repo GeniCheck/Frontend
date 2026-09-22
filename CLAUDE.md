@@ -4,7 +4,7 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙.
 
 ## 프로젝트 개요
 
-HR 신용 평가 플랫폼 **GeniCheck**의 웹 프론트엔드. 백엔드 연동은 아직 없고 화면·플로우 데모 단계다 (인증번호 데모 코드: `123456`).
+HR 신용 평가 플랫폼 **GeniCheck**의 웹 프론트엔드. 회원가입·로그인은 실제 백엔드에 연동되어 있고, 그 외 화면은 아직 데모 단계다.
 
 - **스택**: React 19 · TypeScript · Vite 8 · React Router 7 · Tailwind CSS v4 · ESLint/Prettier
 - **명령어**: `npm run dev` / `npm run build`(tsc + vite) / `npm run lint` / `npm run format`

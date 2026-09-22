@@ -30,6 +30,7 @@ import QuestionTemplatePage from "@/pages/main/QuestionTemplatePage";
 import EvaluationPage from "@/pages/main/EvaluationPage";
 import ReferralPage from "@/pages/main/ReferralPage";
 import AIReportsPage from "@/pages/main/AIReportsPage";
+import TeamPage from "@/pages/main/TeamPage";
 import SupportPage from "@/pages/main/SupportPage";
 import CreditsPage from "@/pages/main/CreditsPage";
 
@@ -87,6 +88,7 @@ function App() {
                 element={<EvaluationPage />}
               />
               <Route path="ai-reports" element={<AIReportsPage />} />
+              <Route path="team" element={<TeamPage />} />
             </Route>
 
             {/* 대표 + 인사팀장 공통 접근 */}

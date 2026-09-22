@@ -17,9 +17,7 @@ const SignupPage: React.FC = () => {
           <div className="bg-brand shadow-brand/30 flex h-9 w-9 items-center justify-center rounded-xl shadow-lg">
             <i className="ti ti-shield-check text-xl text-white"></i>
           </div>
-          <span className="text-[22px] font-black tracking-[2px]">
-            GeniCheck
-          </span>
+          <span className="text-[22px] font-black">GeniCheck</span>
         </div>
       </nav>
 
@@ -30,7 +28,8 @@ const SignupPage: React.FC = () => {
             onClick={() => navigate("/")}
             className="hover:text-text1 mb-8 flex items-center gap-2 text-sm font-bold text-gray-400"
           >
-            <i className="ti ti-arrow-left"></i> 홈으로
+            <i className="ti ti-arrow-left text-base" />
+            뒤로가기
           </button>
 
           <div className="mb-8">

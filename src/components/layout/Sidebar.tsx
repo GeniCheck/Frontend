@@ -5,7 +5,10 @@ import { useRole } from "@/context/roleContext";
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { role } = useRole();
+  const { role, displayName } = useRole();
+  const homePath = role === "hr" ? "/main/referral" : "/main";
+  const fallbackName = role === "hr" ? "인사팀장" : "대표";
+  const name = displayName ?? fallbackName;
 
   // 인사팀장(hr)은 인재 추천 게시판만 이용 — ceoOnly 항목은 숨긴다
   const mainMenu = [
@@ -44,15 +47,13 @@ const Sidebar: React.FC = () => {
       <div>
         {/* 로고 헤더 */}
         <div
-          onClick={() => navigate("/")}
+          onClick={() => navigate(homePath)}
           className="mb-10 flex cursor-pointer items-center gap-2.5 transition-transform active:scale-95"
         >
           <div className="bg-brand shadow-brand/30 flex h-8 w-8 items-center justify-center rounded-xl shadow-md">
             <i className="ti ti-shield-check text-lg text-white"></i>
           </div>
-          <span className="text-text1 text-xl font-black tracking-[1.5px]">
-            GeniCheck
-          </span>
+          <span className="text-text1 text-xl font-black">GeniCheck</span>
         </div>
 
         {/* MAIN MENU 그룹 */}
@@ -134,17 +135,16 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* 최하단 사용자 프로필 */}
-      <div className="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-2 transition-all hover:bg-gray-100/70 active:scale-95">
-        <div className="from-brand2 to-brand flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br text-xs font-bold text-white shadow-md">
-          ES
+      <div className="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 transition-all hover:bg-gray-100/70 active:scale-95">
+        <div className="from-brand2 to-brand flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br text-xs font-bold text-white shadow-md">
+          {name.slice(0, 1)}
         </div>
         <div className="min-w-0 flex-1 text-left">
-          <div className="truncate text-xs font-black">Elizabeth Stone</div>
+          <div className="truncate text-xs font-black">{name}</div>
           <span className="text-accent border-accent/30 bg-accent-light text-3xs mt-0.5 inline-block rounded border px-1.5 py-0.5 font-black tracking-tighter">
             {role === "hr" ? "HR Manager" : "Master Account"}
           </span>
         </div>
-        <i className="ti ti-selector text-sm text-gray-400" />
       </div>
     </aside>
   );
