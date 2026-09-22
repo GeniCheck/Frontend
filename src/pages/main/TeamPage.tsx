@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useAuthControllerHrRegister,
   useAuthControllerHrRegisterVerify,
+  useAuthControllerResendOtp,
 } from "@/api/generated/endpoints/auth/auth";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
 import { extractRequired } from "@/api/extractRequired";
@@ -12,6 +13,9 @@ import { EMAIL_REGEX, PASSWORD_REGEX } from "@/components/auth/validators";
 import OtpInput from "@/components/auth/OtpInput";
 
 type Step = "form" | "otp";
+
+// 재전송 남발 방지용 쿨다운
+const RESEND_COOLDOWN_SECONDS = 30;
 
 const emptyFormData = () => ({
   name: "",
@@ -28,11 +32,24 @@ const TeamPage: React.FC = () => {
   const [tempToken, setTempToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendNotice, setResendNotice] = useState<string | null>(null);
 
   const { mutateAsync: registerMutation, isPending: isRegistering } =
     useAuthControllerHrRegister();
   const { mutateAsync: verifyMutation, isPending: isVerifying } =
     useAuthControllerHrRegisterVerify();
+  const { mutateAsync: resendMutation, isPending: isResending } =
+    useAuthControllerResendOtp();
+
+  // 1초마다 쿨다운 감소
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
 
   const companyCode = storedCompanyCode ?? manualCompanyCode;
 
@@ -59,9 +76,26 @@ const TeamPage: React.FC = () => {
       setTempToken(nextTempToken);
       setOtpCode("");
       setStep("otp");
+      setResendCooldown(RESEND_COOLDOWN_SECONDS);
+      setResendNotice(null);
     } catch (err) {
       setError(
         extractErrorMessage(err, "계정 생성 요청에 실패했어요. 다시 시도해주세요."),
+      );
+    }
+  };
+
+  const resendOtp = async () => {
+    if (!tempToken || resendCooldown > 0 || isResending) return;
+    setError(null);
+    setResendNotice(null);
+    try {
+      await resendMutation({ data: { tempToken } });
+      setResendCooldown(RESEND_COOLDOWN_SECONDS);
+      setResendNotice("인증번호를 다시 보냈어요.");
+    } catch (err) {
+      setError(
+        extractErrorMessage(err, "재전송에 실패했어요. 다시 시도해주세요."),
       );
     }
   };
@@ -71,6 +105,8 @@ const TeamPage: React.FC = () => {
     setOtpCode("");
     setTempToken(null);
     setError(null);
+    setResendNotice(null);
+    setResendCooldown(0);
   };
 
   const submit = async () => {
@@ -94,6 +130,8 @@ const TeamPage: React.FC = () => {
     setOtpCode("");
     setTempToken(null);
     setError(null);
+    setResendNotice(null);
+    setResendCooldown(0);
   };
 
   return (
@@ -227,6 +265,24 @@ const TeamPage: React.FC = () => {
               </p>
 
               <OtpInput value={otpCode} onChange={setOtpCode} autoFocus />
+
+              <div className="mt-3 flex items-center justify-between">
+                <p className="text-2xs font-bold text-gray-400">
+                  {resendNotice ?? "메일이 안 왔나요?"}
+                </p>
+                <button
+                  type="button"
+                  onClick={resendOtp}
+                  disabled={resendCooldown > 0 || isResending}
+                  className="text-2xs text-brand hover:text-brand-dark font-bold transition-colors disabled:cursor-not-allowed disabled:text-gray-300"
+                >
+                  {isResending
+                    ? "재전송 중..."
+                    : resendCooldown > 0
+                      ? `재전송 (${resendCooldown}초)`
+                      : "인증번호 재전송"}
+                </button>
+              </div>
 
               {error && (
                 <p className="text-2xs mt-3 font-bold text-red-500">
