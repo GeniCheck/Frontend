@@ -6,13 +6,9 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface HrRegisterDto {
-  /** 가입할 회사 코드 */
-  companyCode: string;
-  /** HR 로그인 이메일 */
+export interface HrInviteDto {
+  /** HR 담당자 이메일 (초대 메일 수신 + 향후 로그인 아이디) */
   email: string;
-  /** HR 로그인 비밀번호 */
-  password: string;
   /** HR 담당자 이름 */
   name: string;
 }

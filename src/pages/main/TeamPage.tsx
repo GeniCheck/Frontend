@@ -1,137 +1,49 @@
-import React, { useEffect, useState } from "react";
-import {
-  useAuthControllerHrRegister,
-  useAuthControllerHrRegisterVerify,
-  useAuthControllerResendOtp,
-} from "@/api/generated/endpoints/auth/auth";
+import React, { useState } from "react";
+import { useAuthControllerHrInvite } from "@/api/generated/endpoints/auth/auth";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
-import { extractRequired } from "@/api/extractRequired";
-import type { TempTokenResponse } from "@/api/authResponses";
-import { readStoredCompanyCode } from "@/context/roleContext";
 import FormField from "@/components/auth/FormField";
-import { EMAIL_REGEX, PASSWORD_REGEX } from "@/components/auth/validators";
-import OtpInput from "@/components/auth/OtpInput";
-
-type Step = "form" | "otp";
-
-// 재전송 남발 방지용 쿨다운
-const RESEND_COOLDOWN_SECONDS = 30;
+import { EMAIL_REGEX } from "@/components/auth/validators";
 
 const emptyFormData = () => ({
   name: "",
   email: "",
-  password: "",
 });
 
 const TeamPage: React.FC = () => {
-  const storedCompanyCode = readStoredCompanyCode();
-  const [step, setStep] = useState<Step>("form");
   const [formData, setFormData] = useState(emptyFormData);
-  const [manualCompanyCode, setManualCompanyCode] = useState("");
-  const [otpCode, setOtpCode] = useState("");
-  const [tempToken, setTempToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
-  const [resendNotice, setResendNotice] = useState<string | null>(null);
 
-  const { mutateAsync: registerMutation, isPending: isRegistering } =
-    useAuthControllerHrRegister();
-  const { mutateAsync: verifyMutation, isPending: isVerifying } =
-    useAuthControllerHrRegisterVerify();
-  const { mutateAsync: resendMutation, isPending: isResending } =
-    useAuthControllerResendOtp();
-
-  // 1초마다 쿨다운 감소
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const timer = setInterval(() => {
-      setResendCooldown((prev) => Math.max(prev - 1, 0));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [resendCooldown]);
-
-  const companyCode = storedCompanyCode ?? manualCompanyCode;
+  const { mutateAsync: inviteMutation, isPending: isInviting } =
+    useAuthControllerHrInvite();
 
   const isNameValid = formData.name.trim().length > 0;
   const isEmailValid = EMAIL_REGEX.test(formData.email);
-  const isPasswordValid = PASSWORD_REGEX.test(formData.password);
-  const isCompanyCodeValid = companyCode.trim().length > 0;
 
-  const isFormValid =
-    isNameValid && isEmailValid && isPasswordValid && isCompanyCodeValid;
+  const isFormValid = isNameValid && isEmailValid;
 
-  const requestOtp = async () => {
+  const invite = async () => {
     if (!isFormValid) return;
     setError(null);
     try {
-      const result = (await registerMutation({
-        data: { ...formData, companyCode },
-      })) as unknown as TempTokenResponse | undefined;
-      const nextTempToken = extractRequired(
-        result,
-        "tempToken",
-        "등록 응답에 임시 토큰이 없어요.",
-      );
-      setTempToken(nextTempToken);
-      setOtpCode("");
-      setStep("otp");
-      setResendCooldown(RESEND_COOLDOWN_SECONDS);
-      setResendNotice(null);
-    } catch (err) {
-      setError(
-        extractErrorMessage(err, "계정 생성 요청에 실패했어요. 다시 시도해주세요."),
-      );
-    }
-  };
-
-  const resendOtp = async () => {
-    if (!tempToken || resendCooldown > 0 || isResending) return;
-    setError(null);
-    setResendNotice(null);
-    try {
-      await resendMutation({ data: { tempToken } });
-      setResendCooldown(RESEND_COOLDOWN_SECONDS);
-      setResendNotice("인증번호를 다시 보냈어요.");
-    } catch (err) {
-      setError(
-        extractErrorMessage(err, "재전송에 실패했어요. 다시 시도해주세요."),
-      );
-    }
-  };
-
-  const backToForm = () => {
-    setStep("form");
-    setOtpCode("");
-    setTempToken(null);
-    setError(null);
-    setResendNotice(null);
-    setResendCooldown(0);
-  };
-
-  const submit = async () => {
-    if (otpCode.length < 6 || !tempToken) return;
-    setError(null);
-    try {
-      await verifyMutation({ data: { tempToken, otpCode } });
+      await inviteMutation({
+        data: { name: formData.name.trim(), email: formData.email },
+      });
       setDone(true);
     } catch (err) {
       setError(
-        extractErrorMessage(err, "인증번호가 올바르지 않아요. 다시 확인해 주세요."),
+        extractErrorMessage(
+          err,
+          "초대 메일 발송에 실패했어요. 다시 시도해주세요.",
+        ),
       );
     }
   };
 
-  const createAnother = () => {
+  const inviteAnother = () => {
     setDone(false);
-    setStep("form");
     setFormData(emptyFormData());
-    setManualCompanyCode("");
-    setOtpCode("");
-    setTempToken(null);
     setError(null);
-    setResendNotice(null);
-    setResendCooldown(0);
   };
 
   return (
@@ -152,33 +64,37 @@ const TeamPage: React.FC = () => {
           {done ? (
             <div className="space-y-6 text-center">
               <div className="bg-brand-light text-brand mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl">
-                <i className="ti ti-check" />
+                <i className="ti ti-mail-check" />
               </div>
               <div>
                 <h2 className="text-text1 mb-2 text-xl font-black">
-                  인사팀장 계정을 만들었어요
+                  초대 메일을 보냈어요
                 </h2>
                 <p className="text-text2 text-xs leading-relaxed font-medium">
-                  <b className="text-text1 font-bold">{formData.email}</b>{" "}
-                  계정으로 로그인할 수 있어요. 로그인 정보를 인사팀장님께
-                  전달해주세요.
+                  <b className="text-text1 font-bold">{formData.email}</b> 로
+                  초대 메일을 보냈어요. 인사팀장님이 메일의 링크에서 비밀번호를
+                  설정하면 로그인할 수 있어요.
+                </p>
+                <p className="text-2xs mt-2 font-bold text-gray-400">
+                  메일이 보이지 않으면 스팸함도 확인해달라고 안내해주세요.
                 </p>
               </div>
               <button
                 type="button"
-                onClick={createAnother}
+                onClick={inviteAnother}
                 className="bg-brand shadow-brand/30 hover:bg-brand-dark w-full rounded-2xl py-4 font-bold text-white shadow-xl transition-all active:scale-[0.98]"
               >
-                계정 추가로 만들기
+                다른 인사팀장 초대하기
               </button>
             </div>
-          ) : step === "form" ? (
+          ) : (
             <>
               <h2 className="text-text1 mb-1 text-xl font-black">
-                인사팀장 계정 생성
+                인사팀장 초대
               </h2>
               <p className="text-text2 mb-6 text-xs font-medium">
-                생성을 진행하면 인증번호가 대표님 이메일로 발송돼요.
+                입력한 이메일로 초대 메일이 발송돼요. 비밀번호는 인사팀장님이
+                직접 설정해요.
               </p>
               <div className="space-y-4">
                 <FormField
@@ -197,106 +113,24 @@ const TeamPage: React.FC = () => {
                   }
                   placeholder="인사팀장 이메일 (로그인 아이디)"
                   errorMessage={
-                    !isEmailValid ? "올바른 이메일 형식으로 입력해주세요." : undefined
-                  }
-                />
-                <FormField
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(value) =>
-                    setFormData({ ...formData, password: value })
-                  }
-                  placeholder="비밀번호"
-                  errorMessage={
-                    !isPasswordValid
-                      ? "6~10자, 영문 대소문자·숫자·특수문자(!@#$%^&*)를 각각 1개 이상 포함해주세요."
+                    !isEmailValid
+                      ? "올바른 이메일 형식으로 입력해주세요."
                       : undefined
                   }
                 />
-                {storedCompanyCode ? (
-                  <p className="text-2xs px-1 font-bold text-gray-400">
-                    회사 코드 {storedCompanyCode} 로 생성돼요.
-                  </p>
-                ) : (
-                  <FormField
-                    name="companyCode"
-                    value={manualCompanyCode}
-                    onChange={setManualCompanyCode}
-                    placeholder="회사 코드"
-                  />
-                )}
-                {!storedCompanyCode && (
-                  <p className="text-2xs -mt-2 px-1 font-bold text-gray-400">
-                    이 브라우저에 저장된 코드가 없어요. 회원가입 완료 화면에서
-                    안내된 코드를 입력해주세요.
-                  </p>
-                )}
               </div>
 
               {error && (
-                <p className="text-2xs mt-4 font-bold text-red-500">
-                  {error}
-                </p>
+                <p className="text-2xs mt-4 font-bold text-red-500">{error}</p>
               )}
 
               <button
                 type="button"
-                onClick={requestOtp}
-                disabled={!isFormValid || isRegistering}
+                onClick={invite}
+                disabled={!isFormValid || isInviting}
                 className="bg-brand shadow-brand/30 hover:bg-brand-dark mt-6 w-full rounded-2xl py-4 font-bold text-white shadow-xl transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
               >
-                {isRegistering ? "요청 중..." : "인증번호 받기"}
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={backToForm}
-                className="hover:text-text1 mb-6 flex items-center gap-1.5 text-xs font-bold text-gray-400 transition-colors"
-              >
-                <i className="ti ti-arrow-left text-sm" />
-                정보 입력으로
-              </button>
-              <p className="text-text2 mb-6 text-xs leading-relaxed font-medium">
-                대표 이메일로 인증번호 6자리를 발송했어요. 메일함을
-                확인해주세요.
-              </p>
-
-              <OtpInput value={otpCode} onChange={setOtpCode} autoFocus />
-
-              <div className="mt-3 flex items-center justify-between">
-                <p className="text-2xs font-bold text-gray-400">
-                  {resendNotice ?? "메일이 안 왔나요?"}
-                </p>
-                <button
-                  type="button"
-                  onClick={resendOtp}
-                  disabled={resendCooldown > 0 || isResending}
-                  className="text-2xs text-brand hover:text-brand-dark font-bold transition-colors disabled:cursor-not-allowed disabled:text-gray-300"
-                >
-                  {isResending
-                    ? "재전송 중..."
-                    : resendCooldown > 0
-                      ? `재전송 (${resendCooldown}초)`
-                      : "인증번호 재전송"}
-                </button>
-              </div>
-
-              {error && (
-                <p className="text-2xs mt-3 font-bold text-red-500">
-                  {error}
-                </p>
-              )}
-
-              <button
-                type="button"
-                onClick={submit}
-                disabled={otpCode.length < 6 || isVerifying}
-                className="bg-brand shadow-brand/30 hover:bg-brand-dark mt-6 w-full rounded-2xl py-4 font-bold text-white shadow-xl transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
-              >
-                {isVerifying ? "확인 중..." : "계정 생성 완료"}
+                {isInviting ? "발송 중..." : "초대 메일 보내기"}
               </button>
             </>
           )}

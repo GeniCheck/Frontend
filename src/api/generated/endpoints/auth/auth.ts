@@ -30,9 +30,12 @@ import type {
   CompanySignupDto,
   CompanySignupOtpRequestDto,
   CompanySignupOtpVerifyDto,
+  HrAcceptInviteDto,
+  HrInviteDto,
   HrLoginDto,
   HrOtpVerifyDto,
-  HrRegisterDto,
+  PasswordResetConfirmDto,
+  PasswordResetRequestDto,
   RefreshTokenDto,
   ResendOtpDto,
   VerifyEmailDto,
@@ -61,7 +64,7 @@ const withQueryKey = <T extends object, K>(
 };
 
 /**
- * @summary 지원자 회원가입 (완료 후 인증 이메일 자동 발송)
+ * @summary 지원자 회원가입 - 가입 완료 후 이메일 인증코드 자동 발송
  */
 export const authControllerApplicantSignup = (
   applicantSignupDto: ApplicantSignupDto,
@@ -131,7 +134,7 @@ export type AuthControllerApplicantSignupMutationVariables = {
 };
 
 /**
- * @summary 지원자 회원가입 (완료 후 인증 이메일 자동 발송)
+ * @summary 지원자 회원가입 - 가입 완료 후 이메일 인증코드 자동 발송
  */
 export const useAuthControllerApplicantSignup = <
   TError = void,
@@ -159,7 +162,7 @@ export const useAuthControllerApplicantSignup = <
   );
 };
 /**
- * @summary 지원자 이메일 인증 코드 확인
+ * @summary 지원자 회원가입 - 이메일 인증코드 확인
  */
 export const authControllerVerifyEmail = (
   verifyEmailDto: VerifyEmailDto,
@@ -229,7 +232,7 @@ export type AuthControllerVerifyEmailMutationVariables = {
 };
 
 /**
- * @summary 지원자 이메일 인증 코드 확인
+ * @summary 지원자 회원가입 - 이메일 인증코드 확인
  */
 export const useAuthControllerVerifyEmail = <TError = void, TContext = unknown>(
   options?: {
@@ -254,7 +257,7 @@ export const useAuthControllerVerifyEmail = <TError = void, TContext = unknown>(
   );
 };
 /**
- * @summary 지원자 로그인
+ * @summary 지원자 로그인 - 이메일/비밀번호 (가입 시 이메일 인증 필요)
  */
 export const authControllerApplicantLogin = (
   applicantLoginDto: ApplicantLoginDto,
@@ -324,7 +327,7 @@ export type AuthControllerApplicantLoginMutationVariables = {
 };
 
 /**
- * @summary 지원자 로그인
+ * @summary 지원자 로그인 - 이메일/비밀번호 (가입 시 이메일 인증 필요)
  */
 export const useAuthControllerApplicantLogin = <
   TError = void,
@@ -352,7 +355,7 @@ export const useAuthControllerApplicantLogin = <
   );
 };
 /**
- * @summary 기업 회원가입 (사업자등록번호 필수)
+ * @summary 기업대표 회원가입 3단계(최종) - 사업자 인증 + 본인 이메일 인증 토큰 검증 후 계정 생성
  */
 export const authControllerCompanySignup = (
   companySignupDto: CompanySignupDto,
@@ -422,7 +425,7 @@ export type AuthControllerCompanySignupMutationVariables = {
 };
 
 /**
- * @summary 기업 회원가입 (사업자등록번호 필수)
+ * @summary 기업대표 회원가입 3단계(최종) - 사업자 인증 + 본인 이메일 인증 토큰 검증 후 계정 생성
  */
 export const useAuthControllerCompanySignup = <
   TError = void,
@@ -450,7 +453,7 @@ export const useAuthControllerCompanySignup = <
   );
 };
 /**
- * @summary 기업가입 1단계 - 사업자 정보 인증
+ * @summary 기업대표 회원가입 1단계 - 사업자등록번호 진위 확인
  */
 export const authControllerVerifyCompanyBusiness = (
   companyBusinessVerifyDto: CompanyBusinessVerifyDto,
@@ -521,7 +524,7 @@ export type AuthControllerVerifyCompanyBusinessMutationVariables = {
 };
 
 /**
- * @summary 기업가입 1단계 - 사업자 정보 인증
+ * @summary 기업대표 회원가입 1단계 - 사업자등록번호 진위 확인
  */
 export const useAuthControllerVerifyCompanyBusiness = <
   TError = void,
@@ -549,7 +552,7 @@ export const useAuthControllerVerifyCompanyBusiness = <
   );
 };
 /**
- * @summary CEO 로그인 1단계 - 이메일/비밀번호 인증
+ * @summary 기업대표 로그인 1단계 - 이메일/비밀번호 확인 후 본인 이메일로 인증코드 발송
  */
 export const authControllerCompanyLogin = (
   companyLoginDto: CompanyLoginDto,
@@ -619,7 +622,7 @@ export type AuthControllerCompanyLoginMutationVariables = {
 };
 
 /**
- * @summary CEO 로그인 1단계 - 이메일/비밀번호 인증
+ * @summary 기업대표 로그인 1단계 - 이메일/비밀번호 확인 후 본인 이메일로 인증코드 발송
  */
 export const useAuthControllerCompanyLogin = <
   TError = void,
@@ -647,7 +650,7 @@ export const useAuthControllerCompanyLogin = <
   );
 };
 /**
- * @summary CEO 로그인 2단계 - OTP 검증
+ * @summary 기업대표 로그인 2단계 - 본인 이메일 인증코드 확인 후 토큰 발급
  */
 export const authControllerCompanyOtpVerify = (
   companyOtpVerifyDto: CompanyOtpVerifyDto,
@@ -717,7 +720,7 @@ export type AuthControllerCompanyOtpVerifyMutationVariables = {
 };
 
 /**
- * @summary CEO 로그인 2단계 - OTP 검증
+ * @summary 기업대표 로그인 2단계 - 본인 이메일 인증코드 확인 후 토큰 발급
  */
 export const useAuthControllerCompanyOtpVerify = <
   TError = void,
@@ -745,46 +748,46 @@ export const useAuthControllerCompanyOtpVerify = <
   );
 };
 /**
- * @summary HR signup - company code and personal email verification
+ * @summary 인사팀장 초대 - 대표가 로그인한 상태에서 이름/이메일만 입력, HR 본인 이메일로 초대 메일 발송 (COMPANY 권한 필요)
  */
-export const authControllerHrRegister = (
-  hrRegisterDto: HrRegisterDto,
+export const authControllerHrInvite = (
+  hrInviteDto: HrInviteDto,
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
   return customInstance<void>(
     {
-      url: `/api/v1/auth/hr/register`,
+      url: `/api/v1/auth/hr/invite`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      data: hrRegisterDto,
+      data: hrInviteDto,
       signal,
     },
     options,
   );
 };
 
-export const getAuthControllerHrRegisterMutationKey = () =>
-  ["authControllerHrRegister"] as const;
+export const getAuthControllerHrInviteMutationKey = () =>
+  ["authControllerHrInvite"] as const;
 
-export const getAuthControllerHrRegisterMutationOptions = <
+export const getAuthControllerHrInviteMutationOptions = <
   TError = void,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof authControllerHrRegister>>,
+    Awaited<ReturnType<typeof authControllerHrInvite>>,
     TError,
-    AuthControllerHrRegisterMutationVariables,
+    AuthControllerHrInviteMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof authControllerHrRegister>>,
+  Awaited<ReturnType<typeof authControllerHrInvite>>,
   TError,
-  AuthControllerHrRegisterMutationVariables,
+  AuthControllerHrInviteMutationVariables,
   TContext
 > => {
-  const mutationKey = getAuthControllerHrRegisterMutationKey();
+  const mutationKey = getAuthControllerHrInviteMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       "mutationKey" in options.mutation &&
@@ -794,90 +797,90 @@ export const getAuthControllerHrRegisterMutationOptions = <
     : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof authControllerHrRegister>>,
-    AuthControllerHrRegisterMutationVariables
+    Awaited<ReturnType<typeof authControllerHrInvite>>,
+    AuthControllerHrInviteMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
-    return authControllerHrRegister(data, requestOptions);
+    return authControllerHrInvite(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type AuthControllerHrRegisterMutationResult = NonNullable<
-  Awaited<ReturnType<typeof authControllerHrRegister>>
+export type AuthControllerHrInviteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof authControllerHrInvite>>
 >;
-export type AuthControllerHrRegisterMutationBody = HrRegisterDto;
-export type AuthControllerHrRegisterMutationError = void;
-export type AuthControllerHrRegisterMutationVariables = { data: HrRegisterDto };
+export type AuthControllerHrInviteMutationBody = HrInviteDto;
+export type AuthControllerHrInviteMutationError = void;
+export type AuthControllerHrInviteMutationVariables = { data: HrInviteDto };
 
 /**
- * @summary HR signup - company code and personal email verification
+ * @summary 인사팀장 초대 - 대표가 로그인한 상태에서 이름/이메일만 입력, HR 본인 이메일로 초대 메일 발송 (COMPANY 권한 필요)
  */
-export const useAuthControllerHrRegister = <TError = void, TContext = unknown>(
+export const useAuthControllerHrInvite = <TError = void, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof authControllerHrRegister>>,
+      Awaited<ReturnType<typeof authControllerHrInvite>>,
       TError,
-      AuthControllerHrRegisterMutationVariables,
+      AuthControllerHrInviteMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
-  Awaited<ReturnType<typeof authControllerHrRegister>>,
+  Awaited<ReturnType<typeof authControllerHrInvite>>,
   TError,
-  AuthControllerHrRegisterMutationVariables,
+  AuthControllerHrInviteMutationVariables,
   TContext
 > => {
   return useMutation(
-    getAuthControllerHrRegisterMutationOptions(options),
+    getAuthControllerHrInviteMutationOptions(options),
     queryClient,
   );
 };
 /**
- * @summary HR signup step 2 - verify personal email and create account
+ * @summary 인사팀장 초대 수락 - 초대 메일의 링크를 통해 HR 본인이 비밀번호를 설정하고 가입 완료
  */
-export const authControllerHrRegisterVerify = (
-  hrOtpVerifyDto: HrOtpVerifyDto,
+export const authControllerHrAcceptInvite = (
+  hrAcceptInviteDto: HrAcceptInviteDto,
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
   return customInstance<void>(
     {
-      url: `/api/v1/auth/hr/register/verify`,
+      url: `/api/v1/auth/hr/accept-invite`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      data: hrOtpVerifyDto,
+      data: hrAcceptInviteDto,
       signal,
     },
     options,
   );
 };
 
-export const getAuthControllerHrRegisterVerifyMutationKey = () =>
-  ["authControllerHrRegisterVerify"] as const;
+export const getAuthControllerHrAcceptInviteMutationKey = () =>
+  ["authControllerHrAcceptInvite"] as const;
 
-export const getAuthControllerHrRegisterVerifyMutationOptions = <
+export const getAuthControllerHrAcceptInviteMutationOptions = <
   TError = void,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof authControllerHrRegisterVerify>>,
+    Awaited<ReturnType<typeof authControllerHrAcceptInvite>>,
     TError,
-    AuthControllerHrRegisterVerifyMutationVariables,
+    AuthControllerHrAcceptInviteMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof authControllerHrRegisterVerify>>,
+  Awaited<ReturnType<typeof authControllerHrAcceptInvite>>,
   TError,
-  AuthControllerHrRegisterVerifyMutationVariables,
+  AuthControllerHrAcceptInviteMutationVariables,
   TContext
 > => {
-  const mutationKey = getAuthControllerHrRegisterVerifyMutationKey();
+  const mutationKey = getAuthControllerHrAcceptInviteMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       "mutationKey" in options.mutation &&
@@ -887,56 +890,56 @@ export const getAuthControllerHrRegisterVerifyMutationOptions = <
     : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof authControllerHrRegisterVerify>>,
-    AuthControllerHrRegisterVerifyMutationVariables
+    Awaited<ReturnType<typeof authControllerHrAcceptInvite>>,
+    AuthControllerHrAcceptInviteMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
-    return authControllerHrRegisterVerify(data, requestOptions);
+    return authControllerHrAcceptInvite(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type AuthControllerHrRegisterVerifyMutationResult = NonNullable<
-  Awaited<ReturnType<typeof authControllerHrRegisterVerify>>
+export type AuthControllerHrAcceptInviteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof authControllerHrAcceptInvite>>
 >;
-export type AuthControllerHrRegisterVerifyMutationBody = HrOtpVerifyDto;
-export type AuthControllerHrRegisterVerifyMutationError = void;
-export type AuthControllerHrRegisterVerifyMutationVariables = {
-  data: HrOtpVerifyDto;
+export type AuthControllerHrAcceptInviteMutationBody = HrAcceptInviteDto;
+export type AuthControllerHrAcceptInviteMutationError = void;
+export type AuthControllerHrAcceptInviteMutationVariables = {
+  data: HrAcceptInviteDto;
 };
 
 /**
- * @summary HR signup step 2 - verify personal email and create account
+ * @summary 인사팀장 초대 수락 - 초대 메일의 링크를 통해 HR 본인이 비밀번호를 설정하고 가입 완료
  */
-export const useAuthControllerHrRegisterVerify = <
+export const useAuthControllerHrAcceptInvite = <
   TError = void,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof authControllerHrRegisterVerify>>,
+      Awaited<ReturnType<typeof authControllerHrAcceptInvite>>,
       TError,
-      AuthControllerHrRegisterVerifyMutationVariables,
+      AuthControllerHrAcceptInviteMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
-  Awaited<ReturnType<typeof authControllerHrRegisterVerify>>,
+  Awaited<ReturnType<typeof authControllerHrAcceptInvite>>,
   TError,
-  AuthControllerHrRegisterVerifyMutationVariables,
+  AuthControllerHrAcceptInviteMutationVariables,
   TContext
 > => {
   return useMutation(
-    getAuthControllerHrRegisterVerifyMutationOptions(options),
+    getAuthControllerHrAcceptInviteMutationOptions(options),
     queryClient,
   );
 };
 /**
- * @summary HR login step 1 - email/password, then company email verification
+ * @summary 인사팀장 로그인 1단계 - 본인 email/password 확인 후 대표 이메일로 인증코드 발송
  */
 export const authControllerHrLogin = (
   hrLoginDto: HrLoginDto,
@@ -1004,7 +1007,7 @@ export type AuthControllerHrLoginMutationError = void;
 export type AuthControllerHrLoginMutationVariables = { data: HrLoginDto };
 
 /**
- * @summary HR login step 1 - email/password, then company email verification
+ * @summary 인사팀장 로그인 1단계 - 본인 email/password 확인 후 대표 이메일로 인증코드 발송
  */
 export const useAuthControllerHrLogin = <TError = void, TContext = unknown>(
   options?: {
@@ -1029,7 +1032,7 @@ export const useAuthControllerHrLogin = <TError = void, TContext = unknown>(
   );
 };
 /**
- * @summary HR login step 2 - verify company official email code
+ * @summary 인사팀장 로그인 2단계 - 대표 이메일 인증 코드 검증 후 토큰 발급
  */
 export const authControllerHrOtpVerify = (
   hrOtpVerifyDto: HrOtpVerifyDto,
@@ -1099,7 +1102,7 @@ export type AuthControllerHrOtpVerifyMutationVariables = {
 };
 
 /**
- * @summary HR login step 2 - verify company official email code
+ * @summary 인사팀장 로그인 2단계 - 대표 이메일 인증 코드 검증 후 토큰 발급
  */
 export const useAuthControllerHrOtpVerify = <TError = void, TContext = unknown>(
   options?: {
@@ -1217,7 +1220,7 @@ export const useAuthControllerRefresh = <TError = void, TContext = unknown>(
   );
 };
 /**
- * @summary 회원가입 대표 OTP 요청·재요청
+ * @summary 기업대표 회원가입 2단계 - 본인 이메일로 인증코드 발송(재발송 포함)
  */
 export const authControllerRequestCompanySignupOtp = (
   companySignupOtpRequestDto: CompanySignupOtpRequestDto,
@@ -1288,7 +1291,7 @@ export type AuthControllerRequestCompanySignupOtpMutationVariables = {
 };
 
 /**
- * @summary 회원가입 대표 OTP 요청·재요청
+ * @summary 기업대표 회원가입 2단계 - 본인 이메일로 인증코드 발송(재발송 포함)
  */
 export const useAuthControllerRequestCompanySignupOtp = <
   TError = unknown,
@@ -1316,7 +1319,7 @@ export const useAuthControllerRequestCompanySignupOtp = <
   );
 };
 /**
- * @summary 회원가입 대표 OTP 인증
+ * @summary 기업대표 회원가입 2단계 - 본인 이메일 인증코드 확인, 최종가입용 토큰 발급
  */
 export const authControllerVerifyCompanySignupOtp = (
   companySignupOtpVerifyDto: CompanySignupOtpVerifyDto,
@@ -1387,7 +1390,7 @@ export type AuthControllerVerifyCompanySignupOtpMutationVariables = {
 };
 
 /**
- * @summary 회원가입 대표 OTP 인증
+ * @summary 기업대표 회원가입 2단계 - 본인 이메일 인증코드 확인, 최종가입용 토큰 발급
  */
 export const useAuthControllerVerifyCompanySignupOtp = <
   TError = void,
@@ -1507,6 +1510,204 @@ export const useAuthControllerResendOtp = <
 > => {
   return useMutation(
     getAuthControllerResendOtpMutationOptions(options),
+    queryClient,
+  );
+};
+/**
+ * @summary 비밀번호 재설정 요청 - 대표 또는 HR 본인 이메일로 재설정 코드 발송
+ */
+export const authControllerRequestPasswordReset = (
+  passwordResetRequestDto: PasswordResetRequestDto,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/v1/auth/password/reset/request`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: passwordResetRequestDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getAuthControllerRequestPasswordResetMutationKey = () =>
+  ["authControllerRequestPasswordReset"] as const;
+
+export const getAuthControllerRequestPasswordResetMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof authControllerRequestPasswordReset>>,
+    TError,
+    AuthControllerRequestPasswordResetMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof authControllerRequestPasswordReset>>,
+  TError,
+  AuthControllerRequestPasswordResetMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAuthControllerRequestPasswordResetMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof authControllerRequestPasswordReset>>,
+    AuthControllerRequestPasswordResetMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return authControllerRequestPasswordReset(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AuthControllerRequestPasswordResetMutationResult = NonNullable<
+  Awaited<ReturnType<typeof authControllerRequestPasswordReset>>
+>;
+export type AuthControllerRequestPasswordResetMutationBody =
+  PasswordResetRequestDto;
+export type AuthControllerRequestPasswordResetMutationError = unknown;
+export type AuthControllerRequestPasswordResetMutationVariables = {
+  data: PasswordResetRequestDto;
+};
+
+/**
+ * @summary 비밀번호 재설정 요청 - 대표 또는 HR 본인 이메일로 재설정 코드 발송
+ */
+export const useAuthControllerRequestPasswordReset = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof authControllerRequestPasswordReset>>,
+      TError,
+      AuthControllerRequestPasswordResetMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof authControllerRequestPasswordReset>>,
+  TError,
+  AuthControllerRequestPasswordResetMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getAuthControllerRequestPasswordResetMutationOptions(options),
+    queryClient,
+  );
+};
+/**
+ * @summary 비밀번호 재설정 확인 - 본인 이메일로 받은 코드 검증 후 새 비밀번호 반영
+ */
+export const authControllerConfirmPasswordReset = (
+  passwordResetConfirmDto: PasswordResetConfirmDto,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/v1/auth/password/reset/confirm`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: passwordResetConfirmDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getAuthControllerConfirmPasswordResetMutationKey = () =>
+  ["authControllerConfirmPasswordReset"] as const;
+
+export const getAuthControllerConfirmPasswordResetMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof authControllerConfirmPasswordReset>>,
+    TError,
+    AuthControllerConfirmPasswordResetMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof authControllerConfirmPasswordReset>>,
+  TError,
+  AuthControllerConfirmPasswordResetMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAuthControllerConfirmPasswordResetMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof authControllerConfirmPasswordReset>>,
+    AuthControllerConfirmPasswordResetMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return authControllerConfirmPasswordReset(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AuthControllerConfirmPasswordResetMutationResult = NonNullable<
+  Awaited<ReturnType<typeof authControllerConfirmPasswordReset>>
+>;
+export type AuthControllerConfirmPasswordResetMutationBody =
+  PasswordResetConfirmDto;
+export type AuthControllerConfirmPasswordResetMutationError = void;
+export type AuthControllerConfirmPasswordResetMutationVariables = {
+  data: PasswordResetConfirmDto;
+};
+
+/**
+ * @summary 비밀번호 재설정 확인 - 본인 이메일로 받은 코드 검증 후 새 비밀번호 반영
+ */
+export const useAuthControllerConfirmPasswordReset = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof authControllerConfirmPasswordReset>>,
+      TError,
+      AuthControllerConfirmPasswordResetMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof authControllerConfirmPasswordReset>>,
+  TError,
+  AuthControllerConfirmPasswordResetMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getAuthControllerConfirmPasswordResetMutationOptions(options),
     queryClient,
   );
 };
