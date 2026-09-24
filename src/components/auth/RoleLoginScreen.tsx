@@ -193,15 +193,6 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
           <span className="text-xl font-black">GeniCheck</span>
         </div>
 
-        {/* 좌측 상단 돌아가기 */}
-        <div
-          onClick={() => navigate("/login")}
-          className="hover:text-brand absolute top-20 left-6 z-10 flex cursor-pointer items-center gap-1.5 text-xs font-bold text-gray-400 transition-colors lg:top-6"
-        >
-          <i className="ti ti-arrow-back text-base" />
-          역할 선택으로
-        </div>
-
         <div className="mx-auto w-full max-w-md text-left">
           {step === "credentials" ? (
             <>
@@ -257,7 +248,7 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
                 <button
                   type="submit"
                   disabled={isLoggingIn}
-                  className={`mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
+                  className={`mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
                 >
                   {isLoggingIn ? "확인 중..." : "인증번호 받기"}
                 </button>
