@@ -100,7 +100,7 @@ const PasswordResetPage: React.FC<PasswordResetPageProps> = ({ role }) => {
     setNotice(null);
   };
 
-  const buttonClass = `w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`;
+  const buttonClass = `w-full rounded-xl py-3.5 text-sm font-bold text-white transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`;
 
   return (
     <div className="bg-surface text-text1 flex min-h-screen flex-col items-center justify-center px-6 py-12">

@@ -13,7 +13,7 @@ export const TONES: Record<
   }
 > = {
   purple: {
-    solid: "bg-brand hover:bg-brand-dark shadow-brand/20",
+    solid: "bg-brand hover:bg-brand-dark",
     bannerBg: "bg-brand",
     blob: "bg-brand2/40",
     inputFocus: "focus:border-brand focus:ring-brand/15",
@@ -22,7 +22,7 @@ export const TONES: Record<
     iconBox: "bg-brand-light text-brand",
   },
   amber: {
-    solid: "bg-accent hover:bg-accent-dark shadow-accent/20",
+    solid: "bg-accent hover:bg-accent-dark",
     bannerBg: "bg-accent",
     blob: "bg-amber-400/40",
     inputFocus: "focus:border-accent focus:ring-accent/15",

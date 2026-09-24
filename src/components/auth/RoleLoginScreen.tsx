@@ -312,7 +312,7 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
                 type="button"
                 onClick={verify}
                 disabled={code.length < 6 || isVerifying}
-                className={`mt-6 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
+                className={`mt-6 w-full rounded-xl py-3.5 text-sm font-bold text-white transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
               >
                 {isVerifying ? "확인 중..." : "로그인"}
               </button>
