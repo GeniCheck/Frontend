@@ -10,7 +10,6 @@ import {
   ROLE_STORAGE_KEY,
   ACCESS_TOKEN_STORAGE_KEY,
   REFRESH_TOKEN_STORAGE_KEY,
-  COMPANY_CODE_STORAGE_KEY,
   readStoredRole,
 } from "./roleContext";
 import type { Role, SessionTokens } from "./roleContext";
@@ -55,7 +54,6 @@ export const RoleProvider = ({ children }: { children: ReactNode }) => {
     window.localStorage.removeItem(ROLE_STORAGE_KEY);
     window.localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
     window.localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
-    window.localStorage.removeItem(COMPANY_CODE_STORAGE_KEY);
     queryClient.removeQueries({ queryKey: getAuthControllerGetMeQueryKey() });
   }, [queryClient]);
 
