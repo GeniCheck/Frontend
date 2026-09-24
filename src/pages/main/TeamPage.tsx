@@ -22,7 +22,8 @@ const TeamPage: React.FC = () => {
 
   const isFormValid = isNameValid && isEmailValid;
 
-  const invite = async () => {
+  const invite = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!isFormValid) return;
     setError(null);
     try {
@@ -96,42 +97,45 @@ const TeamPage: React.FC = () => {
                 입력한 이메일로 초대 메일이 발송돼요. 비밀번호는 인사팀장님이
                 직접 설정해요.
               </p>
-              <div className="space-y-4">
-                <FormField
-                  name="name"
-                  value={formData.name}
-                  onChange={(value) =>
-                    setFormData({ ...formData, name: value })
-                  }
-                  placeholder="인사팀장 이름"
-                />
-                <FormField
-                  name="email"
-                  value={formData.email}
-                  onChange={(value) =>
-                    setFormData({ ...formData, email: value })
-                  }
-                  placeholder="인사팀장 이메일 (로그인 아이디)"
-                  errorMessage={
-                    !isEmailValid
-                      ? "올바른 이메일 형식으로 입력해주세요."
-                      : undefined
-                  }
-                />
-              </div>
+              <form onSubmit={invite}>
+                <div className="space-y-4">
+                  <FormField
+                    name="name"
+                    value={formData.name}
+                    onChange={(value) =>
+                      setFormData({ ...formData, name: value })
+                    }
+                    placeholder="인사팀장 이름"
+                  />
+                  <FormField
+                    name="email"
+                    value={formData.email}
+                    onChange={(value) =>
+                      setFormData({ ...formData, email: value })
+                    }
+                    placeholder="인사팀장 이메일 (로그인 아이디)"
+                    errorMessage={
+                      !isEmailValid
+                        ? "올바른 이메일 형식으로 입력해주세요."
+                        : undefined
+                    }
+                  />
+                </div>
 
-              {error && (
-                <p className="text-2xs mt-4 font-bold text-red-500">{error}</p>
-              )}
+                {error && (
+                  <p className="text-2xs mt-4 font-bold text-red-500">
+                    {error}
+                  </p>
+                )}
 
-              <button
-                type="button"
-                onClick={invite}
-                disabled={!isFormValid || isInviting}
-                className="bg-brand shadow-brand/30 hover:bg-brand-dark mt-6 w-full rounded-2xl py-4 font-bold text-white shadow-xl transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
-              >
-                {isInviting ? "발송 중..." : "초대 메일 보내기"}
-              </button>
+                <button
+                  type="submit"
+                  disabled={!isFormValid || isInviting}
+                  className="bg-brand shadow-brand/30 hover:bg-brand-dark mt-6 w-full rounded-2xl py-4 font-bold text-white shadow-xl transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                >
+                  {isInviting ? "발송 중..." : "초대 메일 보내기"}
+                </button>
+              </form>
             </>
           )}
         </div>

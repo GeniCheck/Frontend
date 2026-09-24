@@ -3,7 +3,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthControllerHrAcceptInvite } from "@/api/generated/endpoints/auth/auth";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
 import FormField from "@/components/auth/FormField";
-import { PASSWORD_REGEX } from "@/components/auth/validators";
+import {
+  PASSWORD_REGEX,
+  PASSWORD_RULE_MESSAGE,
+} from "@/components/auth/validators";
 
 const HrAcceptInvitePage: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +36,7 @@ const HrAcceptInvitePage: React.FC = () => {
       setError(
         extractErrorMessage(
           err,
-          "비밀번호 설정에 실패했어요. 초대 링크가 만료됐다면 대표님께 초대를 다시 요청해주세요.",
+          "비밀번호 설정에 실패했어요. 잠시 후 다시 시도해주세요.",
         ),
       );
     }
@@ -106,9 +109,7 @@ const HrAcceptInvitePage: React.FC = () => {
                 onChange={setPassword}
                 placeholder="새 비밀번호"
                 errorMessage={
-                  !isPasswordValid
-                    ? "6~10자, 영문 대소문자·숫자·특수문자(!@#$%^&*)를 각각 1개 이상 포함해주세요."
-                    : undefined
+                  !isPasswordValid ? PASSWORD_RULE_MESSAGE : undefined
                 }
               />
               <FormField

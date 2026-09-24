@@ -13,6 +13,7 @@ import OtpInput from "./OtpInput";
 import FormField, { inputClass } from "./FormField";
 import {
   PASSWORD_REGEX,
+  PASSWORD_RULE_MESSAGE,
   BUSINESS_NUMBER_REGEX,
   COMPANY_NAME_REGEX,
   EMAIL_REGEX,
@@ -275,9 +276,7 @@ const CompanySignupForm: React.FC = () => {
               onChange={setField("password")}
               placeholder="비밀번호를 설정해주세요"
               errorMessage={
-                !isPasswordValid
-                  ? "6~10자, 영문 대소문자·숫자·특수문자(!@#$%^&*)를 각각 1개 이상 포함해주세요."
-                  : undefined
+                !isPasswordValid ? PASSWORD_RULE_MESSAGE : undefined
               }
             />
             <div className="space-y-1.5">
