@@ -16,6 +16,7 @@ import LoginPage from "@/pages/auth/LoginPage"; // 역할 선택 화면
 import CeoLoginPage from "@/pages/auth/CeoLoginPage";
 import HrLoginPage from "@/pages/auth/HrLoginPage";
 import SignupPage from "@/pages/auth/SignupPage"; // 여기서 내부 분기 처리
+import HrAcceptInvitePage from "@/pages/auth/HrAcceptInvitePage";
 
 // ─── 3. VERIFICATION 도메인 영역 (링크 토큰 기반, 로그인 불필요) ───
 import SelfDeclarePage from "@/pages/verification/SelfDeclarePage";
@@ -52,6 +53,7 @@ function App() {
 
           {/* 회원가입 루트 경로 */}
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/hr/accept-invite" element={<HrAcceptInvitePage />} />
 
           {/* 직원용 자기선언 페이지: 1회성 링크 토큰 기반, 로그인 불필요 */}
           <Route
