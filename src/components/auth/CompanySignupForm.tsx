@@ -8,7 +8,6 @@ import {
 } from "@/api/generated/endpoints/auth/auth";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
 import { extractRequired } from "@/api/extractRequired";
-import { COMPANY_CODE_STORAGE_KEY } from "@/context/roleContext";
 import OtpInput from "./OtpInput";
 import FormField, { inputClass } from "./FormField";
 import {
@@ -27,9 +26,6 @@ interface CompanySignupOtpVerifyResponse {
 interface CompanyBusinessVerifyResponse {
   businessVerificationToken: string;
 }
-interface CompanySignupResponse {
-  companyCode: string;
-}
 
 const CompanySignupForm: React.FC = () => {
   const navigate = useNavigate();
@@ -46,10 +42,6 @@ const CompanySignupForm: React.FC = () => {
   const [businessVerificationToken, setBusinessVerificationToken] = useState<
     string | null
   >(null);
-  const [companyCode, setCompanyCode] = useState<string | null>(null);
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
-    "idle",
-  );
   const [error, setError] = useState<string | null>(null);
 
   const { mutateAsync: requestOtpMutation, isPending: isRequestingOtp } =
@@ -135,7 +127,7 @@ const CompanySignupForm: React.FC = () => {
         "이메일 인증 응답에 토큰이 없어요.",
       );
 
-      const signupResult = (await signupMutation({
+      await signupMutation({
         data: {
           ...formData,
           companyName: formData.companyName.trim(),
@@ -144,28 +136,11 @@ const CompanySignupForm: React.FC = () => {
           emailVerificationToken,
           businessVerificationToken,
         },
-      })) as unknown as CompanySignupResponse | undefined;
-
-      if (signupResult?.companyCode) {
-        window.localStorage.setItem(
-          COMPANY_CODE_STORAGE_KEY,
-          signupResult.companyCode,
-        );
-        setCompanyCode(signupResult.companyCode);
-      }
+      });
       setStep("done");
     } catch (err) {
       setError(extractErrorMessage(err, "회원가입에 실패했어요. 다시 시도해주세요."));
     }
-  };
-
-  const copyCompanyCode = () => {
-    if (!companyCode) return;
-    navigator.clipboard
-      .writeText(companyCode)
-      .then(() => setCopyState("copied"))
-      .catch(() => setCopyState("failed"));
-    setTimeout(() => setCopyState("idle"), 2000);
   };
 
   return (
@@ -180,43 +155,9 @@ const CompanySignupForm: React.FC = () => {
               회원가입이 완료됐어요
             </h2>
             <p className="text-text2 text-xs leading-relaxed font-medium">
-              아래 회사 코드는 인사팀장 계정을 만들 때 필요해요. 다시 확인할
-              수 없으니 꼭 저장해두세요.
+              가입한 이메일과 비밀번호로 로그인해주세요.
             </p>
           </div>
-          {companyCode && (
-            <div className="flex items-center justify-center gap-2 rounded-2xl bg-gray-50 px-5 py-4">
-              <span className="text-text1 text-lg font-black tracking-widest">
-                {companyCode}
-              </span>
-              <button
-                type="button"
-                onClick={copyCompanyCode}
-                className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-bold transition-all active:scale-95 ${
-                  copyState === "copied"
-                    ? "bg-emerald-50 text-emerald-600"
-                    : copyState === "failed"
-                      ? "bg-red-50 text-red-500"
-                      : "text-text2 hover:text-text1 hover:bg-gray-100"
-                }`}
-              >
-                <i
-                  className={`ti text-sm ${
-                    copyState === "copied"
-                      ? "ti-check"
-                      : copyState === "failed"
-                        ? "ti-alert-circle"
-                        : "ti-copy"
-                  }`}
-                />
-                {copyState === "copied"
-                  ? "복사됨"
-                  : copyState === "failed"
-                    ? "복사 실패"
-                    : "복사"}
-              </button>
-            </div>
-          )}
           <button
             type="button"
             onClick={() => navigate("/login/ceo", { replace: true })}
