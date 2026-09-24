@@ -33,6 +33,7 @@ const PUBLIC_AUTH_PATHS = [
   "/auth/hr/login",
   "/auth/hr/otp/verify",
   "/auth/hr/accept-invite",
+  "/auth/password/reset",
   "/auth/otp/resend",
   REFRESH_PATH,
 ];
