@@ -57,7 +57,7 @@ const HrLoginPage: React.FC = () => {
       heading="인사팀장 로그인"
       subheading="초대받은 이메일과 설정한 비밀번호로 로그인해 주세요."
       idLabel="이메일"
-      idPlaceholder="대표님께 전달받은 이메일"
+      idPlaceholder="초대받은 이메일"
       otpNotice={
         <>
           시스템이 <b className="text-text1 font-bold">대표님 이메일</b>로

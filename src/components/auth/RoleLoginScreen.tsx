@@ -4,42 +4,9 @@ import { useRole } from "@/context/roleContext";
 import type { Role } from "@/context/roleContext";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
 import OtpInput from "./OtpInput";
+import { TONES, type Tone } from "./tones";
 
 const RESEND_COOLDOWN = 30;
-
-type Tone = "purple" | "amber";
-
-const TONES: Record<
-  Tone,
-  {
-    solid: string;
-    bannerBg: string;
-    blob: string;
-    inputFocus: string;
-    otpFocus: string;
-    link: string;
-    iconBox: string;
-  }
-> = {
-  purple: {
-    solid: "bg-brand hover:bg-brand-dark shadow-brand/20",
-    bannerBg: "bg-brand",
-    blob: "bg-brand2/40",
-    inputFocus: "focus:border-brand focus:ring-brand/15",
-    otpFocus: "focus:border-brand focus:ring-brand/25",
-    link: "text-brand",
-    iconBox: "bg-brand-light text-brand",
-  },
-  amber: {
-    solid: "bg-accent hover:bg-accent-dark shadow-accent/20",
-    bannerBg: "bg-accent",
-    blob: "bg-amber-400/40",
-    inputFocus: "focus:border-accent focus:ring-accent/15",
-    otpFocus: "focus:border-accent focus:ring-accent/25",
-    link: "text-accent",
-    iconBox: "bg-accent-light text-accent",
-  },
-};
 
 export interface RoleLoginScreenProps {
   role: Role;
@@ -226,15 +193,6 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
           <span className="text-xl font-black">GeniCheck</span>
         </div>
 
-        {/* 좌측 상단 돌아가기 */}
-        <div
-          onClick={() => navigate("/login")}
-          className="hover:text-brand absolute top-20 left-6 z-10 flex cursor-pointer items-center gap-1.5 text-xs font-bold text-gray-400 transition-colors lg:top-6"
-        >
-          <i className="ti ti-arrow-back text-base" />
-          역할 선택으로
-        </div>
-
         <div className="mx-auto w-full max-w-md text-left">
           {step === "credentials" ? (
             <>
@@ -290,9 +248,16 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
                 <button
                   type="submit"
                   disabled={isLoggingIn}
-                  className={`mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
+                  className={`mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
                 >
                   {isLoggingIn ? "확인 중..." : "인증번호 받기"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/login/${role}/reset-password`)}
+                  className={`ml-auto block text-xs font-bold transition-opacity hover:opacity-80 ${t.link}`}
+                >
+                  비밀번호를 잊으셨나요?
                 </button>
               </form>
             </>
@@ -347,7 +312,7 @@ const RoleLoginScreen: React.FC<RoleLoginScreenProps> = ({
                 type="button"
                 onClick={verify}
                 disabled={code.length < 6 || isVerifying}
-                className={`mt-6 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
+                className={`mt-6 w-full rounded-xl py-3.5 text-sm font-bold text-white transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${t.solid}`}
               >
                 {isVerifying ? "확인 중..." : "로그인"}
               </button>

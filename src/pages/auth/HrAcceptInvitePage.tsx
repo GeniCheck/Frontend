@@ -88,7 +88,7 @@ const HrAcceptInvitePage: React.FC = () => {
             <button
               type="button"
               onClick={goToLogin}
-              className="bg-accent hover:bg-accent-dark shadow-accent/20 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px]"
+              className="bg-accent hover:bg-accent-dark w-full rounded-xl py-3.5 text-sm font-bold text-white transition-all hover:translate-y-[-1px]"
             >
               로그인하러 가기
             </button>
@@ -133,7 +133,7 @@ const HrAcceptInvitePage: React.FC = () => {
               <button
                 type="submit"
                 disabled={!isFormValid || isAccepting}
-                className="bg-accent hover:bg-accent-dark shadow-accent/20 mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                className="bg-accent hover:bg-accent-dark mt-2 w-full rounded-xl py-3.5 text-sm font-bold text-white transition-all hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
               >
                 {isAccepting ? "설정 중..." : "비밀번호 설정하기"}
               </button>
