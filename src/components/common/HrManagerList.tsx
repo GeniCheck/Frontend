@@ -129,7 +129,7 @@ const HrManagerList: React.FC = () => {
                         type="button"
                         onClick={() => openConfirm(null)}
                         disabled={isDeleting}
-                        className="hover:text-text1 text-xs font-bold text-gray-400 disabled:opacity-40"
+                        className="text-text2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-40"
                       >
                         아니요
                       </button>
@@ -137,7 +137,7 @@ const HrManagerList: React.FC = () => {
                         type="button"
                         onClick={() => remove(m.id)}
                         disabled={isDeleting}
-                        className="rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-500 hover:bg-red-100 disabled:opacity-40"
+                        className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-bold text-white transition-all hover:bg-red-600 active:scale-95 disabled:opacity-40"
                       >
                         {isDeleting ? "처리 중..." : status.action}
                       </button>
@@ -146,7 +146,7 @@ const HrManagerList: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => openConfirm(m.id)}
-                      className="shrink-0 text-xs font-bold text-gray-400 transition-colors hover:text-red-500"
+                      className="text-text2 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95"
                     >
                       {status.action}
                     </button>
