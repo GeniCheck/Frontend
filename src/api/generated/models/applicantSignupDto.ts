@@ -9,7 +9,7 @@
 export interface ApplicantSignupDto {
   /** 이메일 (최대 50자) */
   email: string;
-  /** 비밀번호 (6~10자, 영문 대소문자·숫자·특수문자(!@#$%^&*) 각 1개 이상) */
+  /** 비밀번호 (6~20자, 영문 대소문자·숫자·특수문자(!@#$%^&*) 각 1개 이상) */
   password: string;
   /** 이름 (2~10자, 한글 완성형·영문만 허용) */
   name: string;

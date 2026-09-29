@@ -9,3 +9,13 @@ export interface AuthTokenResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+export type HrManagerStatus = "active" | "pending" | "expired";
+
+export interface HrManager {
+  id: string;
+  name: string;
+  email: string;
+  status: HrManagerStatus;
+  createdAt: string;
+}

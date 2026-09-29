@@ -14,6 +14,6 @@ export interface PasswordResetConfirmDto {
   role: PasswordResetConfirmDtoRole;
   /** 본인 이메일로 받은 재설정 코드 (숫자 6자리) */
   code: string;
-  /** 새 비밀번호 */
+  /** 새 비밀번호 (6~20자) */
   newPassword: string;
 }
