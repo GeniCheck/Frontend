@@ -7,25 +7,29 @@ import {
 } from "@/api/generated/endpoints/auth/auth";
 import type { HrManager, HrManagerStatus } from "@/api/authResponses";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const STATUS: Record<
   HrManagerStatus,
-  { label: string; badge: string; action: string }
+  { label: string; badge: string; action: string; confirm: string }
 > = {
   active: {
     label: "가입 완료",
     badge: "bg-emerald-50 text-emerald-600",
     action: "삭제",
+    confirm: "계정을 삭제하면 바로 로그아웃되고 더 이상 로그인할 수 없어요.",
   },
   pending: {
     label: "초대 대기",
     badge: "bg-accent-light text-accent-dark",
     action: "초대 취소",
+    confirm: "보낸 초대 링크로 더 이상 가입할 수 없어요.",
   },
   expired: {
     label: "초대 만료",
     badge: "bg-gray-100 text-gray-400",
     action: "삭제",
+    confirm: "만료된 초대를 목록에서 삭제해요.",
   },
 };
 
@@ -40,19 +44,20 @@ const HrManagerList: React.FC = () => {
   const { mutateAsync: deleteMutation, isPending: isDeleting } =
     useAuthControllerDeleteHrManager();
 
-  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [target, setTarget] = useState<HrManager | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const openConfirm = (id: string | null) => {
-    setConfirmId(id);
+  const openConfirm = (manager: HrManager | null) => {
+    setTarget(manager);
     setError(null);
   };
 
-  const remove = async (id: string) => {
+  const remove = async () => {
+    if (!target) return;
     setError(null);
     try {
-      await deleteMutation({ hrUserId: id });
-      setConfirmId(null);
+      await deleteMutation({ hrUserId: target.id });
+      setTarget(null);
       await queryClient.invalidateQueries({
         queryKey: getAuthControllerListHrManagersQueryKey(),
       });
@@ -99,7 +104,6 @@ const HrManagerList: React.FC = () => {
         <ul className="divide-y divide-gray-100">
           {managers.map((m) => {
             const status = STATUS[m.status];
-            const isConfirming = confirmId === m.id;
             return (
               <li key={m.id} className="py-4">
                 <div className="flex items-center justify-between gap-4">
@@ -120,48 +124,42 @@ const HrManagerList: React.FC = () => {
                     </p>
                   </div>
 
-                  {isConfirming ? (
-                    <div className="flex shrink-0 items-center gap-2">
-                      <span className="text-text2 text-xs font-bold">
-                        정말 {status.action}할까요?
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => openConfirm(null)}
-                        disabled={isDeleting}
-                        className="text-text2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-40"
-                      >
-                        아니요
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => remove(m.id)}
-                        disabled={isDeleting}
-                        className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-bold text-white transition-all hover:bg-red-600 active:scale-95 disabled:opacity-40"
-                      >
-                        {isDeleting ? "처리 중..." : status.action}
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => openConfirm(m.id)}
-                      className="text-text2 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95"
-                    >
-                      {status.action}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => openConfirm(m)}
+                    className="text-text2 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95"
+                  >
+                    {status.action}
+                  </button>
                 </div>
-                {isConfirming && error && (
-                  <p className="text-2xs mt-2 font-bold text-red-500">
-                    {error}
-                  </p>
-                )}
               </li>
             );
           })}
         </ul>
       )}
+
+      <ConfirmModal
+        open={target !== null}
+        title={
+          target
+            ? `${target.name}님을 ${STATUS[target.status].action}할까요?`
+            : ""
+        }
+        description={
+          target && (
+            <>
+              <b className="text-text1 font-bold">{target.email}</b>
+              <br />
+              {STATUS[target.status].confirm}
+            </>
+          )
+        }
+        confirmLabel={target ? STATUS[target.status].action : ""}
+        isPending={isDeleting}
+        error={error}
+        onConfirm={remove}
+        onClose={() => openConfirm(null)}
+      />
     </div>
   );
 };
