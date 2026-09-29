@@ -43,6 +43,7 @@ const CompanySignupForm: React.FC = () => {
     string | null
   >(null);
   const [error, setError] = useState<string | null>(null);
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const { mutateAsync: requestOtpMutation, isPending: isRequestingOtp } =
     useAuthControllerRequestCompanySignupOtp();
@@ -68,6 +69,7 @@ const CompanySignupForm: React.FC = () => {
   const isEmailValid =
     EMAIL_REGEX.test(formData.email) && formData.email.length <= 50;
   const isPasswordValid = PASSWORD_REGEX.test(formData.password);
+  const isPasswordMatch = formData.password === passwordConfirm;
   const isStartDateValid = formData.startDate.trim().length > 0;
 
   const isFormValid =
@@ -76,6 +78,7 @@ const CompanySignupForm: React.FC = () => {
     isRepresentativeNameValid &&
     isEmailValid &&
     isPasswordValid &&
+    isPasswordMatch &&
     isStartDateValid;
 
   const normalizedStartDate = formData.startDate.replace(/-/g, "");
@@ -218,6 +221,16 @@ const CompanySignupForm: React.FC = () => {
               placeholder="비밀번호를 설정해주세요"
               errorMessage={
                 !isPasswordValid ? PASSWORD_RULE_MESSAGE : undefined
+              }
+            />
+            <FormField
+              name="passwordConfirm"
+              type="password"
+              value={passwordConfirm}
+              onChange={setPasswordConfirm}
+              placeholder="비밀번호를 한 번 더 입력해주세요"
+              errorMessage={
+                !isPasswordMatch ? "비밀번호가 일치하지 않아요." : undefined
               }
             />
             <div className="space-y-1.5">
