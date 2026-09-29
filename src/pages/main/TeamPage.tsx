@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { useAuthControllerHrInvite } from "@/api/generated/endpoints/auth/auth";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  getAuthControllerListHrManagersQueryKey,
+  useAuthControllerHrInvite,
+} from "@/api/generated/endpoints/auth/auth";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
 import FormField from "@/components/auth/FormField";
 import { EMAIL_REGEX } from "@/components/auth/validators";
+import HrManagerList from "@/components/common/HrManagerList";
 
 const emptyFormData = () => ({
   name: "",
@@ -10,6 +15,7 @@ const emptyFormData = () => ({
 });
 
 const TeamPage: React.FC = () => {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState(emptyFormData);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -31,6 +37,9 @@ const TeamPage: React.FC = () => {
         data: { name: formData.name.trim(), email: formData.email },
       });
       setDone(true);
+      queryClient.invalidateQueries({
+        queryKey: getAuthControllerListHrManagersQueryKey(),
+      });
     } catch (err) {
       setError(
         extractErrorMessage(
@@ -60,8 +69,8 @@ const TeamPage: React.FC = () => {
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-312.5 flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-125 rounded-3xl border border-gray-100 bg-white p-10 shadow-sm">
+      <div className="mx-auto grid w-full max-w-312.5 items-start gap-6 p-6 lg:grid-cols-2">
+        <div className="rounded-3xl border border-gray-100 bg-white p-10 shadow-sm">
           {done ? (
             <div className="space-y-6 text-center">
               <div className="bg-brand-light text-brand mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl">
@@ -139,6 +148,7 @@ const TeamPage: React.FC = () => {
             </>
           )}
         </div>
+        <HrManagerList />
       </div>
     </main>
   );

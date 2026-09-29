@@ -1712,7 +1712,160 @@ export const useAuthControllerConfirmPasswordReset = <
   );
 };
 /**
- * @summary 인사팀장 계정 삭제 (COMPANY 권한 필요)
+ * @summary 인사팀장 목록 조회 - 활성 계정 + 아직 수락 안 한 초대까지 함께 반환 (COMPANY 권한 필요)
+ */
+export const authControllerListHrManagers = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/api/v1/auth/hr`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getAuthControllerListHrManagersQueryKey = () => {
+  return [`/api/v1/auth/hr`] as const;
+};
+
+export const getAuthControllerListHrManagersQueryOptions = <
+  TData = Awaited<ReturnType<typeof authControllerListHrManagers>>,
+  TError = void,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof authControllerListHrManagers>>,
+      TError,
+      TData
+    >
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getAuthControllerListHrManagersQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof authControllerListHrManagers>>
+  > = ({ signal }) => authControllerListHrManagers(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof authControllerListHrManagers>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AuthControllerListHrManagersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof authControllerListHrManagers>>
+>;
+export type AuthControllerListHrManagersQueryError = void;
+
+export function useAuthControllerListHrManagers<
+  TData = Awaited<ReturnType<typeof authControllerListHrManagers>>,
+  TError = void,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof authControllerListHrManagers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof authControllerListHrManagers>>,
+          TError,
+          Awaited<ReturnType<typeof authControllerListHrManagers>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useAuthControllerListHrManagers<
+  TData = Awaited<ReturnType<typeof authControllerListHrManagers>>,
+  TError = void,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof authControllerListHrManagers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof authControllerListHrManagers>>,
+          TError,
+          Awaited<ReturnType<typeof authControllerListHrManagers>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useAuthControllerListHrManagers<
+  TData = Awaited<ReturnType<typeof authControllerListHrManagers>>,
+  TError = void,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof authControllerListHrManagers>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary 인사팀장 목록 조회 - 활성 계정 + 아직 수락 안 한 초대까지 함께 반환 (COMPANY 권한 필요)
+ */
+
+export function useAuthControllerListHrManagers<
+  TData = Awaited<ReturnType<typeof authControllerListHrManagers>>,
+  TError = void,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof authControllerListHrManagers>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getAuthControllerListHrManagersQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+/**
+ * @summary 인사팀장 계정 삭제 또는 대기중 초대 취소 - hrUserId가 어느 쪽인지에 따라 자동 처리 (COMPANY 권한 필요)
  */
 export const authControllerDeleteHrManager = (
   hrUserId: string,
@@ -1776,7 +1929,7 @@ export type AuthControllerDeleteHrManagerMutationVariables = {
 };
 
 /**
- * @summary 인사팀장 계정 삭제 (COMPANY 권한 필요)
+ * @summary 인사팀장 계정 삭제 또는 대기중 초대 취소 - hrUserId가 어느 쪽인지에 따라 자동 처리 (COMPANY 권한 필요)
  */
 export const useAuthControllerDeleteHrManager = <
   TError = void,

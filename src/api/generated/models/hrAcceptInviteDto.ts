@@ -9,6 +9,6 @@
 export interface HrAcceptInviteDto {
   /** 초대 이메일에 포함된 토큰 */
   token: string;
-  /** HR 본인이 설정할 로그인 비밀번호 */
+  /** HR 본인이 설정할 로그인 비밀번호 (6~20자) */
   password: string;
 }

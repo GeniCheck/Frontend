@@ -9,7 +9,7 @@
 export interface CompanySignupDto {
   /** 기업 대표 이메일 */
   email: string;
-  /** 비밀번호 */
+  /** 비밀번호 (6~20자) */
   password: string;
   /** 기업명 */
   companyName: string;

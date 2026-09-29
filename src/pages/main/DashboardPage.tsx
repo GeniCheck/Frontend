@@ -46,7 +46,7 @@ const DashboardPage: React.FC = () => {
             onClick={() => navigate("/main/team")}
             className="bg-brand shadow-brand/10 hover:bg-brand-dark flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95"
           >
-            <i className="ti ti-user-plus text-sm" /> 직원 등록
+            <i className="ti ti-user-plus text-sm" /> 인사팀장 관리
           </button>
           <button
             type="button"
