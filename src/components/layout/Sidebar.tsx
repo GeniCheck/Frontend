@@ -40,6 +40,13 @@ const Sidebar: React.FC = () => {
       badge: null,
       ceoOnly: true,
     },
+    {
+      name: "Team",
+      icon: "ti-user-shield",
+      path: "/main/team",
+      badge: null,
+      ceoOnly: true,
+    },
   ].filter((item) => role !== "hr" || !item.ceoOnly);
 
   return (
