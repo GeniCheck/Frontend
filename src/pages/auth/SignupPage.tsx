@@ -46,7 +46,7 @@ const SignupPage: React.FC = () => {
           <p className="text-text2 mt-6 flex items-start gap-2 rounded-xl bg-gray-50 p-3.5 text-xs leading-relaxed">
             <i className="ti ti-info-circle mt-0.5 text-sm text-gray-400" />
             <span>
-              인사팀장 계정은 대표가 로그인한 뒤 직접 생성합니다.
+              인사팀장은 대표가 로그인한 뒤 이메일로 초대합니다.
               인사팀장·직원은 별도로 회원가입할 수 없어요.
             </span>
           </p>
