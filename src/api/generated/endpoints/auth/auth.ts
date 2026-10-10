@@ -939,7 +939,7 @@ export const useAuthControllerHrAcceptInvite = <
   );
 };
 /**
- * @summary 인사팀장 로그인 1단계 - 본인 email/password 확인 후 대표 이메일로 인증코드 발송
+ * @summary 인사팀장 로그인 1단계 - 본인 email/password 확인 후 본인 이메일로 인증코드 발송
  */
 export const authControllerHrLogin = (
   hrLoginDto: HrLoginDto,
@@ -1007,7 +1007,7 @@ export type AuthControllerHrLoginMutationError = void;
 export type AuthControllerHrLoginMutationVariables = { data: HrLoginDto };
 
 /**
- * @summary 인사팀장 로그인 1단계 - 본인 email/password 확인 후 대표 이메일로 인증코드 발송
+ * @summary 인사팀장 로그인 1단계 - 본인 email/password 확인 후 본인 이메일로 인증코드 발송
  */
 export const useAuthControllerHrLogin = <TError = void, TContext = unknown>(
   options?: {
@@ -1032,7 +1032,7 @@ export const useAuthControllerHrLogin = <TError = void, TContext = unknown>(
   );
 };
 /**
- * @summary 인사팀장 로그인 2단계 - 대표 이메일 인증 코드 검증 후 토큰 발급
+ * @summary 인사팀장 로그인 2단계 - 본인 이메일 인증 코드 검증 후 토큰 발급
  */
 export const authControllerHrOtpVerify = (
   hrOtpVerifyDto: HrOtpVerifyDto,
@@ -1102,7 +1102,7 @@ export type AuthControllerHrOtpVerifyMutationVariables = {
 };
 
 /**
- * @summary 인사팀장 로그인 2단계 - 대표 이메일 인증 코드 검증 후 토큰 발급
+ * @summary 인사팀장 로그인 2단계 - 본인 이메일 인증 코드 검증 후 토큰 발급
  */
 export const useAuthControllerHrOtpVerify = <TError = void, TContext = unknown>(
   options?: {

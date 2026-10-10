@@ -13,108 +13,12 @@ import type {
   UseMutationResult,
 } from "@tanstack/react-query";
 
-import type { ApplicantConfirmDto, ResignDto } from "../../models";
+import type { ApplicantConfirmDto, ResignEmployeeDto } from "../../models";
 
 import { customInstance } from "../../../mutator/customInstance";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-/**
- * @summary 대표: 직원 퇴사 등록 및 평가 링크 자동 발송
- */
-export const employmentControllerResign = (
-  resignDto: ResignDto,
-  options?: SecondParameter<typeof customInstance>,
-  signal?: AbortSignal,
-) => {
-  return customInstance<void>(
-    {
-      url: `/api/v1/employment/resign`,
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: resignDto,
-      signal,
-    },
-    options,
-  );
-};
-
-export const getEmploymentControllerResignMutationKey = () =>
-  ["employmentControllerResign"] as const;
-
-export const getEmploymentControllerResignMutationOptions = <
-  TError = void,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof employmentControllerResign>>,
-    TError,
-    EmploymentControllerResignMutationVariables,
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof employmentControllerResign>>,
-  TError,
-  EmploymentControllerResignMutationVariables,
-  TContext
-> => {
-  const mutationKey = getEmploymentControllerResignMutationKey();
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof employmentControllerResign>>,
-    EmploymentControllerResignMutationVariables
-  > = (props) => {
-    const { data } = props ?? {};
-
-    return employmentControllerResign(data, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type EmploymentControllerResignMutationResult = NonNullable<
-  Awaited<ReturnType<typeof employmentControllerResign>>
->;
-export type EmploymentControllerResignMutationBody = ResignDto;
-export type EmploymentControllerResignMutationError = void;
-export type EmploymentControllerResignMutationVariables = { data: ResignDto };
-
-/**
- * @summary 대표: 직원 퇴사 등록 및 평가 링크 자동 발송
- */
-export const useEmploymentControllerResign = <
-  TError = void,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof employmentControllerResign>>,
-      TError,
-      EmploymentControllerResignMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof customInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof employmentControllerResign>>,
-  TError,
-  EmploymentControllerResignMutationVariables,
-  TContext
-> => {
-  return useMutation(
-    getEmploymentControllerResignMutationOptions(options),
-    queryClient,
-  );
-};
 /**
  * @summary 지원자: 퇴직 사실 확인 및 2단계 동의 트리거
  */
@@ -213,6 +117,104 @@ export const useEmploymentControllerApplicantConfirm = <
 > => {
   return useMutation(
     getEmploymentControllerApplicantConfirmMutationOptions(options),
+    queryClient,
+  );
+};
+/**
+ * @summary 대표: 직원 퇴사 등록 및 자기평가 시작 (평가 생성 + 자기평가 링크 메일)
+ */
+export const employeeResignControllerResign = (
+  resignEmployeeDto: ResignEmployeeDto,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/v1/employment/resign`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: resignEmployeeDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getEmployeeResignControllerResignMutationKey = () =>
+  ["employeeResignControllerResign"] as const;
+
+export const getEmployeeResignControllerResignMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof employeeResignControllerResign>>,
+    TError,
+    EmployeeResignControllerResignMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof employeeResignControllerResign>>,
+  TError,
+  EmployeeResignControllerResignMutationVariables,
+  TContext
+> => {
+  const mutationKey = getEmployeeResignControllerResignMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof employeeResignControllerResign>>,
+    EmployeeResignControllerResignMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return employeeResignControllerResign(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EmployeeResignControllerResignMutationResult = NonNullable<
+  Awaited<ReturnType<typeof employeeResignControllerResign>>
+>;
+export type EmployeeResignControllerResignMutationBody = ResignEmployeeDto;
+export type EmployeeResignControllerResignMutationError = void;
+export type EmployeeResignControllerResignMutationVariables = {
+  data: ResignEmployeeDto;
+};
+
+/**
+ * @summary 대표: 직원 퇴사 등록 및 자기평가 시작 (평가 생성 + 자기평가 링크 메일)
+ */
+export const useEmployeeResignControllerResign = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof employeeResignControllerResign>>,
+      TError,
+      EmployeeResignControllerResignMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof employeeResignControllerResign>>,
+  TError,
+  EmployeeResignControllerResignMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getEmployeeResignControllerResignMutationOptions(options),
     queryClient,
   );
 };

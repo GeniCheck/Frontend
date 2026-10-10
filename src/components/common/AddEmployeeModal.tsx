@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { extractErrorMessage } from "@/api/extractErrorMessage";
 
 // 직원 등록 API 요청 바디에 대응하는 입력값
 export interface NewEmployeeInput {
@@ -22,7 +23,7 @@ const EMPTY_FORM: NewEmployeeInput = {
 interface AddEmployeeModalProps {
   open: boolean;
   onClose: () => void;
-  onAdd: (employee: NewEmployeeInput) => void;
+  onAdd: (employee: NewEmployeeInput) => Promise<void>;
 }
 
 const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
@@ -31,16 +32,18 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
   onAdd,
 }) => {
   const [form, setForm] = useState<NewEmployeeInput>(EMPTY_FORM);
+  const [isSubmitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Esc 키로 모달 닫기
+  // Esc 키로 모달 닫기 (제출 중에는 닫히지 않도록)
   useEffect(() => {
-    if (!open) return;
+    if (!open || isSubmitting) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
+  }, [open, isSubmitting, onClose]);
 
   if (!open) return null;
 
@@ -51,15 +54,27 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
     };
 
   const handleClose = () => {
+    if (isSubmitting) return;
     setForm(EMPTY_FORM);
+    setError(null);
     onClose();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onAdd(form);
-    setForm(EMPTY_FORM);
-    onClose();
+    setError(null);
+    setSubmitting(true);
+    try {
+      await onAdd(form);
+      setForm(EMPTY_FORM);
+      onClose();
+    } catch (err) {
+      setError(
+        extractErrorMessage(err, "직원 등록에 실패했어요. 다시 시도해주세요."),
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputClassName =
@@ -69,7 +84,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={handleClose}
+      onClick={isSubmitting ? undefined : handleClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -85,12 +100,17 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-all hover:bg-gray-100 active:scale-90"
+            disabled={isSubmitting}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-all hover:bg-gray-100 active:scale-90 disabled:opacity-40"
             aria-label="닫기"
           >
             <i className="ti ti-x text-sm" />
           </button>
         </div>
+
+        {error && (
+          <p className="mb-4 text-xs font-bold text-red-500">{error}</p>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
@@ -169,15 +189,17 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95"
+              disabled={isSubmitting}
+              className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-40"
             >
               취소
             </button>
             <button
               type="submit"
-              className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95"
+              disabled={isSubmitting}
+              className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95 disabled:opacity-40"
             >
-              추가
+              {isSubmitting ? "추가 중..." : "추가"}
             </button>
           </div>
         </form>
