@@ -126,40 +126,6 @@ const RECOMMENDED_QUESTIONS: TemplateQuestion[] = [
   },
 ];
 
-// 우측 "폼 기본 정보"에 처음부터 채워지는 임시 목업 질문
-const INITIAL_QUESTIONS: TemplateQuestion[] = [
-  {
-    id: "q-1",
-    name: "협업 기여도",
-    content: "팀 내 협업 기여도를 1~10점으로 평가해 주세요.",
-    type: "점수형",
-  },
-  {
-    id: "q-2",
-    name: "의사결정 능력",
-    content: "의사결정 능력을 1~10점으로 평가해 주세요.",
-    type: "점수형",
-  },
-  {
-    id: "q-3",
-    name: "대표 성과 기술",
-    content: "재직 중 가장 대표적인 성과를 구체적으로 기술해 주세요.",
-    type: "서술형",
-  },
-  {
-    id: "q-4",
-    name: "강점 유형 선택",
-    content: "본인의 주요 강점 유형을 선택해 주세요.",
-    type: "선택형",
-    options: [
-      "실행력 / 추진력",
-      "분석력 / 논리력",
-      "창의력 / 기획력",
-      "소통력 / 협업력",
-    ],
-  },
-];
-
 const QUESTION_TYPES: QuestionType[] = ["점수형", "선택형", "서술형"];
 
 // 화면의 질문 유형 → 백엔드 DTO 타입. UI엔 필수 여부/평가 대상 여부를 고르는
@@ -243,8 +209,7 @@ const QuestionTemplatePage: React.FC = () => {
     "추천 질문" | "저장된 질문" | "직접 작성"
   >("추천 질문");
 
-  const [questions, setQuestions] =
-    useState<TemplateQuestion[]>(INITIAL_QUESTIONS);
+  const [questions, setQuestions] = useState<TemplateQuestion[]>([]);
   const [savedQuestions, setSavedQuestions] = useState<TemplateQuestion[]>([]);
 
   // "직접 작성" 탭의 입력 폼 상태
@@ -826,18 +791,41 @@ const QuestionTemplatePage: React.FC = () => {
                   </div>
                 ))}
 
-                {/* 드래그 앤 드롭 안내 영역: 라이브러리 질문을 여기로 드래그하면 질문지에 추가됨 */}
-                <div
-                  className={`text-2xs rounded-2xl border-2 border-dashed p-8 text-center leading-relaxed transition-all ${
-                    draggedLibraryQuestion
-                      ? "border-brand bg-brand-light text-brand"
-                      : "border-gray-200 text-gray-400"
-                  }`}
-                >
-                  여기로 질문을 드래그하거나
-                  <br />
-                  왼쪽 라이브러리에서 클릭하여 추가
-                </div>
+                {questions.length === 0 ? (
+                  <div
+                    className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-16 text-center transition-all ${
+                      draggedLibraryQuestion
+                        ? "border-brand bg-brand-light"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 text-2xl text-gray-300">
+                      <i className="ti ti-clipboard-list" />
+                    </div>
+                    <div>
+                      <p className="text-text1 text-sm font-bold">
+                        아직 추가된 질문이 없습니다
+                      </p>
+                      <p className="text-2xs mt-1 text-gray-400">
+                        왼쪽 라이브러리에서 질문을 클릭하거나 이 영역으로
+                        드래그해 추가해 보세요.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  // 드래그 앤 드롭 안내 영역: 라이브러리 질문을 여기로 드래그하면 질문지에 추가됨
+                  <div
+                    className={`text-2xs rounded-2xl border-2 border-dashed p-8 text-center leading-relaxed transition-all ${
+                      draggedLibraryQuestion
+                        ? "border-brand bg-brand-light text-brand"
+                        : "border-gray-200 text-gray-400"
+                    }`}
+                  >
+                    여기로 질문을 드래그하거나
+                    <br />
+                    왼쪽 라이브러리에서 클릭하여 추가
+                  </div>
+                )}
               </div>
             </div>
           </div>
