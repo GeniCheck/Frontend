@@ -1,14 +1,20 @@
 import React, { useRef, useState } from "react";
 import DeclarationPublishModal from "@/components/common/DeclarationPublishModal";
 import QuestionTemplateListModal from "@/components/common/QuestionTemplateListModal";
-import { useQuestionTemplateControllerCreate } from "@/api/generated/endpoints/question-template/question-template";
+import {
+  useQuestionTemplateControllerCreate,
+  useQuestionTemplateControllerUpdate,
+} from "@/api/generated/endpoints/question-template/question-template";
 import { QuestionDtoType } from "@/api/generated/models/questionDtoType";
 import type { QuestionDto } from "@/api/generated/models/questionDto";
+import type { UpdateQuestionTemplateDto } from "@/api/generated/models/updateQuestionTemplateDto";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
 import type {
+  CreateQuestionTemplateResponse,
   QuestionTemplateDetail,
   QuestionTemplateDetailQuestion,
   QuestionTemplateQuestionType,
+  UpdateQuestionTemplateResponse,
 } from "@/api/questionTemplateResponses";
 
 type QuestionType = "점수형" | "선택형" | "서술형";
@@ -264,9 +270,17 @@ const QuestionTemplatePage: React.FC = () => {
   const [formDescription, setFormDescription] = useState("");
 
   const createTemplateMutation = useQuestionTemplateControllerCreate();
+  const updateTemplateMutation = useQuestionTemplateControllerUpdate();
   const [saveTemplateError, setSaveTemplateError] = useState<string | null>(
     null,
   );
+
+  // "폼으로 불러오기"로 적용됐거나 막 저장에 성공한 템플릿. 있으면 "템플릿 수정"
+  // 버튼이 나타나고, 없으면 "템플릿으로 저장"이 새 템플릿 생성 역할만 한다.
+  const [loadedTemplate, setLoadedTemplate] = useState<{
+    templateId: string;
+    version: number;
+  } | null>(null);
 
   const handleOptionChange = (index: number, value: string) => {
     setDraftOptions((prev) =>
@@ -342,17 +356,55 @@ const QuestionTemplatePage: React.FC = () => {
     }
     setSaveTemplateError(null);
     try {
-      await createTemplateMutation.mutateAsync({
+      const response = (await createTemplateMutation.mutateAsync({
         data: {
           name: formName.trim(),
           description: formDescription.trim() || undefined,
           questions: questions.map((q, i) => buildQuestionDto(q, i + 1)),
         },
+      })) as unknown as CreateQuestionTemplateResponse;
+      setLoadedTemplate({
+        templateId: response.templateId,
+        version: response.version,
       });
       alert("템플릿이 저장되었습니다.");
     } catch (err) {
       setSaveTemplateError(
         extractErrorMessage(err, "템플릿 저장에 실패했습니다."),
+      );
+    }
+  };
+
+  const handleUpdateTemplate = async () => {
+    if (!loadedTemplate) return;
+    if (!formName.trim()) {
+      setSaveTemplateError("폼 제목을 입력해주세요.");
+      return;
+    }
+    if (questions.length === 0) {
+      setSaveTemplateError("질문을 1개 이상 추가해주세요.");
+      return;
+    }
+    setSaveTemplateError(null);
+    try {
+      const response = (await updateTemplateMutation.mutateAsync({
+        templateId: loadedTemplate.templateId,
+        // description이 nullable string인데 스웨거 생성 타입이 깨져 있어 캐스팅한다.
+        data: {
+          version: loadedTemplate.version,
+          name: formName.trim(),
+          description: formDescription.trim() || null,
+          questions: questions.map((q, i) => buildQuestionDto(q, i + 1)),
+        } as unknown as UpdateQuestionTemplateDto,
+      })) as unknown as UpdateQuestionTemplateResponse;
+      setLoadedTemplate({
+        templateId: response.templateId,
+        version: response.version,
+      });
+      alert("템플릿이 수정되었습니다.");
+    } catch (err) {
+      setSaveTemplateError(
+        extractErrorMessage(err, "템플릿 수정에 실패했습니다."),
       );
     }
   };
@@ -365,6 +417,10 @@ const QuestionTemplatePage: React.FC = () => {
         .sort((a, b) => a.order - b.order)
         .map(mapDetailQuestionToTemplateQuestion),
     );
+    setLoadedTemplate({
+      templateId: detail.templateId,
+      version: detail.version,
+    });
     setSaveTemplateError(null);
   };
 
@@ -402,6 +458,18 @@ const QuestionTemplatePage: React.FC = () => {
               >
                 템플릿 목록
               </button>
+              {loadedTemplate && (
+                <button
+                  type="button"
+                  disabled={updateTemplateMutation.isPending}
+                  onClick={handleUpdateTemplate}
+                  className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95 disabled:opacity-40"
+                >
+                  {updateTemplateMutation.isPending
+                    ? "수정 중..."
+                    : "템플릿 수정"}
+                </button>
+              )}
               <button
                 type="button"
                 disabled={createTemplateMutation.isPending}
@@ -410,7 +478,9 @@ const QuestionTemplatePage: React.FC = () => {
               >
                 {createTemplateMutation.isPending
                   ? "저장 중..."
-                  : "템플릿으로 저장"}
+                  : loadedTemplate
+                    ? "새로운 템플릿으로 저장"
+                    : "템플릿으로 저장"}
               </button>
               <button
                 type="button"

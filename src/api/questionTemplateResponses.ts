@@ -11,6 +11,9 @@ export interface CreateQuestionTemplateResponse {
   status: QuestionTemplateStatus;
 }
 
+// 수정 응답도 생성 응답과 모양이 같다 (templateId/version/questionCount/status).
+export type UpdateQuestionTemplateResponse = CreateQuestionTemplateResponse;
+
 export interface QuestionTemplateListItem {
   templateId: string;
   name: string;
