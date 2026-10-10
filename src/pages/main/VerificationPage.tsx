@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import type { UpdateEmployeeDto } from "@/api/generated/models";
 import {
+  getEmployeeControllerFindOneQueryKey,
   useEmployeeControllerCreate,
   useEmployeeControllerList,
+  useEmployeeControllerUpdate,
 } from "@/api/generated/endpoints/employee/employee";
+import {
+  EMPLOYMENT_STATUS_LABEL,
+  DECLARATION_STATUS_LABEL,
+} from "@/api/employeeResponses";
 import AddEmployeeModal, {
   type NewEmployeeInput,
 } from "@/components/common/AddEmployeeModal";
 import EmployeeDetailModal, {
   type Employee,
 } from "@/components/common/EmployeeDetailModal";
-
-// 재직 상태(employmentStatus) 실제 enum: EMPLOYED | RESIGNED
-const EMPLOYMENT_STATUS_LABEL: Record<string, string> = {
-  EMPLOYED: "재직중",
-  RESIGNED: "퇴사",
-};
-
-// 자기선언 상태(declarationStatus) 실제 enum: NOT_SENT | SENT | SUBMITTED
-const DECLARATION_STATUS_LABEL: Record<string, string> = {
-  NOT_SENT: "미발송",
-  SENT: "미완료",
-  SUBMITTED: "완료",
-};
 
 // 목록 응답에서 직원 한 명을 표현할 것으로 예상되는 필드.
 // 스웨거에 응답 스키마가 없어(void) 실제 키 이름을 100% 확정할 수 없으므로
@@ -59,9 +54,13 @@ const extractEmployeeArray = (data: unknown): RawEmployee[] => {
 const mapRawEmployee = (raw: RawEmployee): Employee => {
   const employmentStatus = raw.employmentStatus ?? raw.status ?? "EMPLOYED";
   const declarationStatus = raw.declarationStatus ?? "NOT_SENT";
-  const status = EMPLOYMENT_STATUS_LABEL[employmentStatus] ?? employmentStatus;
+  // 서버가 실제로 내려주는 값이 enum과 다를 수 있어 느슨한 Record로 조회한다.
+  const status =
+    (EMPLOYMENT_STATUS_LABEL as Record<string, string>)[employmentStatus] ??
+    employmentStatus;
   const declare =
-    DECLARATION_STATUS_LABEL[declarationStatus] ?? declarationStatus;
+    (DECLARATION_STATUS_LABEL as Record<string, string>)[declarationStatus] ??
+    declarationStatus;
 
   return {
     id: raw.employeeId ?? raw.id ?? crypto.randomUUID(),
@@ -125,7 +124,9 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
   onRetryList,
 }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { mutateAsync: createEmployeeMutation } = useEmployeeControllerCreate();
+  const { mutateAsync: updateEmployeeMutation } = useEmployeeControllerUpdate();
 
   // 페이지 진입 시 스크롤 최상단 리셋
   useEffect(() => {
@@ -139,9 +140,6 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
 
   const [employeeList, setEmployeeList] =
     useState<Employee[]>(initialEmployees);
-
-  const selectedEmployee =
-    employeeList.find((emp) => emp.id === selectedEmployeeId) ?? null;
 
   const handleAddEmployee = async (input: NewEmployeeInput) => {
     await createEmployeeMutation({ data: input });
@@ -167,10 +165,21 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
     ]);
   };
 
-  const handleUpdateEmployee = (
+  const handleUpdateEmployee = async (
     id: string,
     updates: { department: string; position: string; phone: string },
   ) => {
+    await updateEmployeeMutation({
+      employeeId: id,
+      // department/position/phone은 스웨거의 nullable 스키마가 깨져 있어 orval이
+      // `{ [key: string]: unknown } | null`로 잘못 생성했다. 실제로는 문자열이라 캐스팅한다.
+      data: updates as unknown as UpdateEmployeeDto,
+    });
+    // 상세 조회 캐시를 무효화해, 다음에 같은 직원을 다시 열었을 때
+    // 저장 전의 값이 그대로 보이지 않고 서버에서 다시 받아오게 한다.
+    await queryClient.invalidateQueries({
+      queryKey: getEmployeeControllerFindOneQueryKey(id),
+    });
     setEmployeeList((prev) =>
       prev.map((emp) => (emp.id === id ? { ...emp, ...updates } : emp)),
     );
@@ -454,8 +463,8 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
         onAdd={handleAddEmployee}
       />
       <EmployeeDetailModal
-        open={selectedEmployee !== null}
-        employee={selectedEmployee}
+        open={selectedEmployeeId !== null}
+        employeeId={selectedEmployeeId}
         onClose={() => setSelectedEmployeeId(null)}
         onSave={handleUpdateEmployee}
         onResign={handleResignEmployee}
