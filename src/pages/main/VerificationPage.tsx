@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useEmployeeControllerCreate } from "@/api/generated/endpoints/employee/employee";
 import AddEmployeeModal, {
   type NewEmployeeInput,
 } from "@/components/common/AddEmployeeModal";
@@ -9,6 +10,7 @@ import EmployeeDetailModal, {
 
 const VerificationPage: React.FC = () => {
   const navigate = useNavigate();
+  const { mutateAsync: createEmployeeMutation } = useEmployeeControllerCreate();
 
   // 페이지 진입 시 스크롤 최상단 리셋
   useEffect(() => {
@@ -98,7 +100,10 @@ const VerificationPage: React.FC = () => {
   const selectedEmployee =
     employeeList.find((emp) => emp.id === selectedEmployeeId) ?? null;
 
-  const handleAddEmployee = (input: NewEmployeeInput) => {
+  const handleAddEmployee = async (input: NewEmployeeInput) => {
+    await createEmployeeMutation({ data: input });
+
+    // GET /employees 목록 연동 전까지는 등록 성공 후 화면에 직접 한 줄을 더해 보여준다.
     setEmployeeList((prev) => [
       ...prev,
       {
