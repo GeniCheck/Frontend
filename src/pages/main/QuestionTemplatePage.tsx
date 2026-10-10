@@ -1,5 +1,15 @@
 import React, { useRef, useState } from "react";
 import DeclarationPublishModal from "@/components/common/DeclarationPublishModal";
+import QuestionTemplateListModal from "@/components/common/QuestionTemplateListModal";
+import { useQuestionTemplateControllerCreate } from "@/api/generated/endpoints/question-template/question-template";
+import { QuestionDtoType } from "@/api/generated/models/questionDtoType";
+import type { QuestionDto } from "@/api/generated/models/questionDto";
+import { extractErrorMessage } from "@/api/extractErrorMessage";
+import type {
+  QuestionTemplateDetail,
+  QuestionTemplateDetailQuestion,
+  QuestionTemplateQuestionType,
+} from "@/api/questionTemplateResponses";
 
 type QuestionType = "점수형" | "선택형" | "서술형";
 
@@ -146,6 +156,57 @@ const INITIAL_QUESTIONS: TemplateQuestion[] = [
 
 const QUESTION_TYPES: QuestionType[] = ["점수형", "선택형", "서술형"];
 
+// 화면의 질문 유형 → 백엔드 DTO 타입. UI엔 필수 여부/평가 대상 여부를 고르는
+// 입력이 없어서 저장 시엔 항상 필수+평가 대상으로, 점수 범위는 화면에 보이는
+// 1~10점, 서술형 글자수는 500자로 고정해 보낸다.
+const QUESTION_TYPE_TO_DTO: Record<QuestionType, QuestionDtoType> = {
+  점수형: QuestionDtoType.SCORE,
+  선택형: QuestionDtoType.SINGLE_CHOICE,
+  서술형: QuestionDtoType.TEXT,
+};
+
+const buildQuestionDto = (
+  question: TemplateQuestion,
+  order: number,
+): QuestionDto => {
+  const base = {
+    order,
+    type: QUESTION_TYPE_TO_DTO[question.type],
+    text: question.content,
+    required: true,
+    evaluationEnabled: true,
+  };
+  if (question.type === "점수형") {
+    return { ...base, scoreMin: 1, scoreMax: 10 };
+  }
+  if (question.type === "선택형") {
+    return { ...base, options: question.options ?? [] };
+  }
+  return { ...base, maxLength: 500 };
+};
+
+// 백엔드 DTO 타입 → 화면의 질문 유형. "폼으로 불러오기"에서 상세 조회 응답을
+// 다시 화면 질문 목록(TemplateQuestion)으로 되돌릴 때 쓴다.
+const DTO_TYPE_TO_QUESTION_TYPE: Record<
+  QuestionTemplateQuestionType,
+  QuestionType
+> = {
+  SCORE: "점수형",
+  SINGLE_CHOICE: "선택형",
+  TEXT: "서술형",
+};
+
+const mapDetailQuestionToTemplateQuestion = (
+  question: QuestionTemplateDetailQuestion,
+): TemplateQuestion => ({
+  id: question.questionId,
+  name: question.text,
+  content: question.text,
+  type: DTO_TYPE_TO_QUESTION_TYPE[question.type],
+  options:
+    question.type === "SINGLE_CHOICE" ? (question.options ?? []) : undefined,
+});
+
 // 질문 타입별 포인트 컬러: 점수형=brand(인디고) · 선택형=accent(앰버) · 서술형=accent2(그린)
 const TYPE_STYLES: Record<
   QuestionType,
@@ -196,6 +257,16 @@ const QuestionTemplatePage: React.FC = () => {
     useState<TemplateQuestion | null>(null);
 
   const [isPublishModalOpen, setPublishModalOpen] = useState(false);
+  const [isTemplateListOpen, setTemplateListOpen] = useState(false);
+
+  // "폼 기본 정보" 카드 입력값 (= 템플릿 저장 시 보낼 name/description)
+  const [formName, setFormName] = useState("");
+  const [formDescription, setFormDescription] = useState("");
+
+  const createTemplateMutation = useQuestionTemplateControllerCreate();
+  const [saveTemplateError, setSaveTemplateError] = useState<string | null>(
+    null,
+  );
 
   const handleOptionChange = (index: number, value: string) => {
     setDraftOptions((prev) =>
@@ -260,6 +331,43 @@ const QuestionTemplatePage: React.FC = () => {
     setDraftOptions([""]);
   };
 
+  const handleSaveTemplate = async () => {
+    if (!formName.trim()) {
+      setSaveTemplateError("폼 제목을 입력해주세요.");
+      return;
+    }
+    if (questions.length === 0) {
+      setSaveTemplateError("질문을 1개 이상 추가해주세요.");
+      return;
+    }
+    setSaveTemplateError(null);
+    try {
+      await createTemplateMutation.mutateAsync({
+        data: {
+          name: formName.trim(),
+          description: formDescription.trim() || undefined,
+          questions: questions.map((q, i) => buildQuestionDto(q, i + 1)),
+        },
+      });
+      alert("템플릿이 저장되었습니다.");
+    } catch (err) {
+      setSaveTemplateError(
+        extractErrorMessage(err, "템플릿 저장에 실패했습니다."),
+      );
+    }
+  };
+
+  const handleLoadTemplate = (detail: QuestionTemplateDetail) => {
+    setFormName(detail.name);
+    setFormDescription("");
+    setQuestions(
+      [...detail.questions]
+        .sort((a, b) => a.order - b.order)
+        .map(mapDetailQuestionToTemplateQuestion),
+    );
+    setSaveTemplateError(null);
+  };
+
   return (
     <>
       <main className="flex min-h-screen flex-1 flex-col">
@@ -282,12 +390,27 @@ const QuestionTemplatePage: React.FC = () => {
               자기선언 질문 설계
             </h2>
             <div className="flex items-center gap-2">
+              {saveTemplateError && (
+                <p className="text-2xs font-bold text-red-500">
+                  {saveTemplateError}
+                </p>
+              )}
               <button
                 type="button"
-                onClick={() => alert("템플릿 저장 연동 필요")}
+                onClick={() => setTemplateListOpen(true)}
                 className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95"
               >
-                템플릿으로 저장
+                템플릿 목록
+              </button>
+              <button
+                type="button"
+                disabled={createTemplateMutation.isPending}
+                onClick={handleSaveTemplate}
+                className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-40"
+              >
+                {createTemplateMutation.isPending
+                  ? "저장 중..."
+                  : "템플릿으로 저장"}
               </button>
               <button
                 type="button"
@@ -542,10 +665,14 @@ const QuestionTemplatePage: React.FC = () => {
                 <div className="space-y-3">
                   <input
                     type="text"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
                     placeholder="폼 제목을 입력해주세요"
                     className="text-text1 w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
                   />
                   <textarea
+                    value={formDescription}
+                    onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="설명을 입력해주세요"
                     rows={2}
                     className="text-text1 w-full resize-none rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
@@ -649,6 +776,11 @@ const QuestionTemplatePage: React.FC = () => {
       <DeclarationPublishModal
         open={isPublishModalOpen}
         onClose={() => setPublishModalOpen(false)}
+      />
+      <QuestionTemplateListModal
+        open={isTemplateListOpen}
+        onClose={() => setTemplateListOpen(false)}
+        onLoadTemplate={handleLoadTemplate}
       />
     </>
   );
