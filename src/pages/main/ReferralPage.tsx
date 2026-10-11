@@ -101,18 +101,11 @@ const ReferralPage: React.FC = () => {
             Referral
           </h1>
           <span className="text-xs font-semibold text-gray-400">
-            2026년 5월 9일 금요일
+            인재 추천 관리
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="text-text2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95">
-            동의 링크 발송
-          </button>
-          <button className="bg-brand shadow-brand/10 hover:bg-brand-dark flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95">
-            <i className="ti ti-user-plus text-sm" />
-            인재 게시하기
-          </button>
           <button
             type="button"
             onClick={logout}
@@ -241,13 +234,21 @@ const ReferralPage: React.FC = () => {
                 게시 동의를 받은 직원을 골라 추천 사유와 이력서를 올리면 바로
                 공개됩니다.
               </p>
-              <button
-                type="button"
-                className="bg-brand shadow-brand/10 hover:bg-brand-dark mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all active:scale-95"
-              >
-                <i className="ti ti-plus text-sm" />
-                인재 게시하기
-              </button>
+              <div className="mt-4 space-y-2">
+                <button
+                  type="button"
+                  className="text-text2 flex w-full items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95"
+                >
+                  동의 링크 발송
+                </button>
+                <button
+                  type="button"
+                  className="bg-brand shadow-brand/10 hover:bg-brand-dark flex w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all active:scale-95"
+                >
+                  <i className="ti ti-plus text-sm" />
+                  인재 게시하기
+                </button>
+              </div>
             </div>
 
             <div className="rounded-3xl border border-gray-200 bg-white p-5 text-left shadow-sm">
