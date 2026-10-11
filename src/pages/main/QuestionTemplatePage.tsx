@@ -800,6 +800,7 @@ const QuestionTemplatePage: React.FC = () => {
       <DeclarationPublishModal
         open={isPublishModalOpen}
         onClose={() => setPublishModalOpen(false)}
+        templateId={loadedTemplate?.templateId ?? null}
       />
       <QuestionTemplateListModal
         open={isTemplateListOpen}

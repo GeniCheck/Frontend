@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import type { UpdateEmployeeDto } from "@/api/generated/models";
+import type {
+  ResignEmployeeDto,
+  UpdateEmployeeDto,
+} from "@/api/generated/models";
+import { ResignEmployeeDtoSelfEvaluationSendChannel } from "@/api/generated/models";
 import {
   getEmployeeControllerFindOneQueryKey,
+  getEmployeeControllerListQueryKey,
   useEmployeeControllerCreate,
   useEmployeeControllerList,
   useEmployeeControllerUpdate,
 } from "@/api/generated/endpoints/employee/employee";
+import { useEmployeeResignControllerResign } from "@/api/generated/endpoints/employment/employment";
 import {
   EMPLOYMENT_STATUS_LABEL,
   DECLARATION_STATUS_LABEL,
 } from "@/api/employeeResponses";
+import type { ResignEmployeeResponse } from "@/api/employmentResponses";
 import AddEmployeeModal, {
   type NewEmployeeInput,
 } from "@/components/common/AddEmployeeModal";
 import EmployeeDetailModal, {
   type Employee,
 } from "@/components/common/EmployeeDetailModal";
+import TemplatePickerModal from "@/components/common/TemplatePickerModal";
 
 // 목록 응답에서 직원 한 명을 표현할 것으로 예상되는 필드.
 // 스웨거에 응답 스키마가 없어(void) 실제 키 이름을 100% 확정할 수 없으므로
@@ -127,6 +135,8 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
   const queryClient = useQueryClient();
   const { mutateAsync: createEmployeeMutation } = useEmployeeControllerCreate();
   const { mutateAsync: updateEmployeeMutation } = useEmployeeControllerUpdate();
+  const { mutateAsync: resignEmployeeMutation } =
+    useEmployeeResignControllerResign();
 
   // 페이지 진입 시 스크롤 최상단 리셋
   useEffect(() => {
@@ -137,18 +147,29 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
     null,
   );
+  const [sendTargetEmployeeId, setSendTargetEmployeeId] = useState<
+    string | null
+  >(null);
 
   const [employeeList, setEmployeeList] =
     useState<Employee[]>(initialEmployees);
 
   const handleAddEmployee = async (input: NewEmployeeInput) => {
-    await createEmployeeMutation({ data: input });
+    // 응답 스키마가 void로 생성돼 있어 캐스팅한다. 실제 서버가 내려주는
+    // employeeId를 써야 한다 — 임시 id를 쓰면 이후 발송 등 이 직원을
+    // 대상으로 하는 다른 API 호출이 전부 "직원을 찾을 수 없습니다"로 실패한다.
+    const response = (await createEmployeeMutation({
+      data: input,
+    })) as unknown as { employeeId: string };
 
-    // 목록 재조회 대신, 등록 성공 후 화면에 바로 한 줄을 더해 보여준다.
+    await queryClient.invalidateQueries({
+      queryKey: getEmployeeControllerListQueryKey(),
+    });
+
     setEmployeeList((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(),
+        id: response.employeeId,
         name: input.name,
         department: input.department,
         position: input.position,
@@ -185,13 +206,43 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
     );
   };
 
-  const handleResignEmployee = (id: string, resignedAt: string) => {
+  const handleResignEmployee = async (id: string, resignedAt: string) => {
+    const response = (await resignEmployeeMutation({
+      data: {
+        employeeId: id,
+        resignationDate: resignedAt,
+        selfEvaluationSendChannel:
+          ResignEmployeeDtoSelfEvaluationSendChannel.EMAIL,
+      } satisfies ResignEmployeeDto,
+    })) as unknown as ResignEmployeeResponse;
+
+    await queryClient.invalidateQueries({
+      queryKey: getEmployeeControllerFindOneQueryKey(id),
+    });
+    await queryClient.invalidateQueries({
+      queryKey: getEmployeeControllerListQueryKey(),
+    });
+
     setEmployeeList((prev) =>
       prev.map((emp) =>
         emp.id === id
-          ? { ...emp, status: "퇴사", resignedAt, action: "검증 입력" }
+          ? {
+              ...emp,
+              status: "퇴사",
+              resignedAt,
+              action: "검증 입력",
+              due: response.ceoEvaluationDueAt.slice(0, 10),
+            }
           : emp,
       ),
+    );
+  };
+
+  // 템플릿 선택 모달에서 발송이 끝나면 호출된다. 서버 쪽 declarationStatus는
+  // 다음 목록 조회 때 다시 받아오고, 지금 보이는 화면은 바로 미완료로 갱신한다.
+  const handleDeclarationSent = (id: string) => {
+    setEmployeeList((prev) =>
+      prev.map((emp) => (emp.id === id ? { ...emp, declare: "미완료" } : emp)),
     );
   };
 
@@ -426,7 +477,9 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
                                     navigate(`evaluation/${emp.id}`, {
                                       state: { employee: emp },
                                     })
-                                : undefined
+                                : emp.action === "발송"
+                                  ? () => setSendTargetEmployeeId(emp.id)
+                                  : undefined
                             }
                             className={`text-2xs rounded-lg px-3 py-1.5 font-bold shadow-xs transition-all active:scale-95 ${
                               emp.action === "검증 입력"
@@ -468,6 +521,11 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
         onClose={() => setSelectedEmployeeId(null)}
         onSave={handleUpdateEmployee}
         onResign={handleResignEmployee}
+      />
+      <TemplatePickerModal
+        employeeId={sendTargetEmployeeId}
+        onClose={() => setSendTargetEmployeeId(null)}
+        onSent={handleDeclarationSent}
       />
     </>
   );

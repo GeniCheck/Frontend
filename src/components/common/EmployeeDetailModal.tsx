@@ -7,6 +7,7 @@ import {
   EVALUATION_STATUS_LABEL,
 } from "@/api/employeeResponses";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
+import DeclarationViewModal from "@/components/common/DeclarationViewModal";
 
 // 직원 목록 테이블 등 화면 전반에서 쓰는 표시용 모델.
 // status/declare는 EmploymentStatus/DeclarationStatus를 한글로 변환해 둔 값이다.
@@ -39,7 +40,7 @@ interface EmployeeDetailModalProps {
     id: string,
     updates: { department: string; position: string; phone: string },
   ) => Promise<void>;
-  onResign: (id: string, resignedAt: string) => void;
+  onResign: (id: string, resignedAt: string) => Promise<void>;
 }
 
 const EmployeeDetailModal: React.FC<EmployeeDetailModalProps> = ({
@@ -137,7 +138,7 @@ interface EmployeeDetailPanelProps {
     id: string,
     updates: { department: string; position: string; phone: string },
   ) => Promise<void>;
-  onResign: (id: string, resignedAt: string) => void;
+  onResign: (id: string, resignedAt: string) => Promise<void>;
 }
 
 const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
@@ -153,6 +154,9 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isResignOpen, setResignOpen] = useState(false);
   const [resignDate, setResignDate] = useState("");
+  const [isResigning, setResigning] = useState(false);
+  const [resignError, setResignError] = useState<string | null>(null);
+  const [isDeclarationViewOpen, setDeclarationViewOpen] = useState(false);
 
   const status = EMPLOYMENT_STATUS_LABEL[detail.employmentStatus];
   const declare = DECLARATION_STATUS_LABEL[detail.declarationStatus];
@@ -183,10 +187,20 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
     setIsEditing(false);
   };
 
-  const handleConfirmResign = () => {
+  const handleConfirmResign = async () => {
     if (!resignDate) return;
-    onResign(detail.employeeId, resignDate);
-    setResignOpen(false);
+    setResignError(null);
+    setResigning(true);
+    try {
+      await onResign(detail.employeeId, resignDate);
+      setResignOpen(false);
+    } catch (err) {
+      setResignError(
+        extractErrorMessage(err, "퇴사 처리에 실패했어요. 다시 시도해주세요."),
+      );
+    } finally {
+      setResigning(false);
+    }
   };
 
   return (
@@ -323,12 +337,12 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
         </div>
       </div>
 
-      {/* 자기선언 질문지 보기 (제출 완료 시에만 활성화, 추후 연동 예정) */}
+      {/* 자기선언 질문지 보기 (제출 완료 시에만 활성화) */}
       <div className="mt-5">
         <button
           type="button"
           disabled={declare !== "완료"}
-          onClick={() => alert("연동 필요")}
+          onClick={() => setDeclarationViewOpen(true)}
           className={`w-full rounded-xl px-4 py-2.5 text-xs font-bold transition-all active:scale-95 ${
             declare === "완료"
               ? "text-text2 border border-gray-200 bg-white shadow-sm hover:bg-gray-50"
@@ -357,27 +371,34 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
               type="date"
               value={resignDate}
               onChange={(e) => setResignDate(e.target.value)}
+              disabled={isResigning}
               className={inputClassName}
             />
+            {resignError && (
+              <p className="text-right text-xs font-bold text-red-500">
+                {resignError}
+              </p>
+            )}
             <div className="flex justify-end gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => setResignOpen(false)}
-                className="text-text2 text-2xs rounded-xl border border-gray-200 bg-white px-3.5 py-1.5 font-bold transition-all hover:bg-gray-50 active:scale-95"
+                disabled={isResigning}
+                className="text-text2 text-2xs rounded-xl border border-gray-200 bg-white px-3.5 py-1.5 font-bold transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-40"
               >
                 취소
               </button>
               <button
                 type="button"
-                disabled={!resignDate}
+                disabled={!resignDate || isResigning}
                 onClick={handleConfirmResign}
-                className={`text-2xs rounded-xl px-3.5 py-1.5 font-bold transition-all active:scale-95 ${
+                className={`text-2xs rounded-xl px-3.5 py-1.5 font-bold transition-all active:scale-95 disabled:cursor-not-allowed ${
                   resignDate
-                    ? "bg-red-500 text-white hover:bg-red-600"
+                    ? "bg-red-500 text-white hover:bg-red-600 disabled:opacity-60"
                     : "cursor-not-allowed bg-gray-100 text-gray-300"
                 }`}
               >
-                퇴사 처리 확정
+                {isResigning ? "처리 중..." : "퇴사 처리 확정"}
               </button>
             </div>
           </div>
@@ -393,6 +414,10 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
           </div>
         )}
       </div>
+      <DeclarationViewModal
+        employeeId={isDeclarationViewOpen ? detail.employeeId : null}
+        onClose={() => setDeclarationViewOpen(false)}
+      />
     </>
   );
 };
