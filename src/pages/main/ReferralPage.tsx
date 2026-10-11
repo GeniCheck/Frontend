@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthControllerLogout } from "@/api/generated/endpoints/auth/auth";
+import { useReferralPostControllerList } from "@/api/generated/endpoints/referral/referral";
 import { useRole } from "@/context/roleContext";
 import ConsentRequestModal from "@/components/common/ConsentRequestModal";
 import ReferralPostModal from "@/components/common/ReferralPostModal";
+import type { ReferralPostListResponse } from "@/api/referralResponses";
+
+const PAGE_SIZE = 10;
+
+const formatDday = (expiresAt?: string): string => {
+  if (!expiresAt) return "—";
+  const diffDays = Math.ceil(
+    (new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+  );
+  if (diffDays < 0) return "만료";
+  if (diffDays === 0) return "오늘 만료";
+  return `D-${diffDays}`;
+};
 
 const ReferralPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,71 +42,31 @@ const ReferralPage: React.FC = () => {
   const LEVELS = ["전체", "사원", "대리", "과장", "차장", "부장"] as const;
   const [selectedLevel, setSelectedLevel] =
     useState<(typeof LEVELS)[number]>("전체");
+  const [keyword, setKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isConsentModalOpen, setConsentModalOpen] = useState(false);
   const [isPostModalOpen, setPostModalOpen] = useState(false);
 
-  // 전체 공개 인재 수: 별도 집계 API가 아직 없어 화면 상단 안내 문구용으로만 쓰는 고정값.
-  const totalPublishedCount = 248;
-
-  // 이름이 "이*연"처럼 일부 마스킹된 항목은 해당 직원이 이름 비공개로 게시한 경우.
-  const talentList = [
-    {
-      name: "김민준",
-      position: "과장",
-      company: "테크플러스 주식회사",
-      title: "함께 일하고 싶은 프론트엔드 개발자",
-      due: "D-84",
-    },
-    {
-      name: "이*연",
-      position: "대리",
-      company: "Stone Corp.",
-      title: "퍼포먼스 마케팅을 데이터로 이끄는 마케터",
-      due: "D-61",
-    },
-    {
-      name: "박지호",
-      position: "사원",
-      company: "그로스벤처 주식회사",
-      title: "고객 관계를 끝까지 책임지는 B2B 영업 담당자",
-      due: "D-45",
-    },
-    {
-      name: "최*현",
-      position: "과장",
-      company: "인사이트코퍼레이션",
-      title: "디자인 시스템을 처음부터 구축해 본 UX 디자이너",
-      due: "D-30",
-    },
-    {
-      name: "강태양",
-      position: "부장",
-      company: "Stone Corp.",
-      title: "대규모 MSA 전환을 이끈 백엔드 리드",
-      due: "D-22",
-    },
-    {
-      name: "정하늘",
-      position: "대리",
-      company: "테크플러스 주식회사",
-      title: "일정과 품질을 함께 지키는 QA 엔지니어",
-      due: "D-9",
-    },
-    {
-      name: "윤서아",
-      position: "사원",
-      company: "그로스벤처 주식회사",
-      title: "콘텐츠 기획부터 운영까지 해낸 마케터",
-      due: "D-7",
-    },
-  ];
-
-  const visibleTalentList =
-    selectedLevel === "전체"
-      ? talentList
-      : talentList.filter((talent) => talent.position === selectedLevel);
+  const {
+    data: postListData,
+    isPending: isPostListPending,
+    isError: isPostListError,
+    refetch: refetchPostList,
+  } = useReferralPostControllerList({
+    keyword: keyword.trim() || undefined,
+    position: selectedLevel === "전체" ? undefined : selectedLevel,
+    page: currentPage,
+    size: PAGE_SIZE,
+  });
+  const postList = postListData as unknown as
+    ReferralPostListResponse | undefined;
+  const talentList = postList?.items ?? [];
+  const totalPublishedCount = postList?.totalElements ?? 0;
+  const totalPages = Math.max(
+    1,
+    Math.ceil((postList?.totalElements ?? 0) / PAGE_SIZE),
+  );
 
   return (
     <>
@@ -143,6 +117,11 @@ const ReferralPage: React.FC = () => {
                   <i className="ti ti-search absolute top-1/2 left-4 -translate-y-1/2 text-sm text-gray-400" />
                   <input
                     type="text"
+                    value={keyword}
+                    onChange={(e) => {
+                      setKeyword(e.target.value);
+                      setCurrentPage(1);
+                    }}
                     placeholder="제목, 추천 사유로 검색"
                     className="focus:border-brand w-full rounded-xl border border-gray-200 py-2.5 pr-4 pl-10 text-xs transition-all outline-none placeholder:text-gray-300"
                   />
@@ -153,7 +132,10 @@ const ReferralPage: React.FC = () => {
                     <button
                       key={level}
                       type="button"
-                      onClick={() => setSelectedLevel(level)}
+                      onClick={() => {
+                        setSelectedLevel(level);
+                        setCurrentPage(1);
+                      }}
                       className={`rounded-full px-4 py-2 transition-all active:scale-95 ${
                         selectedLevel === level
                           ? "bg-brand text-white shadow-sm"
@@ -167,67 +149,101 @@ const ReferralPage: React.FC = () => {
               </div>
 
               <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse text-left">
-                    <thead>
-                      <tr className="text-2xs border-b border-gray-100 font-bold tracking-wider text-gray-400 uppercase">
-                        <th className="pb-3 font-semibold">인재</th>
-                        <th className="pb-3 font-semibold">추천 제목</th>
-                        <th className="pb-3 font-semibold">게시 만료</th>
-                        <th className="pb-3 text-right font-semibold">액션</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50 text-xs">
-                      {visibleTalentList.map((talent, i) => (
-                        <tr
-                          key={i}
-                          className="transition-colors hover:bg-gray-50/50"
-                        >
-                          <td className="py-3.5">
-                            <span className="text-text1 font-black">
-                              {talent.name}
-                            </span>
-                            <span className="text-text2 ml-1 font-bold">
-                              {talent.position}
-                            </span>
-                            <p className="text-2xs mt-0.5 text-gray-400">
-                              {talent.company}
-                            </p>
-                          </td>
-                          <td className="text-text1 py-3.5 font-bold">
-                            {talent.title}
-                          </td>
-                          <td className="text-text2 py-3.5">{talent.due}</td>
-                          <td className="py-3.5 text-right">
-                            <button
-                              type="button"
-                              className="text-text2 text-2xs rounded-lg border border-gray-200 px-3 py-1.5 font-bold transition-all hover:bg-gray-50 active:scale-95"
-                            >
-                              상세
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="mt-5 flex justify-center gap-1.5">
-                  {[1, 2, 3, 4, 5].map((page) => (
+                {isPostListPending ? (
+                  <p className="py-10 text-center text-xs font-bold text-gray-400">
+                    불러오는 중...
+                  </p>
+                ) : isPostListError ? (
+                  <div className="space-y-3 py-10 text-center">
+                    <p className="text-xs font-bold text-red-500">
+                      게시물 목록을 불러오지 못했어요.
+                    </p>
                     <button
-                      key={page}
                       type="button"
-                      onClick={() => setCurrentPage(page)}
-                      className={`text-2xs flex h-9 w-9 items-center justify-center rounded-lg font-bold transition-all active:scale-95 ${
-                        currentPage === page
-                          ? "bg-brand text-white"
-                          : "border border-gray-200 text-gray-500 hover:bg-gray-50"
-                      }`}
+                      onClick={() => refetchPostList()}
+                      className="text-brand text-xs font-bold hover:opacity-80"
                     >
-                      {page}
+                      다시 시도
                     </button>
-                  ))}
-                </div>
+                  </div>
+                ) : talentList.length === 0 ? (
+                  <p className="py-10 text-center text-xs font-bold text-gray-400">
+                    공개 중인 추천 인재가 없어요.
+                  </p>
+                ) : (
+                  <>
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse text-left">
+                        <thead>
+                          <tr className="text-2xs border-b border-gray-100 font-bold tracking-wider text-gray-400 uppercase">
+                            <th className="pb-3 font-semibold">인재</th>
+                            <th className="pb-3 font-semibold">추천 제목</th>
+                            <th className="pb-3 font-semibold">게시 만료</th>
+                            <th className="pb-3 text-right font-semibold">
+                              액션
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50 text-xs">
+                          {talentList.map((talent) => (
+                            <tr
+                              key={talent.postId}
+                              className="transition-colors hover:bg-gray-50/50"
+                            >
+                              <td className="py-3.5">
+                                <span className="text-text1 font-black">
+                                  {talent.employeeName}
+                                </span>
+                                <span className="text-text2 ml-1 font-bold">
+                                  {talent.position}
+                                </span>
+                                <p className="text-2xs mt-0.5 text-gray-400">
+                                  {talent.companyName}
+                                </p>
+                              </td>
+                              <td className="text-text1 py-3.5 font-bold">
+                                {talent.title}
+                              </td>
+                              <td className="text-text2 py-3.5">
+                                {formatDday(talent.expiresAt)}
+                              </td>
+                              <td className="py-3.5 text-right">
+                                <button
+                                  type="button"
+                                  className="text-text2 text-2xs rounded-lg border border-gray-200 px-3 py-1.5 font-bold transition-all hover:bg-gray-50 active:scale-95"
+                                >
+                                  상세
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="mt-5 flex justify-center gap-1.5">
+                        {Array.from(
+                          { length: totalPages },
+                          (_, i) => i + 1,
+                        ).map((page) => (
+                          <button
+                            key={page}
+                            type="button"
+                            onClick={() => setCurrentPage(page)}
+                            className={`text-2xs flex h-9 w-9 items-center justify-center rounded-lg font-bold transition-all active:scale-95 ${
+                              currentPage === page
+                                ? "bg-brand text-white"
+                                : "border border-gray-200 text-gray-500 hover:bg-gray-50"
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
 

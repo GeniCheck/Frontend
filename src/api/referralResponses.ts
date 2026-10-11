@@ -10,3 +10,27 @@ export interface ResumeUploadUrlResponse {
   uploadUrl: string;
   fileId: string;
 }
+
+// 게시물 목록(GET /referral/posts) 응답도 정확한 필드명이 문서로 확인되지
+// 않았다. 작성 요청 DTO(employeeId/title/recommendationReason/...)와, 같은
+// 백엔드의 다른 목록 API들(question-templates, employees)이 공통으로 쓰는
+// `{ items, page, size, totalElements }` 페이지네이션 모양을 근거로 추정했다.
+// 익명 게시물은 "익명은 이름 마스킹"이라는 설명대로 서버가 이미 마스킹된
+// employeeName을 내려준다고 가정한다.
+export interface ReferralPostListItem {
+  postId: string;
+  employeeName: string;
+  position: string;
+  companyName: string;
+  title: string;
+  recommendationReason: string;
+  publishedAt?: string;
+  expiresAt?: string;
+}
+
+export interface ReferralPostListResponse {
+  items: ReferralPostListItem[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
