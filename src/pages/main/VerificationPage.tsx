@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import type { UpdateEmployeeDto } from "@/api/generated/models";
+import type {
+  ResignEmployeeDto,
+  UpdateEmployeeDto,
+} from "@/api/generated/models";
+import { ResignEmployeeDtoSelfEvaluationSendChannel } from "@/api/generated/models";
 import {
   getEmployeeControllerFindOneQueryKey,
+  getEmployeeControllerListQueryKey,
   useEmployeeControllerCreate,
   useEmployeeControllerList,
   useEmployeeControllerUpdate,
 } from "@/api/generated/endpoints/employee/employee";
+import { useEmployeeResignControllerResign } from "@/api/generated/endpoints/employment/employment";
 import {
   EMPLOYMENT_STATUS_LABEL,
   DECLARATION_STATUS_LABEL,
 } from "@/api/employeeResponses";
+import type { ResignEmployeeResponse } from "@/api/employmentResponses";
 import AddEmployeeModal, {
   type NewEmployeeInput,
 } from "@/components/common/AddEmployeeModal";
@@ -127,6 +134,8 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
   const queryClient = useQueryClient();
   const { mutateAsync: createEmployeeMutation } = useEmployeeControllerCreate();
   const { mutateAsync: updateEmployeeMutation } = useEmployeeControllerUpdate();
+  const { mutateAsync: resignEmployeeMutation } =
+    useEmployeeResignControllerResign();
 
   // 페이지 진입 시 스크롤 최상단 리셋
   useEffect(() => {
@@ -185,11 +194,33 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
     );
   };
 
-  const handleResignEmployee = (id: string, resignedAt: string) => {
+  const handleResignEmployee = async (id: string, resignedAt: string) => {
+    const response = (await resignEmployeeMutation({
+      data: {
+        employeeId: id,
+        resignationDate: resignedAt,
+        selfEvaluationSendChannel:
+          ResignEmployeeDtoSelfEvaluationSendChannel.EMAIL,
+      } satisfies ResignEmployeeDto,
+    })) as unknown as ResignEmployeeResponse;
+
+    await queryClient.invalidateQueries({
+      queryKey: getEmployeeControllerFindOneQueryKey(id),
+    });
+    await queryClient.invalidateQueries({
+      queryKey: getEmployeeControllerListQueryKey(),
+    });
+
     setEmployeeList((prev) =>
       prev.map((emp) =>
         emp.id === id
-          ? { ...emp, status: "퇴사", resignedAt, action: "검증 입력" }
+          ? {
+              ...emp,
+              status: "퇴사",
+              resignedAt,
+              action: "검증 입력",
+              due: response.ceoEvaluationDueAt.slice(0, 10),
+            }
           : emp,
       ),
     );
