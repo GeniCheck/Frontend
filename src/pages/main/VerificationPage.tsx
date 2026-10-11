@@ -155,13 +155,21 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
     useState<Employee[]>(initialEmployees);
 
   const handleAddEmployee = async (input: NewEmployeeInput) => {
-    await createEmployeeMutation({ data: input });
+    // 응답 스키마가 void로 생성돼 있어 캐스팅한다. 실제 서버가 내려주는
+    // employeeId를 써야 한다 — 임시 id를 쓰면 이후 발송 등 이 직원을
+    // 대상으로 하는 다른 API 호출이 전부 "직원을 찾을 수 없습니다"로 실패한다.
+    const response = (await createEmployeeMutation({
+      data: input,
+    })) as unknown as { employeeId: string };
 
-    // 목록 재조회 대신, 등록 성공 후 화면에 바로 한 줄을 더해 보여준다.
+    await queryClient.invalidateQueries({
+      queryKey: getEmployeeControllerListQueryKey(),
+    });
+
     setEmployeeList((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(),
+        id: response.employeeId,
         name: input.name,
         department: input.department,
         position: input.position,
