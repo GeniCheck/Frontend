@@ -223,10 +223,6 @@ const QuestionTemplatePage: React.FC = () => {
   // 드래그 핸들(그립 아이콘)에서 마우스를 누른 경우에만 행 드래그를 허용
   const dragHandleArmed = useRef(false);
 
-  // 라이브러리 질문을 질문지 쪽으로 드래그 중일 때 담아두는 값
-  const [draggedLibraryQuestion, setDraggedLibraryQuestion] =
-    useState<TemplateQuestion | null>(null);
-
   const [isPublishModalOpen, setPublishModalOpen] = useState(false);
   const [isTemplateListOpen, setTemplateListOpen] = useState(false);
 
@@ -490,11 +486,8 @@ const QuestionTemplatePage: React.FC = () => {
                       <button
                         key={q.id}
                         type="button"
-                        draggable
-                        onDragStart={() => setDraggedLibraryQuestion(q)}
-                        onDragEnd={() => setDraggedLibraryQuestion(null)}
                         onClick={() => handleAddQuestion(q)}
-                        className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
+                        className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
                       >
                         <div className="flex items-center gap-3">
                           <span
@@ -527,11 +520,8 @@ const QuestionTemplatePage: React.FC = () => {
                         <button
                           key={q.id}
                           type="button"
-                          draggable
-                          onDragStart={() => setDraggedLibraryQuestion(q)}
-                          onDragEnd={() => setDraggedLibraryQuestion(null)}
                           onClick={() => handleAddQuestion(q)}
-                          className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
+                          className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
                         >
                           <div className="flex items-center gap-3">
                             <span
@@ -715,15 +705,7 @@ const QuestionTemplatePage: React.FC = () => {
                 </div>
               </div>
 
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => {
-                  if (!draggedLibraryQuestion) return;
-                  handleAddQuestion(draggedLibraryQuestion);
-                  setDraggedLibraryQuestion(null);
-                }}
-                className="space-y-4"
-              >
+              <div className="space-y-4">
                 {questions.map((q, i) => (
                   <div
                     key={q.id}
@@ -792,13 +774,7 @@ const QuestionTemplatePage: React.FC = () => {
                 ))}
 
                 {questions.length === 0 ? (
-                  <div
-                    className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-16 text-center transition-all ${
-                      draggedLibraryQuestion
-                        ? "border-brand bg-brand-light"
-                        : "border-gray-200"
-                    }`}
-                  >
+                  <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 text-2xl text-gray-300">
                       <i className="ti ti-clipboard-list" />
                     </div>
@@ -807,23 +783,13 @@ const QuestionTemplatePage: React.FC = () => {
                         아직 추가된 질문이 없습니다
                       </p>
                       <p className="text-2xs mt-1 text-gray-400">
-                        왼쪽 라이브러리에서 질문을 클릭하거나 이 영역으로
-                        드래그해 추가해 보세요.
+                        왼쪽 라이브러리에서 질문을 클릭해 추가해 보세요.
                       </p>
                     </div>
                   </div>
                 ) : (
-                  // 드래그 앤 드롭 안내 영역: 라이브러리 질문을 여기로 드래그하면 질문지에 추가됨
-                  <div
-                    className={`text-2xs rounded-2xl border-2 border-dashed p-8 text-center leading-relaxed transition-all ${
-                      draggedLibraryQuestion
-                        ? "border-brand bg-brand-light text-brand"
-                        : "border-gray-200 text-gray-400"
-                    }`}
-                  >
-                    여기로 질문을 드래그하거나
-                    <br />
-                    왼쪽 라이브러리에서 클릭하여 추가
+                  <div className="text-2xs rounded-2xl border-2 border-dashed border-gray-200 p-8 text-center leading-relaxed text-gray-400">
+                    왼쪽 라이브러리에서 질문을 클릭하여 추가
                   </div>
                 )}
               </div>
