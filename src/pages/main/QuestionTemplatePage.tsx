@@ -1,5 +1,21 @@
 import React, { useRef, useState } from "react";
 import DeclarationPublishModal from "@/components/common/DeclarationPublishModal";
+import QuestionTemplateListModal from "@/components/common/QuestionTemplateListModal";
+import {
+  useQuestionTemplateControllerCreate,
+  useQuestionTemplateControllerUpdate,
+} from "@/api/generated/endpoints/question-template/question-template";
+import { QuestionDtoType } from "@/api/generated/models/questionDtoType";
+import type { QuestionDto } from "@/api/generated/models/questionDto";
+import type { UpdateQuestionTemplateDto } from "@/api/generated/models/updateQuestionTemplateDto";
+import { extractErrorMessage } from "@/api/extractErrorMessage";
+import type {
+  CreateQuestionTemplateResponse,
+  QuestionTemplateDetail,
+  QuestionTemplateDetailQuestion,
+  QuestionTemplateQuestionType,
+  UpdateQuestionTemplateResponse,
+} from "@/api/questionTemplateResponses";
 
 type QuestionType = "점수형" | "선택형" | "서술형";
 
@@ -110,41 +126,58 @@ const RECOMMENDED_QUESTIONS: TemplateQuestion[] = [
   },
 ];
 
-// 우측 "폼 기본 정보"에 처음부터 채워지는 임시 목업 질문
-const INITIAL_QUESTIONS: TemplateQuestion[] = [
-  {
-    id: "q-1",
-    name: "협업 기여도",
-    content: "팀 내 협업 기여도를 1~10점으로 평가해 주세요.",
-    type: "점수형",
-  },
-  {
-    id: "q-2",
-    name: "의사결정 능력",
-    content: "의사결정 능력을 1~10점으로 평가해 주세요.",
-    type: "점수형",
-  },
-  {
-    id: "q-3",
-    name: "대표 성과 기술",
-    content: "재직 중 가장 대표적인 성과를 구체적으로 기술해 주세요.",
-    type: "서술형",
-  },
-  {
-    id: "q-4",
-    name: "강점 유형 선택",
-    content: "본인의 주요 강점 유형을 선택해 주세요.",
-    type: "선택형",
-    options: [
-      "실행력 / 추진력",
-      "분석력 / 논리력",
-      "창의력 / 기획력",
-      "소통력 / 협업력",
-    ],
-  },
-];
-
 const QUESTION_TYPES: QuestionType[] = ["점수형", "선택형", "서술형"];
+
+// 화면의 질문 유형 → 백엔드 DTO 타입. UI엔 필수 여부/평가 대상 여부를 고르는
+// 입력이 없어서 저장 시엔 항상 필수+평가 대상으로, 점수 범위는 화면에 보이는
+// 1~10점, 서술형 글자수는 500자로 고정해 보낸다.
+const QUESTION_TYPE_TO_DTO: Record<QuestionType, QuestionDtoType> = {
+  점수형: QuestionDtoType.SCORE,
+  선택형: QuestionDtoType.SINGLE_CHOICE,
+  서술형: QuestionDtoType.TEXT,
+};
+
+const buildQuestionDto = (
+  question: TemplateQuestion,
+  order: number,
+): QuestionDto => {
+  const base = {
+    order,
+    type: QUESTION_TYPE_TO_DTO[question.type],
+    text: question.content,
+    required: true,
+    evaluationEnabled: true,
+  };
+  if (question.type === "점수형") {
+    return { ...base, scoreMin: 1, scoreMax: 10 };
+  }
+  if (question.type === "선택형") {
+    return { ...base, options: question.options ?? [] };
+  }
+  return { ...base, maxLength: 500 };
+};
+
+// 백엔드 DTO 타입 → 화면의 질문 유형. "폼으로 불러오기"에서 상세 조회 응답을
+// 다시 화면 질문 목록(TemplateQuestion)으로 되돌릴 때 쓴다.
+const DTO_TYPE_TO_QUESTION_TYPE: Record<
+  QuestionTemplateQuestionType,
+  QuestionType
+> = {
+  SCORE: "점수형",
+  SINGLE_CHOICE: "선택형",
+  TEXT: "서술형",
+};
+
+const mapDetailQuestionToTemplateQuestion = (
+  question: QuestionTemplateDetailQuestion,
+): TemplateQuestion => ({
+  id: question.questionId,
+  name: question.text,
+  content: question.text,
+  type: DTO_TYPE_TO_QUESTION_TYPE[question.type],
+  options:
+    question.type === "SINGLE_CHOICE" ? (question.options ?? []) : undefined,
+});
 
 // 질문 타입별 포인트 컬러: 점수형=brand(인디고) · 선택형=accent(앰버) · 서술형=accent2(그린)
 const TYPE_STYLES: Record<
@@ -176,8 +209,7 @@ const QuestionTemplatePage: React.FC = () => {
     "추천 질문" | "저장된 질문" | "직접 작성"
   >("추천 질문");
 
-  const [questions, setQuestions] =
-    useState<TemplateQuestion[]>(INITIAL_QUESTIONS);
+  const [questions, setQuestions] = useState<TemplateQuestion[]>([]);
   const [savedQuestions, setSavedQuestions] = useState<TemplateQuestion[]>([]);
 
   // "직접 작성" 탭의 입력 폼 상태
@@ -191,11 +223,25 @@ const QuestionTemplatePage: React.FC = () => {
   // 드래그 핸들(그립 아이콘)에서 마우스를 누른 경우에만 행 드래그를 허용
   const dragHandleArmed = useRef(false);
 
-  // 라이브러리 질문을 질문지 쪽으로 드래그 중일 때 담아두는 값
-  const [draggedLibraryQuestion, setDraggedLibraryQuestion] =
-    useState<TemplateQuestion | null>(null);
-
   const [isPublishModalOpen, setPublishModalOpen] = useState(false);
+  const [isTemplateListOpen, setTemplateListOpen] = useState(false);
+
+  // "폼 기본 정보" 카드 입력값 (= 템플릿 저장 시 보낼 name/description)
+  const [formName, setFormName] = useState("");
+  const [formDescription, setFormDescription] = useState("");
+
+  const createTemplateMutation = useQuestionTemplateControllerCreate();
+  const updateTemplateMutation = useQuestionTemplateControllerUpdate();
+  const [saveTemplateError, setSaveTemplateError] = useState<string | null>(
+    null,
+  );
+
+  // "폼으로 불러오기"로 적용됐거나 막 저장에 성공한 템플릿. 있으면 "템플릿 수정"
+  // 버튼이 나타나고, 없으면 "템플릿으로 저장"이 새 템플릿 생성 역할만 한다.
+  const [loadedTemplate, setLoadedTemplate] = useState<{
+    templateId: string;
+    version: number;
+  } | null>(null);
 
   const handleOptionChange = (index: number, value: string) => {
     setDraftOptions((prev) =>
@@ -260,6 +306,85 @@ const QuestionTemplatePage: React.FC = () => {
     setDraftOptions([""]);
   };
 
+  const handleSaveTemplate = async () => {
+    if (!formName.trim()) {
+      setSaveTemplateError("폼 제목을 입력해주세요.");
+      return;
+    }
+    if (questions.length === 0) {
+      setSaveTemplateError("질문을 1개 이상 추가해주세요.");
+      return;
+    }
+    setSaveTemplateError(null);
+    try {
+      const response = (await createTemplateMutation.mutateAsync({
+        data: {
+          name: formName.trim(),
+          description: formDescription.trim() || undefined,
+          questions: questions.map((q, i) => buildQuestionDto(q, i + 1)),
+        },
+      })) as unknown as CreateQuestionTemplateResponse;
+      setLoadedTemplate({
+        templateId: response.templateId,
+        version: response.version,
+      });
+      alert("템플릿이 저장되었습니다.");
+    } catch (err) {
+      setSaveTemplateError(
+        extractErrorMessage(err, "템플릿 저장에 실패했습니다."),
+      );
+    }
+  };
+
+  const handleUpdateTemplate = async () => {
+    if (!loadedTemplate) return;
+    if (!formName.trim()) {
+      setSaveTemplateError("폼 제목을 입력해주세요.");
+      return;
+    }
+    if (questions.length === 0) {
+      setSaveTemplateError("질문을 1개 이상 추가해주세요.");
+      return;
+    }
+    setSaveTemplateError(null);
+    try {
+      const response = (await updateTemplateMutation.mutateAsync({
+        templateId: loadedTemplate.templateId,
+        // description이 nullable string인데 스웨거 생성 타입이 깨져 있어 캐스팅한다.
+        data: {
+          version: loadedTemplate.version,
+          name: formName.trim(),
+          description: formDescription.trim() || null,
+          questions: questions.map((q, i) => buildQuestionDto(q, i + 1)),
+        } as unknown as UpdateQuestionTemplateDto,
+      })) as unknown as UpdateQuestionTemplateResponse;
+      setLoadedTemplate({
+        templateId: response.templateId,
+        version: response.version,
+      });
+      alert("템플릿이 수정되었습니다.");
+    } catch (err) {
+      setSaveTemplateError(
+        extractErrorMessage(err, "템플릿 수정에 실패했습니다."),
+      );
+    }
+  };
+
+  const handleLoadTemplate = (detail: QuestionTemplateDetail) => {
+    setFormName(detail.name);
+    setFormDescription("");
+    setQuestions(
+      [...detail.questions]
+        .sort((a, b) => a.order - b.order)
+        .map(mapDetailQuestionToTemplateQuestion),
+    );
+    setLoadedTemplate({
+      templateId: detail.templateId,
+      version: detail.version,
+    });
+    setSaveTemplateError(null);
+  };
+
   return (
     <>
       <main className="flex min-h-screen flex-1 flex-col">
@@ -282,12 +407,41 @@ const QuestionTemplatePage: React.FC = () => {
               자기선언 질문 설계
             </h2>
             <div className="flex items-center gap-2">
+              {saveTemplateError && (
+                <p className="text-2xs font-bold text-red-500">
+                  {saveTemplateError}
+                </p>
+              )}
               <button
                 type="button"
-                onClick={() => alert("템플릿 저장 연동 필요")}
+                onClick={() => setTemplateListOpen(true)}
                 className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95"
               >
-                템플릿으로 저장
+                템플릿 목록
+              </button>
+              {loadedTemplate && (
+                <button
+                  type="button"
+                  disabled={updateTemplateMutation.isPending}
+                  onClick={handleUpdateTemplate}
+                  className="bg-brand shadow-brand/10 hover:bg-brand-dark rounded-xl px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95 disabled:opacity-40"
+                >
+                  {updateTemplateMutation.isPending
+                    ? "수정 중..."
+                    : "템플릿 수정"}
+                </button>
+              )}
+              <button
+                type="button"
+                disabled={createTemplateMutation.isPending}
+                onClick={handleSaveTemplate}
+                className="text-text2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold shadow-sm transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-40"
+              >
+                {createTemplateMutation.isPending
+                  ? "저장 중..."
+                  : loadedTemplate
+                    ? "새로운 템플릿으로 저장"
+                    : "템플릿으로 저장"}
               </button>
               <button
                 type="button"
@@ -332,11 +486,8 @@ const QuestionTemplatePage: React.FC = () => {
                       <button
                         key={q.id}
                         type="button"
-                        draggable
-                        onDragStart={() => setDraggedLibraryQuestion(q)}
-                        onDragEnd={() => setDraggedLibraryQuestion(null)}
                         onClick={() => handleAddQuestion(q)}
-                        className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
+                        className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
                       >
                         <div className="flex items-center gap-3">
                           <span
@@ -369,11 +520,8 @@ const QuestionTemplatePage: React.FC = () => {
                         <button
                           key={q.id}
                           type="button"
-                          draggable
-                          onDragStart={() => setDraggedLibraryQuestion(q)}
-                          onDragEnd={() => setDraggedLibraryQuestion(null)}
                           onClick={() => handleAddQuestion(q)}
-                          className="flex w-full cursor-grab items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] active:cursor-grabbing"
+                          className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
                         >
                           <div className="flex items-center gap-3">
                             <span
@@ -542,10 +690,14 @@ const QuestionTemplatePage: React.FC = () => {
                 <div className="space-y-3">
                   <input
                     type="text"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
                     placeholder="폼 제목을 입력해주세요"
                     className="text-text1 w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
                   />
                   <textarea
+                    value={formDescription}
+                    onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="설명을 입력해주세요"
                     rows={2}
                     className="text-text1 w-full resize-none rounded-xl border border-gray-200 px-3.5 py-2.5 text-xs placeholder:text-gray-300 focus:outline-none"
@@ -553,15 +705,7 @@ const QuestionTemplatePage: React.FC = () => {
                 </div>
               </div>
 
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => {
-                  if (!draggedLibraryQuestion) return;
-                  handleAddQuestion(draggedLibraryQuestion);
-                  setDraggedLibraryQuestion(null);
-                }}
-                className="space-y-4"
-              >
+              <div className="space-y-4">
                 {questions.map((q, i) => (
                   <div
                     key={q.id}
@@ -629,18 +773,25 @@ const QuestionTemplatePage: React.FC = () => {
                   </div>
                 ))}
 
-                {/* 드래그 앤 드롭 안내 영역: 라이브러리 질문을 여기로 드래그하면 질문지에 추가됨 */}
-                <div
-                  className={`text-2xs rounded-2xl border-2 border-dashed p-8 text-center leading-relaxed transition-all ${
-                    draggedLibraryQuestion
-                      ? "border-brand bg-brand-light text-brand"
-                      : "border-gray-200 text-gray-400"
-                  }`}
-                >
-                  여기로 질문을 드래그하거나
-                  <br />
-                  왼쪽 라이브러리에서 클릭하여 추가
-                </div>
+                {questions.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 text-2xl text-gray-300">
+                      <i className="ti ti-clipboard-list" />
+                    </div>
+                    <div>
+                      <p className="text-text1 text-sm font-bold">
+                        아직 추가된 질문이 없습니다
+                      </p>
+                      <p className="text-2xs mt-1 text-gray-400">
+                        왼쪽 라이브러리에서 질문을 클릭해 추가해 보세요.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-2xs rounded-2xl border-2 border-dashed border-gray-200 p-8 text-center leading-relaxed text-gray-400">
+                    왼쪽 라이브러리에서 질문을 클릭하여 추가
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -649,6 +800,11 @@ const QuestionTemplatePage: React.FC = () => {
       <DeclarationPublishModal
         open={isPublishModalOpen}
         onClose={() => setPublishModalOpen(false)}
+      />
+      <QuestionTemplateListModal
+        open={isTemplateListOpen}
+        onClose={() => setTemplateListOpen(false)}
+        onLoadTemplate={handleLoadTemplate}
       />
     </>
   );
