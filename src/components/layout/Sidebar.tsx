@@ -23,7 +23,7 @@ const Sidebar: React.FC = () => {
       name: "Verification",
       icon: "ti-checkbox",
       path: "/main/verification",
-      badge: "3",
+      badge: null,
       ceoOnly: true,
     },
     {
