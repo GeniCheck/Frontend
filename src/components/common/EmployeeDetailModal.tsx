@@ -26,6 +26,7 @@ export interface Employee {
   phone?: string;
   employmentStartDate?: string;
   resignedAt?: string;
+  evaluationId?: string;
 }
 
 const inputClassName =

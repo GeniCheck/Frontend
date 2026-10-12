@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { isAxiosError } from "axios";
 import {
   useDeclarationFormControllerGetForm,
   useDeclarationFormControllerSubmit,
@@ -11,6 +10,7 @@ import type {
   DeclarationFormResponse,
 } from "@/api/declarationResponses";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
+import { toLinkErrorStatus, type LinkErrorStatus } from "@/api/linkErrorStatus";
 import { CONSENT_ITEMS, type ConsentItemId } from "@/types/declaration";
 import LinkStatusMessage from "@/components/verification/LinkStatusMessage";
 import CompanyQuestionList from "@/components/verification/CompanyQuestionList";
@@ -20,23 +20,6 @@ const EMPTY_CONSENTS = CONSENT_ITEMS.reduce(
   (acc, item) => ({ ...acc, [item.id]: false }),
   {} as Record<ConsentItemId, boolean>,
 );
-
-type LinkErrorStatus = "expired" | "invalid" | "submitted";
-
-const LINK_ERROR_BY_CODE: Record<string, LinkErrorStatus> = {
-  LINK_EXPIRED: "expired",
-  ALREADY_SUBMITTED: "submitted",
-  INVALID_LINK_PURPOSE: "invalid",
-};
-
-// 403은 CONSENT_NOT_GIVEN(필수 동의 누락)에도 쓰여서 상태 코드가 아닌 code로 구분한다.
-// 링크 문제가 아니면 null을 돌려 폼에 머물게 한다.
-const toLinkErrorStatus = (err: unknown): LinkErrorStatus | null => {
-  if (!isAxiosError<{ code?: string }>(err)) return null;
-  const code = err.response?.data?.code;
-  if (code) return LINK_ERROR_BY_CODE[code] ?? null;
-  return err.response?.status === 404 ? "invalid" : null;
-};
 
 const isAnswered = (q: DeclarationFormQuestion, answer?: AnswerDto) => {
   if (!answer) return false;

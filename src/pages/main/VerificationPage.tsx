@@ -43,6 +43,9 @@ interface RawEmployee {
   employmentStatus?: string;
   status?: string;
   declarationStatus?: string;
+  evaluationId?: string | null;
+  evaluationStatus?: string | null;
+  ceoEvaluationDueAt?: string | null;
 }
 
 // 목록 응답이 배열 그대로 올 수도, { items / data / employees / list / results }로
@@ -57,6 +60,20 @@ const extractEmployeeArray = (data: unknown): RawEmployee[] => {
     }
   }
   return [];
+};
+
+// 퇴사자 행의 버튼 문구. 직원이 자기평가를 제출해야(CEO_PENDING) 대표 검증을 입력할 수 있다.
+const RESIGNED_ACTION_BY_EVALUATION: Record<string, string> = {
+  SELF_PENDING: "자기평가 대기",
+  SELF_EXPIRED: "자기평가 만료",
+  CEO_PENDING: "검증 입력",
+  COMPLETED: "완료",
+};
+
+const formatDueLabel = (dueAt: string) => {
+  const days = Math.ceil((new Date(dueAt).getTime() - Date.now()) / 86_400_000);
+  if (days < 0) return "기한 만료";
+  return days === 0 ? "오늘 마감" : `D-${days} 마감`;
 };
 
 const mapRawEmployee = (raw: RawEmployee): Employee => {
@@ -80,13 +97,17 @@ const mapRawEmployee = (raw: RawEmployee): Employee => {
     // 목록 조회에는 리포트 열람 상태가 내려오지 않아 기본값으로 둔다 (상세 조회에서 갱신).
     evaluationStatus: "NOT_OPENED",
     hrScore: "—",
-    due: null,
+    due:
+      raw.evaluationStatus === "CEO_PENDING" && raw.ceoEvaluationDueAt
+        ? formatDueLabel(raw.ceoEvaluationDueAt)
+        : null,
     action:
       employmentStatus === "RESIGNED"
-        ? "검증 입력"
+        ? (RESIGNED_ACTION_BY_EVALUATION[raw.evaluationStatus ?? ""] ?? "—")
         : declare === "완료"
           ? "완료"
           : "발송",
+    evaluationId: raw.evaluationId ?? undefined,
     email: raw.email,
     phone: raw.phone,
     employmentStartDate: raw.employmentStartDate,
@@ -230,8 +251,10 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
               ...emp,
               status: "퇴사",
               resignedAt,
-              action: "검증 입력",
-              due: response.ceoEvaluationDueAt.slice(0, 10),
+              action:
+                RESIGNED_ACTION_BY_EVALUATION[response.evaluationStatus] ?? "—",
+              due: null,
+              evaluationId: response.evaluationId,
             }
           : emp,
       ),
@@ -474,7 +497,7 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
                             onClick={
                               emp.action === "검증 입력"
                                 ? () =>
-                                    navigate(`evaluation/${emp.id}`, {
+                                    navigate(`evaluation/${emp.evaluationId}`, {
                                       state: { employee: emp },
                                     })
                                 : emp.action === "발송"

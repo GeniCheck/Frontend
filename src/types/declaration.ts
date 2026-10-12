@@ -19,22 +19,6 @@ export interface DeclarationRecord {
   answerText: string;
 }
 
-export interface DeclarationScoreInput {
-  questionId: string;
-  value: ScoreValue;
-}
-
-// { questionId: ScoreValue } 형태(폼 상태)를 POST /evaluation/self/:token이
-// 받을 배열 payload로 변환한다.
-export function toDeclarationScores(
-  scores: Record<string, ScoreValue>,
-): DeclarationScoreInput[] {
-  return Object.entries(scores).map(([questionId, value]) => ({
-    questionId,
-    value,
-  }));
-}
-
 // 자기선언 링크(GET /employee/link/:token) 검증 성공 시 확보되는 컨텍스트.
 // companyId/employeeId가 실제로 이 응답에 포함되는지는 백엔드 확정 필요.
 export interface DeclarationLinkContext {

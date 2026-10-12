@@ -70,7 +70,8 @@ const EvaluationResultPage: React.FC = () => {
                 <DeclarationScoreItem
                   key={record.question.id}
                   index={i}
-                  record={record}
+                  question={record.question.question}
+                  answer={record.answerText}
                   readOnly
                   value={selfScores[record.question.id]}
                   label="자기평가"
