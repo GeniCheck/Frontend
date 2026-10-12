@@ -34,3 +34,27 @@ export interface ReferralPostListResponse {
   size: number;
   totalElements: number;
 }
+
+export type ReferralConsentStatus =
+  "PENDING" | "AGREED" | "WITHDRAWN" | "EXPIRED";
+
+export interface ReferralConsentResponse {
+  consentId: string;
+  status: ReferralConsentStatus;
+  purpose: string;
+  employee: {
+    name: string;
+    position?: string;
+    companyName: string;
+  };
+  disclosure: {
+    recommendation: boolean;
+    resume: boolean;
+    position: boolean;
+    displayNameMode: "REAL_NAME" | "ANONYMOUS";
+    publishMonths: number;
+    publishMonthsOptions: number[];
+  };
+  expiresAt: string;
+  agreedAt: string | null;
+}

@@ -23,6 +23,7 @@ import PasswordResetPage from "@/pages/auth/PasswordResetPage";
 import SelfDeclarePage from "@/pages/verification/SelfDeclarePage";
 import SelfEvaluationPage from "@/pages/verification/SelfEvaluationPage";
 import EvaluationResultPage from "@/pages/verification/EvaluationResultPage";
+import ReferralConsentPage from "@/pages/verification/ReferralConsentPage";
 
 // ─── 4. MAIN 대시보드 도메인 영역 ───
 import MainPage from "@/pages/main/MainPage";
@@ -82,6 +83,11 @@ function App() {
           <Route
             path="/evaluation/result/:token"
             element={<EvaluationResultPage />}
+          />
+
+          <Route
+            path="/referral/consent/:token"
+            element={<ReferralConsentPage />}
           />
 
           {/* 대시보드 백오피스 내부 중첩 라우트 */}

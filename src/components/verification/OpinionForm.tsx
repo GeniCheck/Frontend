@@ -9,7 +9,6 @@ interface OpinionFormProps {
   onSubmit: (content: string) => void;
 }
 
-// 대표 검증 결과에 대한 직원 의견 1회 제출 폼. 의견을 내도 점수는 바뀌지 않는다.
 const OpinionForm: React.FC<OpinionFormProps> = ({
   dueAt,
   isSubmitting,

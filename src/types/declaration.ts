@@ -1,4 +1,3 @@
-// 법적 사전 동의 항목. id는 제출 DTO(DeclarationConsentsDto)의 필드명과 같다.
 export const CONSENT_ITEMS = [
   {
     id: "evaluationAgreed",
