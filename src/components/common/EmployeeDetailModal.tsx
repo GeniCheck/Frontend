@@ -358,8 +358,8 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
         )}
       </div>
 
-      {/* 퇴사 처리: 실수 클릭을 막기 위해 하단에 눈에 덜 띄게 배치 */}
-      <div className="mt-8 border-t border-gray-100 pt-4">
+      {/* 퇴사 처리: 퇴사일 입력 후 "확정"까지 눌러야 처리되는 2단계 */}
+      <div className="mt-2">
         {status === "퇴사" ? (
           <p className="text-3xs text-center text-gray-300">
             퇴사 처리됨{detail.resignedAt && ` · ${detail.resignedAt}`}
@@ -403,15 +403,13 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
             </div>
           </div>
         ) : (
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={() => setResignOpen(true)}
-              className="text-3xs text-gray-300 underline-offset-2 hover:text-red-400 hover:underline"
-            >
-              퇴사 처리하기
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setResignOpen(true)}
+            className="w-full rounded-xl border border-red-200 bg-white py-2.5 text-xs font-bold text-red-500 shadow-sm transition-all hover:bg-red-50 active:scale-[0.99]"
+          >
+            퇴사 처리하기
+          </button>
         )}
       </div>
       <DeclarationViewModal
