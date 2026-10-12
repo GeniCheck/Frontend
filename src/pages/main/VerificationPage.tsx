@@ -62,7 +62,6 @@ const extractEmployeeArray = (data: unknown): RawEmployee[] => {
   return [];
 };
 
-// 퇴사자 행의 버튼 문구. 직원이 자기평가를 제출해야(CEO_PENDING) 대표 검증을 입력할 수 있다.
 const RESIGNED_ACTION_BY_EVALUATION: Record<string, string> = {
   SELF_PENDING: "자기평가 대기",
   SELF_EXPIRED: "자기평가 만료",

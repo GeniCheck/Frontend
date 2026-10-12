@@ -18,7 +18,6 @@ import ScoreSelector, {
 } from "@/components/common/ScoreSelector";
 import DeclarationScoreItem from "@/components/verification/DeclarationScoreItem";
 
-// 자기선언과 무관한, 대표가 매기는 공통 역량 6개. key는 백엔드 enum과 같다.
 const COMPETENCY_ITEMS: { key: CompetencyScoreDtoKey; title: string }[] = [
   {
     key: CompetencyScoreDtoKey.TRUST,
@@ -48,7 +47,6 @@ const COMPETENCY_ITEMS: { key: CompetencyScoreDtoKey; title: string }[] = [
 
 const PageShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <main className="flex min-h-screen flex-1 flex-col">
-    {/* 상단 헤더: VerificationPage와 동일한 톤 유지 */}
     <header className="sticky top-0 z-40 flex h-17 items-center border-b border-gray-200 bg-white px-6">
       <div className="flex items-baseline gap-3 text-left">
         <h1 className="text-text1 text-base font-black tracking-tight">
@@ -109,7 +107,6 @@ const EvaluationPage: React.FC = () => {
     );
   }
 
-  // 409 이미 완료 · 410 기한 초과 · 403 재직 중 등은 서버 메시지를 그대로 보여준다.
   if (error || !form) {
     return (
       <PageShell>
@@ -180,10 +177,8 @@ const EvaluationPage: React.FC = () => {
 
   return (
     <PageShell>
-      {/* 페이지 타이틀 */}
       <h2 className="text-text1 text-xl font-black">검증 입력</h2>
 
-      {/* 대상 직원 정보 + 평가 항목 안내 */}
       <div className="rounded-3xl border border-gray-200 bg-white p-6 text-left shadow-sm">
         <p className="text-text1 text-lg font-black">{name}</p>
         <p className="text-text2 mt-0.5 text-sm font-semibold">
@@ -198,7 +193,6 @@ const EvaluationPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 평가 항목 목록 */}
       <div className="space-y-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm">
           <div className="mb-4 flex items-center gap-3">
@@ -259,7 +253,6 @@ const EvaluationPage: React.FC = () => {
           </div>
         ))}
 
-        {/* 재고용 의사 */}
         <div className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm">
           <div className="mb-3.5 flex items-center gap-3">
             <span className="bg-brand-light text-brand text-2xs flex h-6 w-6 shrink-0 items-center justify-center rounded-lg font-black">
@@ -297,7 +290,6 @@ const EvaluationPage: React.FC = () => {
         </div>
       )}
 
-      {/* 검증 완료 */}
       <div className="flex justify-end pb-2">
         <button
           type="button"

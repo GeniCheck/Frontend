@@ -359,7 +359,6 @@ const EmployeeDetailPanel: React.FC<EmployeeDetailPanelProps> = ({
         )}
       </div>
 
-      {/* 퇴사 처리: 퇴사일 입력 후 "확정"까지 눌러야 처리되는 2단계 */}
       <div className="mt-2">
         {status === "퇴사" ? (
           <p className="text-3xs text-center text-gray-300">

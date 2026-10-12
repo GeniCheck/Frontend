@@ -35,7 +35,6 @@ export interface ReferralPostListResponse {
   totalElements: number;
 }
 
-// GET /referral/consents/:token (직원 추천 게시 동의 링크)
 export type ReferralConsentStatus =
   "PENDING" | "AGREED" | "WITHDRAWN" | "EXPIRED";
 
@@ -48,7 +47,6 @@ export interface ReferralConsentResponse {
     position?: string;
     companyName: string;
   };
-  // 게시물에 공개되는 항목 여부와 게시 조건
   disclosure: {
     recommendation: boolean;
     resume: boolean;

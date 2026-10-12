@@ -59,8 +59,6 @@ const InfoRow: React.FC<{ label: string; children: React.ReactNode }> = ({
   </div>
 );
 
-// 대표가 인재 추천 화면에서 "동의 링크 발송"으로 보낸 링크(/referral/consent/:token)로
-// 접근하는, 로그인이 필요 없는 퇴사 직원용 페이지. 동의 후에도 같은 링크로 철회한다.
 const ReferralConsentPage: React.FC = () => {
   const { token = "" } = useParams();
   const queryClient = useQueryClient();

@@ -28,8 +28,6 @@ const isAnswered = (q: DeclarationFormQuestion, answer?: AnswerDto) => {
   return (answer.answerText ?? "").trim().length > 0;
 };
 
-// 대표가 VerificationPage에서 "질문지 발송"으로 보낸 1회성 링크
-// (/verification/self-declare/:token)로 접근하는, 로그인이 필요 없는 직원용 페이지.
 const SelfDeclarePage: React.FC = () => {
   const { token = "" } = useParams();
   const { data, isPending, error } = useDeclarationFormControllerGetForm(

@@ -43,7 +43,6 @@ export interface EmployeeDeclarationsResponse {
   declarations: Declaration[];
 }
 
-// GET /declarations/forms/:token 응답. 스웨거에 스키마가 없어 실제 응답 기준으로 작성.
 export interface DeclarationFormOption {
   optionId: string;
   label: string;

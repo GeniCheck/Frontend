@@ -19,8 +19,6 @@ const NoticeCard: React.FC<{ message: string }> = ({ message }) => (
   </div>
 );
 
-// 대표 검증 완료 통보 시 발송되는 링크(/evaluation/result/:token)로 접근하는,
-// 로그인이 필요 없는 직원용 결과 확인·의견 제출 페이지.
 const EvaluationResultPage: React.FC = () => {
   const { token = "" } = useParams();
   const queryClient = useQueryClient();
@@ -43,7 +41,6 @@ const EvaluationResultPage: React.FC = () => {
     );
   }
 
-  // 409 EVALUATION_NOT_COMPLETED 등은 서버 메시지를 그대로 보여준다.
   if (error || !result) {
     return (
       <div className="bg-surface flex min-h-screen items-center justify-center px-6">
@@ -62,7 +59,6 @@ const EvaluationResultPage: React.FC = () => {
     opinionMutation.mutate(
       { token, data: { content } },
       {
-        // 제출 여부는 결과 조회의 opinion.submitted로 다시 받아온다.
         onSuccess: () =>
           queryClient.invalidateQueries({
             queryKey: getResultLinkControllerGetResultQueryKey(token),

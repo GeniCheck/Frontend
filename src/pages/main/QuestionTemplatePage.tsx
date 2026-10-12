@@ -279,7 +279,6 @@ const QuestionTemplatePage: React.FC = () => {
         : undefined,
   });
 
-  // 폼 질문 id는 `${라이브러리 id}-${순번}`이라 접두사로 이미 추가된 질문인지 판별한다.
   const isAddedToForm = (libraryId: string) =>
     questions.some((q) => q.id.startsWith(`${libraryId}-`));
 

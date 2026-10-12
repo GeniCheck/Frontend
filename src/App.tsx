@@ -85,8 +85,6 @@ function App() {
             element={<EvaluationResultPage />}
           />
 
-          {/* 퇴사 직원용 인재 추천 게시 동의 페이지: 대표가 보낸 링크, 로그인
-              불필요. 동의 후에도 같은 링크로 철회할 수 있다. */}
           <Route
             path="/referral/consent/:token"
             element={<ReferralConsentPage />}
