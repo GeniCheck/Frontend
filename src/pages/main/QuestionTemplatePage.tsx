@@ -279,7 +279,12 @@ const QuestionTemplatePage: React.FC = () => {
         : undefined,
   });
 
+  // 폼 질문 id는 `${라이브러리 id}-${순번}`이라 접두사로 이미 추가된 질문인지 판별한다.
+  const isAddedToForm = (libraryId: string) =>
+    questions.some((q) => q.id.startsWith(`${libraryId}-`));
+
   const handleAddQuestion = (question: TemplateQuestion) => {
+    if (isAddedToForm(question.id)) return;
     setQuestions((prev) => [
       ...prev,
       { ...question, id: `${question.id}-${prev.length}` },
@@ -487,7 +492,10 @@ const QuestionTemplatePage: React.FC = () => {
                         key={q.id}
                         type="button"
                         onClick={() => handleAddQuestion(q)}
-                        className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
+                        disabled={isAddedToForm(q.id)}
+                        className={`flex w-full items-center justify-between rounded-xl border border-gray-100 p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] disabled:cursor-default ${
+                          isAddedToForm(q.id) ? "bg-gray-50" : "bg-white"
+                        }`}
                       >
                         <div className="flex items-center gap-3">
                           <span
@@ -521,7 +529,10 @@ const QuestionTemplatePage: React.FC = () => {
                           key={q.id}
                           type="button"
                           onClick={() => handleAddQuestion(q)}
-                          className="flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99]"
+                          disabled={isAddedToForm(q.id)}
+                          className={`flex w-full items-center justify-between rounded-xl border border-gray-100 p-3 text-left transition-all hover:bg-gray-50 active:scale-[0.99] disabled:cursor-default ${
+                            isAddedToForm(q.id) ? "bg-gray-50" : "bg-white"
+                          }`}
                         >
                           <div className="flex items-center gap-3">
                             <span

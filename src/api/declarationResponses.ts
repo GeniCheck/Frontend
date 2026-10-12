@@ -42,3 +42,41 @@ export interface EmployeeDeclarationsResponse {
   employeeId: string;
   declarations: Declaration[];
 }
+
+// GET /declarations/forms/:token 응답. 스웨거에 스키마가 없어 실제 응답 기준으로 작성.
+export interface DeclarationFormOption {
+  optionId: string;
+  label: string;
+}
+
+export interface DeclarationFormQuestion {
+  questionId: string;
+  order: number;
+  type: DeclarationItemType;
+  text: string;
+  required: boolean;
+  scoreMin?: number;
+  scoreMax?: number;
+  options?: DeclarationFormOption[];
+  maxLength?: number;
+  evaluationEnabled: boolean;
+}
+
+export type DeclarationRequiredConsent =
+  "EVALUATION" | "DATA_ACCESS" | "EVIDENCE_RETENTION";
+
+export interface DeclarationFormResponse {
+  declarationId: string;
+  templateName: string;
+  templateVersion: number;
+  employee: {
+    name: string;
+    companyName: string;
+    position?: string;
+  };
+  status: string;
+  expiresAt: string;
+  questions: DeclarationFormQuestion[];
+  requiredConsents: DeclarationRequiredConsent[];
+  consentVersion: string;
+}

@@ -1,8 +1,6 @@
 import React from "react";
-import type { TokenStatus } from "@/hooks/useTokenValidation";
-
 interface LinkStatusMessageProps {
-  status: Extract<TokenStatus, "expired" | "invalid">;
+  status: "expired" | "invalid" | "submitted";
 }
 
 const COPY: Record<
@@ -12,6 +10,10 @@ const COPY: Record<
   expired: {
     title: "만료된 링크예요",
     desc: "자기선언 링크는 1회성이라 제출 후에는 다시 열람할 수 없어요. 링크 재발송이 필요하면 대표에게 문의해주세요.",
+  },
+  submitted: {
+    title: "이미 제출한 링크예요",
+    desc: "제출이 완료된 링크라 다시 작성할 수 없어요. 수정이 필요하면 대표에게 문의해주세요.",
   },
   invalid: {
     title: "유효하지 않은 링크예요",
