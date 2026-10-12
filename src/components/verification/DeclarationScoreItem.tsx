@@ -6,7 +6,7 @@ import ScoreSelector, {
 interface DeclarationScoreItemProps {
   index: number;
   question: string;
-  answer: React.ReactNode;
+  answer?: React.ReactNode;
   value: ScoreValue | undefined;
   onChange?: (value: ScoreValue) => void;
   label?: string;
@@ -54,9 +54,11 @@ const DeclarationScoreItem: React.FC<DeclarationScoreItemProps> = ({
         <p className="text-sm font-bold text-gray-500">
           Q{index + 1}. {question}
         </p>
-        <div className="text-text1 mt-2 rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm leading-relaxed">
-          {answer}
-        </div>
+        {answer !== undefined && (
+          <div className="text-text1 mt-2 rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm leading-relaxed">
+            {answer}
+          </div>
+        )}
       </div>
       {readOnly ? (
         <div className="flex flex-wrap gap-6">

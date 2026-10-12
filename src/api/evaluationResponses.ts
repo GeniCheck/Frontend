@@ -61,3 +61,35 @@ export interface CeoEvaluationFormResponse {
   scoreMax: number;
   items: EvaluationItem[];
 }
+
+// GET /evaluations/result/:token (직원 결과 확인 링크)
+export interface EvaluationResultItem {
+  questionId: string;
+  question: string;
+  selfScore: number;
+  ceoScore: number;
+  scoreGap: number;
+}
+
+export interface EvaluationResultCompetency {
+  key: string;
+  name: string;
+  ceoScore: number;
+}
+
+export interface EvaluationResultResponse {
+  evaluationId: string;
+  employee: {
+    name: string;
+    companyName: string;
+  };
+  completedAt: string;
+  items: EvaluationResultItem[];
+  commonCompetencies: EvaluationResultCompetency[];
+  rehireIntent: boolean;
+  opinion: {
+    allowed: boolean;
+    submitted: boolean;
+    dueAt: string;
+  };
+}
