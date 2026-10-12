@@ -1,6 +1,8 @@
 import React from "react";
+import type { LinkErrorStatus } from "@/api/linkErrorStatus";
+
 interface LinkStatusMessageProps {
-  status: "expired" | "invalid" | "submitted";
+  status: LinkErrorStatus;
 }
 
 const COPY: Record<
@@ -9,7 +11,7 @@ const COPY: Record<
 > = {
   expired: {
     title: "만료된 링크예요",
-    desc: "자기선언 링크는 1회성이라 제출 후에는 다시 열람할 수 없어요. 링크 재발송이 필요하면 대표에게 문의해주세요.",
+    desc: "유효 기간이 지났거나 더 이상 사용할 수 없는 링크예요. 링크 재발송이 필요하면 대표에게 문의해주세요.",
   },
   submitted: {
     title: "이미 제출한 링크예요",
