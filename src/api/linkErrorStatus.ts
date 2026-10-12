@@ -1,12 +1,16 @@
 import { isAxiosError } from "axios";
 
-export type LinkErrorStatus = "expired" | "invalid" | "submitted";
+export type LinkErrorStatus = "expired" | "invalid" | "submitted" | "withdrawn";
 
 const LINK_ERROR_BY_CODE: Record<string, LinkErrorStatus> = {
   LINK_EXPIRED: "expired",
   ALREADY_SUBMITTED: "submitted",
   INVALID_LINK_PURPOSE: "invalid",
   INVALID_EVALUATION_STATUS: "invalid",
+  CONSENT_NOT_FOUND: "invalid",
+  // 추천 동의 링크: 조회 시 ALREADY_PROCESSED는 철회된 동의를 뜻한다.
+  ALREADY_PROCESSED: "withdrawn",
+  ALREADY_WITHDRAWN: "withdrawn",
 };
 
 // 직원용 1회성 링크 API의 에러를 링크 안내 화면 상태로 바꾼다.
