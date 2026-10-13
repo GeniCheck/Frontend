@@ -2,7 +2,6 @@
 // 스웨거에 스키마가 없어 orval이 void로 생성하므로, 실제 호출부에서
 // `as unknown as` 캐스팅 대상으로 쓴다.
 
-// 실제 POST /referral/resumes/presigned-url 응답으로 확인된 모양(2026-10-13).
 export interface ResumeUploadUrlResponse {
   resumeFileId: string;
   uploadUrl: string;
@@ -10,14 +9,9 @@ export interface ResumeUploadUrlResponse {
   expiresAt: string;
 }
 
-// 이름은 서버가 이미 마스킹해서 내려준다 — 익명이면 "이**"처럼 displayName
-// 자체가 마스킹된 문자열이라, 프론트에서 별도로 또 마스킹할 필요가 없다.
-
-// 실제 GET /referral/posts 목록 응답으로 확인된 모양(2026-10-13).
-// 상세(ReferralPostDetail)와 달리 employee가 중첩되지 않고 평평하며,
-// 날짜 필드명도 expiresAt(상세는 postExpiresAt), 총 개수도 total(상세
-// 페이지네이션은 totalElements 추정)로 서로 다르다 — 실제 응답 기준으로 둘을
-// 통일하지 않고 각자 확인된 모양 그대로 둔다.
+// 목록 응답은 상세(ReferralPostDetail)와 달리 employee가 중첩되지 않고
+// 평평하며, 날짜·총 개수 필드명도 서로 다르다(expiresAt vs postExpiresAt,
+// total vs totalElements) — 둘을 억지로 통일하지 않고 각자 응답 그대로 둔다.
 export interface ReferralPostListItem {
   postId: string;
   title: string;
@@ -35,7 +29,6 @@ export interface ReferralPostListResponse {
   total: number;
 }
 
-// 실제 GET /referral/posts/{postId} 응답으로 확인된 모양(2026-10-13).
 export interface ReferralPostEmployee {
   displayName: string;
   position: string;
