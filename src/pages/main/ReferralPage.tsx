@@ -64,11 +64,8 @@ const ReferralPage: React.FC = () => {
   const postList = postListData as unknown as
     ReferralPostListResponse | undefined;
   const talentList = postList?.items ?? [];
-  const totalPublishedCount = postList?.totalElements ?? 0;
-  const totalPages = Math.max(
-    1,
-    Math.ceil((postList?.totalElements ?? 0) / PAGE_SIZE),
-  );
+  const totalPublishedCount = postList?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil((postList?.total ?? 0) / PAGE_SIZE));
 
   return (
     <>
@@ -194,7 +191,7 @@ const ReferralPage: React.FC = () => {
                             >
                               <td className="py-3.5">
                                 <span className="text-text1 font-black">
-                                  {talent.employeeName}
+                                  {talent.displayName}
                                 </span>
                                 <span className="text-text2 ml-1 font-bold">
                                   {talent.position}

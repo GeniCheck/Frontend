@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  getReferralPostControllerFindOneQueryKey,
   getReferralPostControllerListQueryKey,
   useReferralPostControllerFindOne,
   useReferralPostControllerRemove,
@@ -8,7 +9,11 @@ import {
 } from "@/api/generated/endpoints/referral/referral";
 import { UpdateReferralPostDtoDisplayNameMode } from "@/api/generated/models/updateReferralPostDtoDisplayNameMode";
 import { UpdateReferralPostDtoPublishMonths } from "@/api/generated/models/updateReferralPostDtoPublishMonths";
-import type { ReferralPostDetail } from "@/api/referralResponses";
+import {
+  inferDisplayNameMode,
+  inferPublishMonths,
+  type ReferralPostDetail,
+} from "@/api/referralResponses";
 import { extractErrorMessage } from "@/api/extractErrorMessage";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
@@ -59,7 +64,7 @@ const ReferralPostDetailModal: React.FC<ReferralPostDetailModalProps> = ({
         <div className="mb-5 flex items-start justify-between">
           <div>
             <h3 className="text-text1 text-base font-black">
-              {detail ? detail.employeeName : "게시물 상세"}
+              {detail ? detail.employee.displayName : "게시물 상세"}
             </h3>
             <p className="text-2xs mt-1 text-gray-400">추천 게시물 상세</p>
           </div>
@@ -119,15 +124,25 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
   const updateMutation = useReferralPostControllerUpdate();
   const removeMutation = useReferralPostControllerRemove();
 
+  // 상세 응답에 displayNameMode/publishMonths가 없어 추정한 현재 상태.
+  // 수정 중 전환해도 "원래 몇 개월이었는지" 기준은 이 값으로 고정해 둔다.
+  const initialDisplayNameMode = inferDisplayNameMode(
+    detail.employee.displayName,
+  );
+  const initialPublishMonths = inferPublishMonths(
+    detail.publishedAt,
+    detail.postExpiresAt,
+  );
+
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(detail.title);
   const [recommendationReason, setRecommendationReason] = useState(
     detail.recommendationReason,
   );
   const [displayNameMode, setDisplayNameMode] = useState(
-    detail.displayNameMode,
+    initialDisplayNameMode,
   );
-  const [publishMonths, setPublishMonths] = useState(detail.publishMonths);
+  const [publishMonths, setPublishMonths] = useState(initialPublishMonths);
   const [isSaving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -137,8 +152,8 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
   const handleCancelEdit = () => {
     setTitle(detail.title);
     setRecommendationReason(detail.recommendationReason);
-    setDisplayNameMode(detail.displayNameMode);
-    setPublishMonths(detail.publishMonths);
+    setDisplayNameMode(initialDisplayNameMode);
+    setPublishMonths(initialPublishMonths);
     setSaveError(null);
     setIsEditing(false);
   };
@@ -147,18 +162,29 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
     setSaveError(null);
     setSaving(true);
     try {
+      const trimmedTitle = title.trim();
+      const trimmedReason = recommendationReason.trim();
       await updateMutation.mutateAsync({
         postId: detail.postId,
         data: {
-          title: title.trim(),
-          recommendationReason: recommendationReason.trim(),
+          title: trimmedTitle,
+          recommendationReason: trimmedReason,
           displayNameMode,
           publishMonths,
         },
       });
+      // 목록·상세 캐시를 모두 무효화해, 모달을 다시 열거나 목록으로 돌아가도
+      // 방금 수정한 값이 바로 보이게 한다.
       await queryClient.invalidateQueries({
         queryKey: getReferralPostControllerListQueryKey(),
       });
+      await queryClient.invalidateQueries({
+        queryKey: getReferralPostControllerFindOneQueryKey(detail.postId),
+      });
+      // detail prop은 다음 재조회 전까지 그대로라, 지금 화면에 당장 반영되도록
+      // 로컬 상태를 저장된(트림된) 값으로 맞춰둔다.
+      setTitle(trimmedTitle);
+      setRecommendationReason(trimmedReason);
       onChanged();
       setIsEditing(false);
     } catch (err) {
@@ -212,7 +238,8 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
             <div>
               <span className="text-gray-400">추천 대상</span>
               <p className="text-text1 mt-0.5 font-bold">
-                {detail.employeeName} · {detail.position} · {detail.companyName}
+                {detail.employee.displayName} · {detail.employee.position} ·{" "}
+                {detail.companyName}
               </p>
             </div>
 
@@ -228,7 +255,7 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
                   className={inputClassName}
                 />
               ) : (
-                <p className="text-text1 font-bold">{detail.title}</p>
+                <p className="text-text1 font-bold">{title}</p>
               )}
             </div>
 
@@ -248,7 +275,7 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
                 />
               ) : (
                 <p className="text-text2 leading-relaxed">
-                  {detail.recommendationReason}
+                  {recommendationReason}
                 </p>
               )}
             </div>
@@ -299,7 +326,7 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
                         key={value}
                         type="button"
                         // 3 → 6개월 연장만 가능해, 이미 6개월이면 3개월로 되돌릴 수 없다.
-                        disabled={isSaving || detail.publishMonths > value}
+                        disabled={isSaving || initialPublishMonths > value}
                         onClick={() => setPublishMonths(value)}
                         className={`flex-1 rounded-md px-3 py-1.5 transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${
                           publishMonths === value
@@ -317,17 +344,17 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-gray-400">이름 표시 · 게시 기간</span>
                 <span className="text-text1 font-bold">
-                  {detail.displayNameMode === "REAL_NAME" ? "실명" : "익명"} ·{" "}
-                  {detail.publishMonths}개월
+                  {displayNameMode === "REAL_NAME" ? "실명" : "익명"} ·{" "}
+                  {publishMonths}개월
                 </span>
               </div>
             )}
 
-            {detail.resumeDownloadUrl && (
+            {detail.resume && (
               <div className="flex items-center justify-between">
                 <span className="text-gray-400">이력서</span>
                 <a
-                  href={detail.resumeDownloadUrl}
+                  href={detail.resume.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-brand font-bold hover:underline"
@@ -340,10 +367,8 @@ const ReferralPostDetailPanel: React.FC<ReferralPostDetailPanelProps> = ({
             <div className="flex items-center justify-between">
               <span className="text-gray-400">게시 기간</span>
               <span className="text-text1 font-bold">
-                {detail.publishedAt &&
-                  new Date(detail.publishedAt).toLocaleDateString("ko-KR")}
-                {detail.expiresAt &&
-                  ` ~ ${new Date(detail.expiresAt).toLocaleDateString("ko-KR")}`}
+                {new Date(detail.publishedAt).toLocaleDateString("ko-KR")} ~{" "}
+                {new Date(detail.postExpiresAt).toLocaleDateString("ko-KR")}
               </span>
             </div>
 
