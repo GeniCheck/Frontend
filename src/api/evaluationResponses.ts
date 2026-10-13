@@ -103,3 +103,39 @@ export interface EvaluationResultResponse {
     dueAt: string;
   };
 }
+
+// 대표용 "평가 비교 결과 조회"(GET /evaluations/{evaluationId}/result) 응답.
+// 위 EvaluationResultResponse는 직원이 결과 링크 토큰으로 보는 별도 엔드포인트용
+// 타입이라 필드가 다르다(employee 이름 없음, notification/employeeOpinion 구조).
+export interface CeoEvaluationResultItem {
+  questionId: string;
+  question: string;
+  declarationAnswer: DeclarationAnswer;
+  selfScore: number | null;
+  ceoScore: number;
+  scoreGap: number | null;
+}
+
+export interface CeoEvaluationResultCompetency {
+  key: CompetencyScoreDtoKey;
+  name: string;
+  ceoScore: number;
+}
+
+export interface CeoEvaluationResultResponse {
+  evaluationId: string;
+  employeeId: string;
+  status: string;
+  items: CeoEvaluationResultItem[];
+  commonCompetencies: CeoEvaluationResultCompetency[];
+  rehireIntent: boolean;
+  notification: {
+    sent: boolean;
+    viewedAt: string | null;
+  };
+  employeeOpinion: {
+    submitted: boolean;
+    content: string | null;
+    submittedAt: string | null;
+  };
+}

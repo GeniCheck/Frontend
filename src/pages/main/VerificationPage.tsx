@@ -26,6 +26,7 @@ import EmployeeDetailModal, {
   type Employee,
 } from "@/components/common/EmployeeDetailModal";
 import TemplatePickerModal from "@/components/common/TemplatePickerModal";
+import EvaluationResultModal from "@/components/common/EvaluationResultModal";
 
 // 목록 응답에서 직원 한 명을 표현할 것으로 예상되는 필드.
 // 스웨거에 응답 스키마가 없어(void) 실제 키 이름을 100% 확정할 수 없으므로
@@ -170,6 +171,8 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
   const [sendTargetEmployeeId, setSendTargetEmployeeId] = useState<
     string | null
   >(null);
+  const [resultTargetEmployee, setResultTargetEmployee] =
+    useState<Employee | null>(null);
 
   const [employeeList, setEmployeeList] =
     useState<Employee[]>(initialEmployees);
@@ -501,17 +504,22 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
                                     })
                                 : emp.action === "발송"
                                   ? () => setSendTargetEmployeeId(emp.id)
-                                  : undefined
+                                  : emp.action === "완료" && emp.evaluationId
+                                    ? () => setResultTargetEmployee(emp)
+                                    : undefined
                             }
                             className={`text-2xs rounded-lg px-3 py-1.5 font-bold shadow-xs transition-all active:scale-95 ${
                               emp.action === "검증 입력"
                                 ? "bg-brand/10 text-brand hover:bg-brand/20"
-                                : emp.action === "발송"
+                                : emp.action === "발송" ||
+                                    (emp.action === "완료" && emp.evaluationId)
                                   ? "text-text2 border border-gray-200 hover:bg-gray-50"
                                   : "cursor-default bg-gray-100 text-gray-400"
                             }`}
                           >
-                            {emp.action}
+                            {emp.action === "완료" && emp.evaluationId
+                              ? "결과 조회"
+                              : emp.action}
                           </button>
                         </td>
                         <td className="py-3.5 text-right">
@@ -548,6 +556,10 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
         employeeId={sendTargetEmployeeId}
         onClose={() => setSendTargetEmployeeId(null)}
         onSent={handleDeclarationSent}
+      />
+      <EvaluationResultModal
+        employee={resultTargetEmployee}
+        onClose={() => setResultTargetEmployee(null)}
       />
     </>
   );
