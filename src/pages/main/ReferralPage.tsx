@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthControllerLogout } from "@/api/generated/endpoints/auth/auth";
 import { useReferralPostControllerList } from "@/api/generated/endpoints/referral/referral";
-import { useRole } from "@/context/roleContext";
 import ConsentRequestModal from "@/components/common/ConsentRequestModal";
 import ReferralPostModal from "@/components/common/ReferralPostModal";
 import ReferralPostDetailModal from "@/components/common/ReferralPostDetailModal";
@@ -21,20 +18,6 @@ const formatDday = (expiresAt?: string): string => {
 };
 
 const ReferralPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { clearSession } = useRole();
-  const { mutateAsync: logoutMutation, isPending: isLoggingOut } =
-    useAuthControllerLogout();
-
-  const logout = async () => {
-    try {
-      await logoutMutation();
-    } finally {
-      clearSession();
-      navigate("/");
-    }
-  };
-
   // 페이지 진입 시 스크롤 최상단 리셋
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -74,7 +57,7 @@ const ReferralPage: React.FC = () => {
       */}
       <main className="flex min-h-screen flex-1 flex-col">
         {/* 상단 툴바 헤더 */}
-        <header className="sticky top-0 z-40 flex h-17 items-center justify-between border-b border-gray-200 bg-white px-6">
+        <header className="sticky top-0 z-40 flex h-17 items-center border-b border-gray-200 bg-white px-6">
           <div className="flex items-baseline gap-3 text-left">
             <h1 className="text-text1 text-base font-black tracking-tight">
               Referral
@@ -82,18 +65,6 @@ const ReferralPage: React.FC = () => {
             <span className="text-xs font-semibold text-gray-400">
               인재 추천 관리
             </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={logout}
-              disabled={isLoggingOut}
-              className="text-text2 flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold shadow-sm transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <i className="ti ti-logout text-sm" />
-              {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
-            </button>
           </div>
         </header>
 
