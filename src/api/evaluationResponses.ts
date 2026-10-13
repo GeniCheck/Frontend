@@ -1,4 +1,5 @@
 import type { DeclarationItemType } from "@/api/declarationResponses";
+import type { CompetencyScoreDtoKey } from "@/api/generated/models/competencyScoreDtoKey";
 
 export interface DeclarationAnswer {
   type: DeclarationItemType;
@@ -38,19 +39,38 @@ export interface SelfEvaluationFormResponse {
   items: EvaluationItem[];
 }
 
+// 자기평가 폼(EvaluationItem)과 별개 타입. 실제 응답에 order 필드가 없고,
+// 대신 commonCompetencies가 함께 내려온다 — 자기평가 쪽 타입을 공유하면
+// SelfEvaluationPage.tsx(직원 파트)가 의존하는 order 필드가 깨지므로 분리했다.
+export interface CeoEvaluationFormItem {
+  questionId: string;
+  question: string;
+  declarationAnswer: DeclarationAnswer;
+  selfScore: number | null;
+  ceoScore: number | null;
+}
+
+export interface CeoEvaluationFormCompetency {
+  key: CompetencyScoreDtoKey;
+  name: string;
+  ceoScore: number | null;
+}
+
 export interface CeoEvaluationFormResponse {
   evaluationId: string;
   employee: {
+    employeeId?: string;
     name: string;
     department?: string;
     position?: string;
     resignedAt?: string;
   };
   status: string;
-  dueAt: string;
+  ceoEvaluationDueAt: string;
   scoreMin: number;
   scoreMax: number;
-  items: EvaluationItem[];
+  items: CeoEvaluationFormItem[];
+  commonCompetencies: CeoEvaluationFormCompetency[];
 }
 
 export interface EvaluationResultItem {
@@ -81,5 +101,41 @@ export interface EvaluationResultResponse {
     allowed: boolean;
     submitted: boolean;
     dueAt: string;
+  };
+}
+
+// 대표용 "평가 비교 결과 조회"(GET /evaluations/{evaluationId}/result) 응답.
+// 위 EvaluationResultResponse는 직원이 결과 링크 토큰으로 보는 별도 엔드포인트용
+// 타입이라 필드가 다르다(employee 이름 없음, notification/employeeOpinion 구조).
+export interface CeoEvaluationResultItem {
+  questionId: string;
+  question: string;
+  declarationAnswer: DeclarationAnswer;
+  selfScore: number | null;
+  ceoScore: number;
+  scoreGap: number | null;
+}
+
+export interface CeoEvaluationResultCompetency {
+  key: CompetencyScoreDtoKey;
+  name: string;
+  ceoScore: number;
+}
+
+export interface CeoEvaluationResultResponse {
+  evaluationId: string;
+  employeeId: string;
+  status: string;
+  items: CeoEvaluationResultItem[];
+  commonCompetencies: CeoEvaluationResultCompetency[];
+  rehireIntent: boolean;
+  notification: {
+    sent: boolean;
+    viewedAt: string | null;
+  };
+  employeeOpinion: {
+    submitted: boolean;
+    content: string | null;
+    submittedAt: string | null;
   };
 }
