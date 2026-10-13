@@ -154,7 +154,7 @@ const ReferralPostModal: React.FC<ReferralPostModalProps> = ({
         if (!putResponse.ok) {
           throw new Error("이력서 업로드에 실패했어요.");
         }
-        resumeFileId = uploadUrlResponse.fileId;
+        resumeFileId = uploadUrlResponse.resumeFileId;
       }
 
       await createPostMutation.mutateAsync({
