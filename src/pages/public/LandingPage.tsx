@@ -90,18 +90,18 @@ const LandingPage: React.FC = () => {
 
       {/* ─── 2. HERO SECTION ─── */}
       <section className="relative min-h-screen pt-32 pb-20 px-8 flex flex-col items-center text-center overflow-hidden bg-surface">
-        {/* 메인 타이틀 단색 보라색화 적용 완료 */}
+        {/* 메인 카피: 대표님 가이드라인(기록→검증→추천→채용) 반영한 핵심 메시지 */}
         <h1 className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-300 font-black text-[clamp(32px,5vw,56px)] leading-[1.32] tracking-tight mb-6">
-          <span className="block text-text1">직원의 진짜 실력,</span>
-          <span className="block text-brand">데이터로 증명한다</span>
+          <span className="block text-text1">이력서는 내가 쓰고,</span>
+          <span className="block text-brand">경력은 데이터가 증명합니다</span>
         </h1>
 
         <p className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-400 max-w-145 text-text2 text-lg leading-relaxed mb-12">
-          입사부터 퇴사까지. 직원 스스로 선언하고, 대표가 검증하고, AI가
-          분석합니다.
+          직원이 직접 기록한 경력을 회사가 검증하고, 좋은 인재는 다음 기회로
+          추천합니다.
           <br />
-          <span className="font-bold text-brand">GeniCheck</span>는 채용
-          불안을 끝내는 HR 신용 인프라입니다.
+          <span className="font-bold text-brand">GeniCheck</span>는 경력의
+          기록부터 검증, 추천, 채용까지 연결하는 검증형 커리어 플랫폼입니다.
         </p>
 
         <div className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-500 flex flex-wrap justify-center gap-4 mb-20 z-10">
@@ -129,7 +129,7 @@ const LandingPage: React.FC = () => {
                 <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]"></div>
               </div>
               <div className="flex-1 max-w-100 h-6 bg-white border border-gray-200 rounded-md mx-auto flex items-center justify-center text-2xs text-text3 tabular-nums">
-                app.genicheck.io/dashboard
+                genicheck.app/dashboard
               </div>
             </div>
             <div className="p-6 grid grid-cols-4 gap-4 text-left">
@@ -190,7 +190,44 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 3. TRUST BAR ─── */}
+      {/* ─── 3. BEAUTIFUL EXIT (좋은 인재 추천 핵심 메시지) ─── */}
+      <section className="py-24 px-8 bg-white">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+          <div className="reveal opacity-0 translate-y-8 transition-all duration-700 text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-4">
+              <i className="ti ti-heart-handshake text-brand text-xs"></i>
+              <span className="text-2xs font-bold text-brand uppercase tracking-widest">
+                Beautiful Exit
+              </span>
+            </div>
+            <h2 className="text-[32px] md:text-[42px] font-black text-text1 leading-[1.35] tracking-tight mb-6">
+              좋은 인재와의 이별은,
+              <br />
+              끝이 아니라 추천이어야 합니다.
+            </h2>
+            <p className="text-text2 text-lg leading-relaxed">
+              좋은 직원이라도 회사의 규모, 조직, 직무 또는 연봉 등의 이유로
+              더 이상 함께하기 어려울 수 있습니다. GeniCheck는 좋은 인재가 더
+              큰 무대에서 성장할 수 있도록 현재 회사가 다른 회사에 직접
+              추천할 수 있는 문화를 만듭니다.
+            </p>
+          </div>
+
+          <div className="reveal opacity-0 translate-y-8 transition-all duration-700 delay-150 bg-surface border border-gray-200 rounded-3xl p-9 shadow-sm">
+            <i className="ti ti-quote text-brand/30 text-4xl"></i>
+            <p className="text-lg md:text-xl font-bold text-text1 leading-relaxed mt-4 mb-7">
+              “우리와 함께했던 정말 좋은 인재입니다.
+              <br />더 큰 기회에서 빛날 수 있기를 바랍니다.”
+            </p>
+            <div className="flex items-center gap-2 text-accent2 font-bold text-sm">
+              <i className="ti ti-circle-check"></i>
+              前 회사 대표의 추천
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 4. TRUST BAR ─── */}
       <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-brand py-8 text-white/90 font-bold text-sm tracking-wide">
         <div className="max-w-6xl mx-auto px-8 flex flex-wrap justify-between items-center gap-4">
           {[
@@ -208,7 +245,7 @@ const LandingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ─── 4. HOW IT WORKS SECTION ─── */}
+      {/* ─── 5. HOW IT WORKS SECTION ─── */}
       <section id="how" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-8">
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 mb-16 text-left">
@@ -222,40 +259,48 @@ const LandingPage: React.FC = () => {
               어떻게 작동하나요?
             </h2>
             <p className="text-text2 text-lg leading-relaxed lg:whitespace-nowrap">
-              입사부터 퇴사까지, GeniCheck는 직원의 커리어 전 주기를 HR 데이터로
-              기록합니다.
+              기록 → 검증 → 추천 → 채용. GeniCheck는 직원의 커리어 전 주기를
+              이 네 단계로 연결합니다.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 num: "01",
                 icon: "ti-forms",
-                title: "입사 — 자기 선언",
-                desc: "신규 직원이 입사 시 역량을 스스로 선언합니다. 스킬·경험·업무 스타일을 구체적으로 기술합니다.",
+                title: "기록 — 경력 기록",
+                desc: "직원이 자신의 업무 경험, 프로젝트, 성과와 역량을 직접 기록합니다.",
                 bg: "bg-brand-light",
                 color: "text-brand",
               },
               {
                 num: "02",
                 icon: "ti-shield-check",
-                title: "퇴사 — 대표 검증",
-                desc: "퇴사 시 대표가 선언 내용을 항목별로 검증합니다. 15일 골든타임 안에 점수가 산출됩니다.",
+                title: "검증 — 회사 검증",
+                desc: "함께 일한 회사가 직원이 기록한 경력과 역량을 항목별로 검증합니다. 15일 골든타임 안에 점수가 산출됩니다.",
                 bg: "bg-accent2-light",
                 color: "text-accent2",
               },
               {
                 num: "03",
-                icon: "ti-brain",
-                title: "채용 — 타사 열람",
-                desc: "타 기업이 HR 신용점수를 열람하고 스카웃 요청을 보냅니다. 포인트가 자동 적립됩니다.",
+                icon: "ti-speakerphone",
+                title: "추천 — 인재 추천",
+                desc: "좋은 인재라면 회사가 다른 기업에 직접 추천할 수 있습니다.",
                 bg: "bg-accent-light",
                 color: "text-accent",
+              },
+              {
+                num: "04",
+                icon: "ti-brain",
+                title: "채용 — 타사 스카웃",
+                desc: "타 기업이 검증된 경력 데이터를 확인하고 스카웃 요청을 보냅니다. 포인트가 자동 적립됩니다.",
+                bg: "bg-blue-50",
+                color: "text-blue-500",
               },
             ].map((step, idx) => (
               <div
                 key={idx}
-                className="reveal opacity-0 translate-y-8 transition-all duration-700 group bg-white border border-gray-200 rounded-3xl p-10 relative overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2"
+                className="reveal opacity-0 translate-y-8 transition-all duration-700 group bg-white border border-gray-200 rounded-3xl p-8 relative overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2"
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
                 <div className="absolute right-6 top-0 font-black text-[100px] text-gray-100 leading-none select-none opacity-20">
@@ -278,7 +323,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 5. FEATURES SECTION ─── */}
+      {/* ─── 6. FEATURES SECTION ─── */}
       <section id="features-section" className="py-24 bg-surface">
         <div className="max-w-6xl mx-auto px-8">
           <div className="reveal opacity-0 translate-y-8 transition-all duration-700 mb-16 text-left">
@@ -307,7 +352,7 @@ const LandingPage: React.FC = () => {
                   선언 vs 검증 대조 분석
                 </div>
                 <p className="text-text2 text-[15px] leading-relaxed mb-6 max-w-xl">
-                  직원이 선언한 역량과 대표의 검증 점수를 항목별로 비교합니다.
+                  직원이 선언한 역량과 회사의 검증 점수를 항목별로 비교합니다.
                   GAP이 작을수록 자기 인식이 정확한 인재입니다. 채용 시 가장
                   중요한 판단 지표입니다.
                 </p>
@@ -392,6 +437,21 @@ const LandingPage: React.FC = () => {
             </div>
 
             <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md">
+              <div className="w-11 h-11 rounded-xl bg-accent2-light text-accent2 flex items-center justify-center text-lg shrink-0">
+                <i className="ti ti-affiliate"></i>
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-text1 mb-2">
+                  인재 추천 게시판
+                </h4>
+                <p className="text-text2 text-sm leading-relaxed">
+                  검증된 퇴사 직원을 타 기업에 추천할 수 있습니다. 직원 동의 후
+                  게시, 스카웃 성사 시 포인트 적립.
+                </p>
+              </div>
+            </div>
+
+            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md">
               <div className="w-11 h-11 rounded-xl bg-brand-light text-brand flex items-center justify-center text-lg shrink-0">
                 <i className="ti ti-clock-hour-4"></i>
               </div>
@@ -402,21 +462,6 @@ const LandingPage: React.FC = () => {
                 <p className="text-text2 text-sm leading-relaxed">
                   퇴사일로부터 15일 이내에만 검증 점수를 입력할 수 있습니다.
                   타이머 알림으로 기한을 놓치지 않게 도와줍니다.
-                </p>
-              </div>
-            </div>
-
-            <div className="reveal opacity-0 translate-y-8 transition-all duration-700 bg-white border border-gray-200 rounded-3xl p-6 flex gap-5 items-start text-left shadow-sm hover:shadow-md">
-              <div className="w-11 h-11 rounded-xl bg-accent2-light text-accent2 flex items-center justify-center text-lg shrink-0">
-                <i className="ti ti-users-group"></i>
-              </div>
-              <div>
-                <h4 className="text-base font-bold text-text1 mb-2">
-                  인재 추천 게시판
-                </h4>
-                <p className="text-text2 text-sm leading-relaxed">
-                  검증된 퇴사 직원을 타 기업에 추천할 수 있습니다. 직원 동의 후
-                  게시, 스카웃 성사 시 포인트 적립.
                 </p>
               </div>
             </div>
@@ -454,7 +499,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 6. PRICING SECTION (★ 수직 출렁임 제로 + 배지 정중앙 픽스 스펙) ─── */}
+      {/* ─── 7. PRICING SECTION (★ 수직 출렁임 제로 + 배지 정중앙 픽스 스펙) ─── */}
       <section
         id="pricing-section"
         className="py-24 bg-white border-t border-gray-100"
@@ -658,7 +703,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 7. CTA SECTION (하단 락업 보라색 단색화 및 가입 버튼 복원 완료) ─── */}
+      {/* ─── 8. CTA SECTION (하단 락업 보라색 단색화 및 가입 버튼 복원 완료) ─── */}
       <section className="relative py-32 px-8 text-center bg-surface border-t border-gray-200 overflow-hidden">
         <div className="max-w-4xl mx-auto relative z-10">
           {/* 하단 텍스트 단색 보라색 피드백 반영 */}
@@ -704,7 +749,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── 8. FOOTER ─── */}
+      {/* ─── 9. FOOTER ─── */}
       <footer className="bg-text1 py-12 px-8 md:px-16 flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-white/5">
         <div className="font-black text-[22px] tracking-[2px] text-white/70">
           GeniCheck
