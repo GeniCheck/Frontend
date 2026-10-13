@@ -18,32 +18,17 @@ import ScoreSelector, {
 } from "@/components/common/ScoreSelector";
 import DeclarationScoreItem from "@/components/verification/DeclarationScoreItem";
 
-const COMPETENCY_ITEMS: { key: CompetencyScoreDtoKey; title: string }[] = [
-  {
-    key: CompetencyScoreDtoKey.TRUST,
-    title: "동료와 상사로부터 느껴지는 신뢰도를 1~10점으로 평가해 주세요.",
-  },
-  {
-    key: CompetencyScoreDtoKey.DILIGENCE,
-    title: "업무에 임하는 성실성을 1~10점으로 평가해 주세요.",
-  },
-  {
-    key: CompetencyScoreDtoKey.RESPONSIBILITY,
-    title: "맡은 업무를 끝까지 책임지는 태도를 1~10점으로 평가해 주세요.",
-  },
-  {
-    key: CompetencyScoreDtoKey.COLLABORATION,
-    title: "동료와의 협업 능력을 1~10점으로 평가해 주세요.",
-  },
-  {
-    key: CompetencyScoreDtoKey.COMMUNICATION,
-    title: "의사소통 능력을 1~10점으로 평가해 주세요.",
-  },
-  {
-    key: CompetencyScoreDtoKey.GROWTH_POTENTIAL,
-    title: "앞으로의 성장 가능성을 1~10점으로 평가해 주세요.",
-  },
-];
+// 서버 commonCompetencies의 name은 "신뢰"처럼 짧은 라벨이라, 화면에는 기존
+// 컨벤션대로 1~10점 평가가 가능한 완전한 문장으로 다듬어서 보여준다.
+const COMPETENCY_LABEL: Record<CompetencyScoreDtoKey, string> = {
+  TRUST: "동료와 상사로부터 느껴지는 신뢰도를 1~10점으로 평가해 주세요.",
+  DILIGENCE: "업무에 임하는 성실성을 1~10점으로 평가해 주세요.",
+  RESPONSIBILITY:
+    "맡은 업무를 끝까지 책임지는 태도를 1~10점으로 평가해 주세요.",
+  COLLABORATION: "동료와의 협업 능력을 1~10점으로 평가해 주세요.",
+  COMMUNICATION: "의사소통 능력을 1~10점으로 평가해 주세요.",
+  GROWTH_POTENTIAL: "앞으로의 성장 가능성을 1~10점으로 평가해 주세요.",
+};
 
 const PageShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <main className="flex min-h-screen flex-1 flex-col">
@@ -87,7 +72,8 @@ const EvaluationPage: React.FC = () => {
     { query: { enabled: Boolean(evaluationId), retry: false } },
   );
   const form = data as unknown as CeoEvaluationFormResponse | undefined;
-  const items = [...(form?.items ?? [])].sort((a, b) => a.order - b.order);
+  const items = form?.items ?? [];
+  const competencies = form?.commonCompetencies ?? [];
 
   const submitMutation = useCeoEvaluationControllerSubmit();
 
@@ -128,7 +114,7 @@ const EvaluationPage: React.FC = () => {
   const isComplete =
     items.length > 0 &&
     items.every((item) => isScored(item.questionId)) &&
-    COMPETENCY_ITEMS.every((item) => isScored(item.key)) &&
+    competencies.every((item) => isScored(item.key)) &&
     rehireIntent !== null;
 
   const handleSubmit = () => {
@@ -142,7 +128,7 @@ const EvaluationPage: React.FC = () => {
             questionId: item.questionId,
             ceoScore: scores[item.questionId] as number,
           })),
-          commonCompetencies: COMPETENCY_ITEMS.map((item) => ({
+          commonCompetencies: competencies.map((item) => ({
             key: item.key,
             score: scores[item.key] as number,
           })),
@@ -187,9 +173,9 @@ const EvaluationPage: React.FC = () => {
         </p>
 
         <div className="text-2xs mt-4 rounded-xl border border-gray-100 bg-gray-50 p-3 leading-relaxed font-semibold text-gray-500">
-          {new Date(form.dueAt).toLocaleDateString("ko-KR")}까지 제출할 수
-          있어요. 모든 점수는 {form.scoreMin}~{form.scoreMax} 사이 정수로
-          입력하며, 제출 후에는 수정할 수 없습니다.
+          {new Date(form.ceoEvaluationDueAt).toLocaleDateString("ko-KR")}까지
+          제출할 수 있어요. 모든 점수는 {form.scoreMin}~{form.scoreMax} 사이
+          정수로 입력하며, 제출 후에는 수정할 수 없습니다.
         </div>
       </div>
 
@@ -230,7 +216,7 @@ const EvaluationPage: React.FC = () => {
           </div>
         </div>
 
-        {COMPETENCY_ITEMS.map((item, i) => (
+        {competencies.map((item, i) => (
           <div
             key={item.key}
             className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm"
@@ -239,7 +225,9 @@ const EvaluationPage: React.FC = () => {
               <span className="bg-brand-light text-brand text-2xs flex h-6 w-6 shrink-0 items-center justify-center rounded-lg font-black">
                 {i + 2}
               </span>
-              <span className="text-text1 text-xs font-bold">{item.title}</span>
+              <span className="text-text1 text-xs font-bold">
+                {COMPETENCY_LABEL[item.key]}
+              </span>
             </div>
             <div className="pl-9">
               <ScoreSelector
@@ -256,7 +244,7 @@ const EvaluationPage: React.FC = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm">
           <div className="mb-3.5 flex items-center gap-3">
             <span className="bg-brand-light text-brand text-2xs flex h-6 w-6 shrink-0 items-center justify-center rounded-lg font-black">
-              {COMPETENCY_ITEMS.length + 2}
+              {competencies.length + 2}
             </span>
             <span className="text-text1 text-xs font-bold">
               이 직원을 다시 고용할 의사가 있나요?

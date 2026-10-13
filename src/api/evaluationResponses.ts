@@ -1,4 +1,5 @@
 import type { DeclarationItemType } from "@/api/declarationResponses";
+import type { CompetencyScoreDtoKey } from "@/api/generated/models/competencyScoreDtoKey";
 
 export interface DeclarationAnswer {
   type: DeclarationItemType;
@@ -38,19 +39,38 @@ export interface SelfEvaluationFormResponse {
   items: EvaluationItem[];
 }
 
+// 자기평가 폼(EvaluationItem)과 별개 타입. 실제 응답에 order 필드가 없고,
+// 대신 commonCompetencies가 함께 내려온다 — 자기평가 쪽 타입을 공유하면
+// SelfEvaluationPage.tsx(직원 파트)가 의존하는 order 필드가 깨지므로 분리했다.
+export interface CeoEvaluationFormItem {
+  questionId: string;
+  question: string;
+  declarationAnswer: DeclarationAnswer;
+  selfScore: number | null;
+  ceoScore: number | null;
+}
+
+export interface CeoEvaluationFormCompetency {
+  key: CompetencyScoreDtoKey;
+  name: string;
+  ceoScore: number | null;
+}
+
 export interface CeoEvaluationFormResponse {
   evaluationId: string;
   employee: {
+    employeeId?: string;
     name: string;
     department?: string;
     position?: string;
     resignedAt?: string;
   };
   status: string;
-  dueAt: string;
+  ceoEvaluationDueAt: string;
   scoreMin: number;
   scoreMax: number;
-  items: EvaluationItem[];
+  items: CeoEvaluationFormItem[];
+  commonCompetencies: CeoEvaluationFormCompetency[];
 }
 
 export interface EvaluationResultItem {
