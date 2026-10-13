@@ -36,7 +36,7 @@ const DashboardPage: React.FC = () => {
             Dashboard
           </h1>
           <span className="text-xs font-semibold text-gray-400">
-            2026년 5월 9일 금요일
+            전체 운영 현황 요약
           </span>
         </div>
 
@@ -87,52 +87,50 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* CORE KPI CARDS GRID */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             {
               label: "총 재직 직원",
               value: "48",
-              change: "↑ 3명 이번 달 입사",
-              color: "border-t-4 border-t-brand",
-              emoji: "👥",
+              desc: "전체 48명 중",
+              icon: "ti-users text-brand",
             },
             {
-              label: "선언 완료율",
-              value: "85%",
-              change: "41 / 48명 완료",
-              color: "border-t-4 border-t-accent2",
-              emoji: "📈",
+              label: "선언 완료",
+              value: "41",
+              desc: "완료율 85%",
+              icon: "ti-checks text-emerald-500",
             },
             {
               label: "검증 대기",
               value: "3",
-              change: "⏱ 골든타임 처리 필요",
-              color: "border-t-4 border-t-accent",
-              emoji: "⏳",
+              desc: "⏳ 골든타임",
+              icon: "ti-hourglass text-amber-500",
             },
             {
               label: "보유 포인트",
               value: "245K",
-              change: "+105K 이번 달 적립",
-              color: "border-t-4 border-t-blue-500",
-              emoji: "🪙",
+              desc: "+105K 이번 달 적립",
+              icon: "ti-coin text-blue-500",
             },
           ].map((kpi, i) => (
             <div
               key={i}
-              className={`flex flex-col justify-between rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm ${kpi.color}`}
+              className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm"
             >
-              <div className="flex items-start justify-between">
-                <span className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
+              <div>
+                <span className="text-2xs block font-bold tracking-wider text-gray-400 uppercase">
                   {kpi.label}
                 </span>
-                <span className="text-base">{kpi.emoji}</span>
-              </div>
-              <div className="mt-2.5">
-                <div className="text-text1 text-3xl font-black tracking-tight">
+                <div className="text-text1 mt-1 text-2xl font-black">
                   {kpi.value}
                 </div>
-                <p className="text-2xs mt-1 text-gray-400">{kpi.change}</p>
+                <span className="text-2xs mt-0.5 block text-gray-400">
+                  {kpi.desc}
+                </span>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-xl">
+                <i className={`ti ${kpi.icon}`} />
               </div>
             </div>
           ))}
