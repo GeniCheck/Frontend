@@ -287,15 +287,11 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
   const resignedCount = employeeList.filter(
     (emp) => emp.status === "퇴사",
   ).length;
-  const now = new Date();
-  const resignedThisMonthCount = employeeList.filter((emp) => {
-    if (emp.status !== "퇴사" || !emp.resignedAt) return false;
-    const resignedDate = new Date(emp.resignedAt);
-    return (
-      resignedDate.getFullYear() === now.getFullYear() &&
-      resignedDate.getMonth() === now.getMonth()
-    );
-  }).length;
+  // 목록 응답에 퇴사일 필드가 없어 "이번 달 퇴사" 같은 날짜 집계는 계산할 수
+  // 없다. 대신 퇴사자 중 검증(evaluationStatus)이 끝난 사람 수를 보여준다.
+  const resignedCompletedCount = employeeList.filter(
+    (emp) => emp.status === "퇴사" && emp.action === "완료",
+  ).length;
 
   const statCards = [
     {
@@ -317,10 +313,10 @@ const VerificationPageBody: React.FC<VerificationPageBodyProps> = ({
       icon: "ti-hourglass text-amber-500",
     },
     {
-      label: "이번 달 퇴사",
-      value: String(resignedThisMonthCount),
-      desc: `총 퇴사 ${resignedCount}명`,
-      icon: "ti-logout text-purple-500",
+      label: "퇴사자 검증 완료",
+      value: String(resignedCompletedCount),
+      desc: `총 퇴사 ${resignedCount}명 중`,
+      icon: "ti-shield-check text-purple-500",
     },
   ];
 

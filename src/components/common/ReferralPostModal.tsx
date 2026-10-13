@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEmployeeControllerList } from "@/api/generated/endpoints/employee/employee";
 import { EmployeeControllerListStatus } from "@/api/generated/models/employeeControllerListStatus";
 import {
+  getReferralPostControllerListQueryKey,
   useReferralPostControllerCreate,
   useResumeControllerCreateUploadUrl,
 } from "@/api/generated/endpoints/referral/referral";
@@ -66,6 +68,7 @@ const ReferralPostModal: React.FC<ReferralPostModalProps> = ({
   open,
   onClose,
 }) => {
+  const queryClient = useQueryClient();
   const { data: employeeListData } = useEmployeeControllerList(
     { status: EmployeeControllerListStatus.RESIGNED, size: 100 },
     { query: { enabled: open } },
@@ -79,10 +82,16 @@ const ReferralPostModal: React.FC<ReferralPostModalProps> = ({
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [isSubmitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const clearResumeFile = () => {
+    setResumeFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const resetAndClose = () => {
     setForm(EMPTY_FORM);
-    setResumeFile(null);
+    clearResumeFile();
     setSubmitError(null);
     onClose();
   };
@@ -145,7 +154,7 @@ const ReferralPostModal: React.FC<ReferralPostModalProps> = ({
         if (!putResponse.ok) {
           throw new Error("이력서 업로드에 실패했어요.");
         }
-        resumeFileId = uploadUrlResponse.fileId;
+        resumeFileId = uploadUrlResponse.resumeFileId;
       }
 
       await createPostMutation.mutateAsync({
@@ -157,6 +166,9 @@ const ReferralPostModal: React.FC<ReferralPostModalProps> = ({
           displayNameMode: form.displayNameMode,
           publishMonths: form.publishMonths,
         },
+      });
+      await queryClient.invalidateQueries({
+        queryKey: getReferralPostControllerListQueryKey(),
       });
       alert("인재 추천 게시물이 등록되었습니다.");
       resetAndClose();
@@ -270,6 +282,7 @@ const ReferralPostModal: React.FC<ReferralPostModalProps> = ({
           <div>
             <label className={labelClassName}>이력서 (선택, PDF/DOCX)</label>
             <input
+              ref={fileInputRef}
               type="file"
               accept=".pdf,.docx"
               onChange={handleFileChange}
@@ -277,7 +290,20 @@ const ReferralPostModal: React.FC<ReferralPostModalProps> = ({
               className="text-text2 w-full text-xs file:mr-3 file:rounded-lg file:border file:border-gray-200 file:bg-white file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-gray-500"
             />
             {resumeFile && (
-              <p className="text-2xs mt-1 text-gray-400">{resumeFile.name}</p>
+              <div className="mt-1 flex items-center gap-1.5">
+                <p className="text-2xs flex-1 truncate text-gray-400">
+                  {resumeFile.name}
+                </p>
+                <button
+                  type="button"
+                  onClick={clearResumeFile}
+                  disabled={isSubmitting}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-gray-400 transition-all hover:bg-gray-100 hover:text-red-400 active:scale-90 disabled:opacity-40"
+                  aria-label="첨부한 이력서 제거"
+                >
+                  <i className="ti ti-x text-2xs" />
+                </button>
+              </div>
             )}
           </div>
 

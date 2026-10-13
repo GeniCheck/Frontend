@@ -5,6 +5,7 @@ import { useReferralPostControllerList } from "@/api/generated/endpoints/referra
 import { useRole } from "@/context/roleContext";
 import ConsentRequestModal from "@/components/common/ConsentRequestModal";
 import ReferralPostModal from "@/components/common/ReferralPostModal";
+import ReferralPostDetailModal from "@/components/common/ReferralPostDetailModal";
 import type { ReferralPostListResponse } from "@/api/referralResponses";
 
 const PAGE_SIZE = 10;
@@ -47,6 +48,7 @@ const ReferralPage: React.FC = () => {
 
   const [isConsentModalOpen, setConsentModalOpen] = useState(false);
   const [isPostModalOpen, setPostModalOpen] = useState(false);
+  const [detailPostId, setDetailPostId] = useState<string | null>(null);
 
   const {
     data: postListData,
@@ -62,11 +64,8 @@ const ReferralPage: React.FC = () => {
   const postList = postListData as unknown as
     ReferralPostListResponse | undefined;
   const talentList = postList?.items ?? [];
-  const totalPublishedCount = postList?.totalElements ?? 0;
-  const totalPages = Math.max(
-    1,
-    Math.ceil((postList?.totalElements ?? 0) / PAGE_SIZE),
-  );
+  const totalPublishedCount = postList?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil((postList?.total ?? 0) / PAGE_SIZE));
 
   return (
     <>
@@ -192,7 +191,7 @@ const ReferralPage: React.FC = () => {
                             >
                               <td className="py-3.5">
                                 <span className="text-text1 font-black">
-                                  {talent.employeeName}
+                                  {talent.displayName}
                                 </span>
                                 <span className="text-text2 ml-1 font-bold">
                                   {talent.position}
@@ -210,9 +209,10 @@ const ReferralPage: React.FC = () => {
                               <td className="py-3.5 text-right">
                                 <button
                                   type="button"
+                                  onClick={() => setDetailPostId(talent.postId)}
                                   className="text-text2 text-2xs rounded-lg border border-gray-200 px-3 py-1.5 font-bold transition-all hover:bg-gray-50 active:scale-95"
                                 >
-                                  상세
+                                  상세 조회
                                 </button>
                               </td>
                             </tr>
@@ -327,6 +327,11 @@ const ReferralPage: React.FC = () => {
       <ReferralPostModal
         open={isPostModalOpen}
         onClose={() => setPostModalOpen(false)}
+      />
+      <ReferralPostDetailModal
+        postId={detailPostId}
+        onClose={() => setDetailPostId(null)}
+        onChanged={() => refetchPostList()}
       />
     </>
   );

@@ -2,28 +2,22 @@
 // 스웨거에 스키마가 없어 orval이 void로 생성하므로, 실제 호출부에서
 // `as unknown as` 캐스팅 대상으로 쓴다.
 
-// presigned URL 발급 응답의 정확한 필드명은 문서로 확인되지 않아, 요청 DTO의
-// 주석("resumeFileId: 업로드가 끝난 이력서 ID")과 presigned PUT 업로드의
-// 일반적인 관례(uploadUrl + fileId)로 추정한 값이다. 실제 응답과 다르면
-// ReferralPostModal.tsx의 캐스팅 지점만 고치면 된다.
 export interface ResumeUploadUrlResponse {
+  resumeFileId: string;
   uploadUrl: string;
-  fileId: string;
+  objectKey: string;
+  expiresAt: string;
 }
 
-// 게시물 목록(GET /referral/posts) 응답도 정확한 필드명이 문서로 확인되지
-// 않았다. 작성 요청 DTO(employeeId/title/recommendationReason/...)와, 같은
-// 백엔드의 다른 목록 API들(question-templates, employees)이 공통으로 쓰는
-// `{ items, page, size, totalElements }` 페이지네이션 모양을 근거로 추정했다.
-// 익명 게시물은 "익명은 이름 마스킹"이라는 설명대로 서버가 이미 마스킹된
-// employeeName을 내려준다고 가정한다.
+// 목록 응답은 상세(ReferralPostDetail)와 달리 employee가 중첩되지 않고
+// 평평하며, 날짜·총 개수 필드명도 서로 다르다(expiresAt vs postExpiresAt,
+// total vs totalElements) — 둘을 억지로 통일하지 않고 각자 응답 그대로 둔다.
 export interface ReferralPostListItem {
   postId: string;
-  employeeName: string;
+  title: string;
+  displayName: string;
   position: string;
   companyName: string;
-  title: string;
-  recommendationReason: string;
   publishedAt?: string;
   expiresAt?: string;
 }
@@ -32,8 +26,41 @@ export interface ReferralPostListResponse {
   items: ReferralPostListItem[];
   page: number;
   size: number;
-  totalElements: number;
+  total: number;
 }
+
+export interface ReferralPostEmployee {
+  displayName: string;
+  position: string;
+}
+
+export interface ReferralPostDetail {
+  postId: string;
+  title: string;
+  companyName: string;
+  employee: ReferralPostEmployee;
+  recommendationReason: string;
+  resume: { downloadUrl: string } | null;
+  publishedAt: string;
+  postExpiresAt: string;
+}
+
+// 상세 응답에 displayNameMode/publishMonths가 내려오지 않아, 가진 값으로
+// 현재 상태를 역산한다. 수정 폼 초기값으로만 쓰는 추정치다.
+export const inferDisplayNameMode = (
+  displayName: string,
+): "REAL_NAME" | "ANONYMOUS" =>
+  displayName.includes("*") ? "ANONYMOUS" : "REAL_NAME";
+
+export const inferPublishMonths = (
+  publishedAt: string,
+  postExpiresAt: string,
+): 3 | 6 => {
+  const months =
+    (new Date(postExpiresAt).getTime() - new Date(publishedAt).getTime()) /
+    (1000 * 60 * 60 * 24 * 30);
+  return months >= 4.5 ? 6 : 3;
+};
 
 export type ReferralConsentStatus =
   "PENDING" | "AGREED" | "WITHDRAWN" | "EXPIRED";
