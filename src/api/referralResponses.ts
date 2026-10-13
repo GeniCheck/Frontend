@@ -35,6 +35,26 @@ export interface ReferralPostListResponse {
   totalElements: number;
 }
 
+// 게시물 상세(GET /referral/posts/{postId}) 응답도 정확한 필드명 명세가 없어
+// 목록(ReferralPostListItem) 필드 + 작성/수정 DTO(displayNameMode/publishMonths)
+// + "업로드 확인된 이력서는 5분 다운로드 URL"이라는 설명을 근거로 추정했다.
+export interface ReferralPostDetail {
+  postId: string;
+  employeeId?: string;
+  employeeName: string;
+  position: string;
+  companyName: string;
+  title: string;
+  recommendationReason: string;
+  displayNameMode: "REAL_NAME" | "ANONYMOUS";
+  publishMonths: 3 | 6;
+  status: string;
+  publishedAt?: string;
+  expiresAt?: string;
+  // 이력서 업로드가 확인된 경우에만 내려오는, 5분짜리 임시 다운로드 URL.
+  resumeDownloadUrl?: string;
+}
+
 export type ReferralConsentStatus =
   "PENDING" | "AGREED" | "WITHDRAWN" | "EXPIRED";
 
